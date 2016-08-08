@@ -68,7 +68,6 @@ export interface NewEnvironmentParams {
         release_date?: Time;
         documentation_url?: string;
     };
-    datacenters: Id[];
 }
 
 export interface UpdateEnvironmentParams {
@@ -94,7 +93,7 @@ export class EnvironmentsRequest {
     }
 
     public static async create(doc: NewEnvironmentParams, query?: ApiRequest.QueryParams): Promise<Environment> {
-        return ApiRequest._post<Environment>(this.target, new CreateNewEnvironment(doc), query);
+        return ApiRequest._post<Environment>(this.target, new FormattedDoc({ type: "environments", attributes: doc }), query);
     }
 }
 
@@ -148,27 +147,5 @@ export class EnvironmentRequest {
                 );
             }
         };
-    }
-}
-
-
-class CreateNewEnvironment extends FormattedDoc {
-    data: JsonApi.Resource;
-
-    constructor(attr: NewEnvironmentParams) {
-        super({ type: "environments" });
-        this.data.attributes = attr;
-        let datacenters = {
-            data: attr.datacenters.map(d => {
-                return {
-                    type: "datacenters",
-                    id: d
-                };
-            })
-        };
-        this.data.relationships = {
-            datacenters: datacenters
-        };
-        delete this.data.attributes["datacenters"];
     }
 }

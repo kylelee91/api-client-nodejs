@@ -35,6 +35,7 @@ export interface TierResource {
         public: boolean;
         most_popular: boolean;
         disabled: boolean;
+        descriptors: {title: string, description: string, type: string}[];
         features: {[key: string]: boolean}
         resources: {[key: string]: number}
         support: {[key: string]: boolean};
