@@ -70,6 +70,7 @@ export interface DnsZoneRecordResource {
     attributes: {
         type: DnsZoneRecordType;
         assignable: boolean;
+        ssl?: boolean; // For A Records
         name: string;
         domain: string;
         values: {
@@ -93,6 +94,7 @@ export interface NewZoneRecordParams {
     type: DnsZoneRecordType;
     assignable: boolean;
     name: string;
+    ssl?: boolean;
     values: {
         ip?: string;
         priority?: number;
@@ -112,6 +114,7 @@ export interface UpdateRecordParams {
     assignable?: boolean;
     name?: string;
     domain?: string;
+    ssl?: boolean;
     values?: {
         ip?: string;
         priority?: number;
