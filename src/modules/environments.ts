@@ -68,7 +68,6 @@ export interface NewEnvironmentParams {
         release_date?: Time;
         documentation_url?: string;
     };
-    datacenters: Id[];
 }
 
 export interface UpdateEnvironmentParams {
@@ -158,17 +157,6 @@ class CreateNewEnvironment extends FormattedDoc {
     constructor(attr: NewEnvironmentParams) {
         super({ type: "environments" });
         this.data.attributes = attr;
-        let datacenters = {
-            data: attr.datacenters.map(d => {
-                return {
-                    type: "datacenters",
-                    id: d
-                };
-            })
-        };
-        this.data.relationships = {
-            datacenters: datacenters
-        };
         delete this.data.attributes["datacenters"];
     }
 }
