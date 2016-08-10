@@ -49,8 +49,8 @@ export interface ContainerResource extends JsonApi.Resource {
         account: JsonApi.ToOneRelationship;
         team: JsonApi.ToOneRelationship;
     };
-    meta: {
-        counts: {
+    meta?: {
+        counts?: {
             instances: {
                 starting: number;
                 running: number;
@@ -61,14 +61,14 @@ export interface ContainerResource extends JsonApi.Resource {
                 errored: number;
             }
         };
-        location: {
+        location?: {
             continent: string;
             country: string;
             city: string;
             state: string;
         };
-        image: ImageResource
-        ip: {
+        image?: ImageResource
+        ip?: {
             address: string;
             mask: string;
         }
