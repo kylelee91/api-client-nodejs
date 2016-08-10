@@ -4,6 +4,7 @@ import { Id, State, Events, Task, Time, FormattedDoc } from "../common/structure
 import { TierSummary } from "./tiers";
 import { ContainerState } from "./containers";
 import { InstanceState } from "./instances";
+import { EnvironmentResource } from "./environments";
 
 export function methods(): typeof MethodsRequest;
 export function methods(id: string): MethodsRequest;
@@ -27,6 +28,10 @@ export function invoices(id?: string): typeof InvoicesRequest | InvoicesRequest 
 
 export function services() {
     return new ActiveServicesRequest();
+}
+
+export function expected() {
+    return ExpectedRequest;
 }
 
 // Methods
@@ -227,6 +232,16 @@ export interface InstanceUsage {
     hours: number;
 }
 
+export interface Expected extends JsonApi.ResourceDocument {
+    data: {
+        id: Id;
+        type: "expected"
+        attributes: {
+            costs: number;
+        };
+    };
+}
+
 // Active Services
 export interface ActiveServices extends JsonApi.ResourceDocument {
     data: ActiveServicesResource | null;
@@ -237,7 +252,8 @@ export interface ActiveServicesResource {
     type: "active_services";
     attributes: {
         term: Term;
-        containers: ContainerLineItem[];
+        environments: EnvironmentResource[];
+        containers: {[key: string]: ContainerLineItem[]};
         due: number;
         tier: TierSummary & {due: number};
     };
@@ -252,6 +268,14 @@ export interface NewPaymentMethodParams {
 
 export interface UpdatePaymentMethodParams {
     name: string;
+}
+
+export class ExpectedRequest {
+    private static target = "billing/expected";
+
+    public static async get(): Promise<Expected> {
+        return ApiRequest._get<Expected>(this.target);
+    }
 }
 
 type MethodActions = "make_primary";
