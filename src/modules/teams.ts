@@ -77,7 +77,6 @@ export interface TeamResource extends JsonApi.Resource {
         name: string;
         about: {
             description: string;
-            website: string;
         };
 
         state: State<TeamState>;

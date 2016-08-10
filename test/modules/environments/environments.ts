@@ -35,7 +35,8 @@ describe("Images", () => {
             const dcs = await CycleApi.DataCenters.document().get();
             if (dcs.data.length > 0) {
                 envPromise = CycleApi.Environments.document().create({
-                    name: "Test Env"
+                    name: "Test Env",
+                    description: "Testing Environment Creation"
                 });
             } else {
                 throw new Error("No data centers found");

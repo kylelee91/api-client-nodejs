@@ -57,17 +57,7 @@ export interface EnvironmentResource extends JsonApi.Resource {
 
 export interface NewEnvironmentParams {
     name: string;
-    about?: {
-        description?: string;
-        developer?: {
-            name?: string;
-            website?: string;
-            organization?: string;
-        };
-        version?: string;
-        release_date?: Time;
-        documentation_url?: string;
-    };
+    description: string;
 }
 
 export interface UpdateEnvironmentParams {
