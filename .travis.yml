@@ -4,3 +4,11 @@ node_js:
 - '6.1'
 - '5.11'
 - 4.4.7
+script: npm pack
+deploy:
+  provider: releases
+  api_key:
+    secure: DLzj2QbsxBgSCObm9ZDKrDaX5AGwyp31+ZyOQtZEWutGz4kNC7STFa4CglPgyo1Yg+V6amsSeTZXmi9Jcru/Pe45NOtsnEw7nQU+PeyMJWfNlSaVcNWzd9eqooVPWkl3j9v2S8YVxQdhRFVG4ZzBKwb5F/dwrMoED5Tly16V5o0snX//nnFRmBC0v0/HEApI22iuWcI9MXbXRRuZt3rF8o2ZNa5Na1U21g8aVl6lbA15s1kAIQwL78cJWXOSONmGy/5J0TJXDDt7dFeSq8P//b3uCpiDQhhq91CqarZaIBHTwNGuMrwMSbIqW447O/LL3RKEMCGnBp+rVZ594K/PkVg0b+OiX6p0K9Q5bKSJPFHIvrqHm0NL7fzFKBkDU6EI+QgG3N2begjx+0f3DowmfSQomexF3G6WhVdNZ4nW5NhncFkXpY58YI6ndzyV5p3bCxMY6ik2+qSCUDE95BbsMauIdGTcnfvqq9vibvdlXMhavXuMNbxeYST3dqSookeD9HLi2ug+YxFuY0Ye54zL6evpBA2wtMpr+p7ykzopCe46Ibgk1X1pskccnQcTQDvNAUQPZ/M2C2HOUFGVAE8lthcl6DGTM1B0my01QuyCzqeK1tqIaCngA/qgRSmknP0ISxbNM//DzVO3cFxkAWGzEyRTcaWHTdQpvLUcomCe9fU=
+  file: cycle-api*
+  on:
+    repo: cycleplatform/api-client-nodejs
