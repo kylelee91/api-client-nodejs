@@ -1,6 +1,6 @@
 import * as JsonApi from "../jsonapi/index";
 import * as ApiRequest from "../common/request";
-import { Id, State, Events, Task, FormattedDoc } from "../common/structures";
+import { Id, State, Events, Task, FormattedDoc, Scope } from "../common/structures";
 
 export function document(): typeof ReposRequest;
 export function document(id: string): RepoRequest;
@@ -31,6 +31,7 @@ export interface RepoResource extends JsonApi.Resource {
             description: string;
         };
         type: RepoType;
+        owner: Scope;
         url: string;
         auth: {
             private_key: string;
@@ -40,8 +41,7 @@ export interface RepoResource extends JsonApi.Resource {
     };
 
     relationships?: {
-        account: JsonApi.ToOneRelationship;
-        team: JsonApi.ToOneRelationship;
+        creator: JsonApi.ToOneRelationship;
     };
 
     meta?: {

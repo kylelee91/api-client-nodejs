@@ -56,11 +56,6 @@ export interface DnsZoneResource {
             verified: string;
         };
     };
-
-    relationships?: {
-        account: JsonApi.ToOneRelationship;
-        team: JsonApi.ToOneRelationship;
-    };
 }
 
 export type DnsZoneRecordType = "a" | "aaaa" | "cname" | "mx" | "srv" | "ns" | "txt";

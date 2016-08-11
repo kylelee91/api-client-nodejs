@@ -39,6 +39,12 @@ export interface State<T extends string> {
     };
 }
 
+export type ScopeType = "account" | "employee" | "team";
+export interface Scope {
+    type: ScopeType;
+    id: Id;
+}
+
 export type Time = string;
 
 export type DocType = "task";

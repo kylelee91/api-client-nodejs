@@ -32,7 +32,6 @@ export interface ContainerResource extends JsonApi.Resource {
         env: { [key: string]: string };
         command: string[];
         spawns: number;
-        public_iface: boolean;
         scaling: ScalingStructure;
         volumes: ContainerVolumes[];
         override_command: boolean;
@@ -41,7 +40,6 @@ export interface ContainerResource extends JsonApi.Resource {
     };
     relationships?: {
         environment: JsonApi.ToOneRelationship;
-        cluster: JsonApi.ToOneRelationship;
         image: JsonApi.ToOneRelationship;
         plan: JsonApi.ToOneRelationship;
         domain: JsonApi.ToOneRelationship;

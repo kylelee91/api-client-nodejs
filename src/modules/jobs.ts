@@ -1,6 +1,6 @@
 import * as JsonApi from "../jsonapi/index";
 import * as ApiRequest from "../common/request";
-import { Id, Time, State, Events } from "../common/structures";
+import { Id, Time, State, Events, Scope } from "../common/structures";
 
 export function document(): typeof JobsRequest;
 export function document(id: string): JobRequest;
@@ -31,13 +31,14 @@ export interface JobResource {
         scheduled: Time;
         state: State<JobState>;
         tasks: JobTask[];
+        owner: Scope;
         events: Events & {
             started: Time;
             completed: Time;
         };
     };
     relationships?: {
-        account: JsonApi.ToOneRelationship;
+        creator: JsonApi.ToOneRelationship;
     };
 }
 

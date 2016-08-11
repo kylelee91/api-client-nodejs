@@ -1,6 +1,6 @@
 import * as JsonApi from "../jsonapi/index";
 import * as ApiRequest from "../common/request";
-import { Id, State, Events, Task, FormattedDoc } from "../common/structures";
+import { Id, State, Events, Task, Scope, FormattedDoc } from "../common/structures";
 
 export function document(): typeof ImagesRequest;
 export function document(id: string): ImageRequest;
@@ -39,22 +39,17 @@ export interface ImageResource extends JsonApi.Resource {
         about: {
             description: string;
         };
-        source: {
-            flavor: string;
-            type: string;
-            target: string;
-            repo: string;
-            tag: string;
-        };
+        source: ImageSource;
         tags: string[];
         size: number;
         config: ImageConfig;
         state: State<ImageState>;
         events: Events;
+        owner: Scope;
     };
 
     relationships?: {
-        team: JsonApi.ToOneRelationship;
+        creator: JsonApi.ToOneRelationship;
         repo: JsonApi.ToOneRelationship;
     };
 
@@ -63,6 +58,14 @@ export interface ImageResource extends JsonApi.Resource {
             containers: number;
         };
     };
+}
+
+export interface ImageSource {
+    flavor: string;
+    type: string;
+    target: string;
+    repo: string;
+    tag: string;
 }
 
 export interface ImageConfig {

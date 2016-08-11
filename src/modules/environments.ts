@@ -1,6 +1,6 @@
 import * as JsonApi from "../jsonapi/index";
 import * as ApiRequest from "../common/request";
-import { Id, State, Events, Task, Time, FormattedDoc } from "../common/structures";
+import { Id, State, Events, Task, Time, FormattedDoc, Scope } from "../common/structures";
 
 export function document(): typeof EnvironmentsRequest;
 export function document(id: string): EnvironmentRequest;
@@ -28,23 +28,14 @@ export interface EnvironmentResource extends JsonApi.Resource {
         name: string;
         about: {
             description: string;
-            developer: {
-                name: string;
-                website: string;
-                organization: string;
-            };
-            version: string;
-            release_date: Time;
-            documentation_url: string;
         };
+        owner: Scope;
         state: State<EnvironmentState>;
         events: Events;
     };
 
     relationships?: {
-        account: JsonApi.ToOneRelationship;
-        datacenters: JsonApi.ToManyRelationship;
-        team: JsonApi.ToOneRelationship;
+        creator: JsonApi.ToOneRelationship;
     };
 
     meta?: {
