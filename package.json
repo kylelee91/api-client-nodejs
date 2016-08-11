@@ -22,6 +22,7 @@
   },
   "scripts": {
     "prepublish": "tsc",
+    "preinstall": "tsc",
     "pretest": "cd test && tsc",
     "test": "mocha test/build/test/init.js"
   },
