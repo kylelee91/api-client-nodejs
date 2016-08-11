@@ -32,9 +32,8 @@ export interface ContainerResource extends JsonApi.Resource {
         env: { [key: string]: string };
         command: string[];
         spawns: number;
-        scalable: boolean;
         public_iface: boolean;
-        structure: ContainerStructure;
+        scaling: ScalingStructure;
         volumes: ContainerVolumes[];
         override_command: boolean;
         state: State<ContainerState>;
@@ -46,8 +45,6 @@ export interface ContainerResource extends JsonApi.Resource {
         image: JsonApi.ToOneRelationship;
         plan: JsonApi.ToOneRelationship;
         domain: JsonApi.ToOneRelationship;
-        account: JsonApi.ToOneRelationship;
-        team: JsonApi.ToOneRelationship;
     };
     meta?: {
         counts?: {
@@ -77,20 +74,30 @@ export interface ContainerResource extends JsonApi.Resource {
 
 export type ContainerState = "starting" | "running" | "stopping" | "stopped" | "deleting" | "deleted";
 
-export interface ContainerStructure {
-    scalable?: {
-        instances: {
-            max: number;
-            min: number;
-            hostname_format: string;
-        };
-    };
-    persistent?: {
-        instance: {
-            datacenter: string;
-            hostname: string;
-        };
-    };
+export interface ScalingStructure {
+    method: "persistent" | "geodns" | "loadbalance" | "loadbalance-geodns";
+    hostname: string;
+    geodns?: GeoDNS;
+    loadbalance?: LoadBalance;
+    persistent?: Persistent;
+}
+
+export interface GeoDNS {
+    datacenters: Id[];
+    max_per_dc: number;
+    min_per_dc: number;
+}
+
+export interface LoadBalance {
+    datacenter: Id;
+    max: number;
+    min: number;
+    public_iface?: boolean;
+}
+
+export interface Persistent {
+    datacenter: string;
+    public_iface?: boolean;
 }
 
 export interface ContainerVolumes {
@@ -105,8 +112,7 @@ export interface NewContainerParams {
     environment: string;
     plan: string;
     image: string;
-    scalable: boolean;
-    structure: ContainerStructure;
+    scaling: ScalingStructure;
     dnsRecord?: string;
     public_iface: boolean;
     volumes: ContainerVolumes[];
@@ -115,7 +121,6 @@ export interface NewContainerParams {
 export interface UpdateContainerParams {
     name?: string;
     volumes?: { id: string, remote_access: boolean }[];
-    public_iface?: boolean;
 }
 
 export interface EventCollection extends JsonApi.CollectionDocument {
@@ -266,8 +271,7 @@ export class InstanceRequest {
 export function generateNewContainerDoc(attr: NewContainerParams) {
     let attributes = {
         name: attr.name,
-        structure: attr.structure,
-        scalable: attr.scalable,
+        scaling: attr.scaling,
         volumes: attr.volumes,
         public_iface: attr.public_iface
     };

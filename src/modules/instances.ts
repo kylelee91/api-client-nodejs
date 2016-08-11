@@ -1,5 +1,6 @@
 import * as JsonApi from "../jsonapi/index";
 import { Id, State, Events, Time } from "../common/structures";
+import { Location } from "./datacenters";
 
 export interface InstanceCollection extends JsonApi.CollectionDocument {
     data: InstanceResource[];
@@ -32,6 +33,7 @@ export interface InstanceResource extends JsonApi.Resource {
         hostname: string;
         volumes: InstanceVolume[];
         state: State<InstanceState>;
+        location: Location;
         events: Events & {
             first_boot: Time;   
             started: Time;

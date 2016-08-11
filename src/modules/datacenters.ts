@@ -26,14 +26,17 @@ export interface DataCenterResource extends JsonApi.Resource {
     attributes: {
         name: string;
         provider: string;
-        location: {
-            state: string;
-            city: string;
-            country: string;
-            continent: string;
-        };
+        location: Location;
         active: boolean;
     };
+}
+
+export interface Location {
+    state: string;
+    city: string;
+    country: string;
+    continent: string;
+    coordinates: number[];
 }
 
 export class DataCentersRequest {
