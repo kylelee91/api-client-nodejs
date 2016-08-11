@@ -107,12 +107,11 @@ export interface ContainerVolumes {
 
 export interface NewContainerParams {
     name: string;
-    environment: string;
-    plan: string;
-    image: string;
+    environment: Id;
+    plan: Id;
+    image: Id;
     scaling: ScalingStructure;
-    dnsRecord?: string;
-    public_iface: boolean;
+    domain?: Id;
     volumes: ContainerVolumes[];
 }
 
