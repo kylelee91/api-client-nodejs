@@ -270,7 +270,6 @@ export function generateNewContainerDoc(attr: NewContainerParams) {
         name: attr.name,
         scaling: attr.scaling,
         volumes: attr.volumes,
-        public_iface: attr.public_iface
     };
     let relationships = {
         image: {
@@ -294,7 +293,7 @@ export function generateNewContainerDoc(attr: NewContainerParams) {
         domain: {
             data: {
                 type: "domains",
-                id: attr.dnsRecord
+                id: attr.domain
             }
         }
     };
