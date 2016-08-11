@@ -4,7 +4,6 @@ node_js:
 - '6.1'
 - '5.11'
 - 4.4.7
-script: 
 before_deploy: npm pack
 deploy:
   provider: releases

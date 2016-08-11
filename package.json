@@ -23,7 +23,7 @@
   "scripts": {
     "prepublish": "tsc",
     "pretest": "cd test && tsc",
-    "test": "mocha test/build/test/init.js"
+    "test": ""
   },
   "keywords": [
     "cycle",
