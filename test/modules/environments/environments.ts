@@ -31,18 +31,13 @@ describe("Images", () => {
             return CycleApi.Environments.document().get();
         });
 
-        it("Create an environment", async () => {
-            const dcs = await CycleApi.DataCenters.document().get();
-            if (dcs.data.length > 0) {
-                envPromise = CycleApi.Environments.document().create({
-                    name: "Test Env",
-                    about: {
-                        description: "Testing Environment Creation"
-                    }
-                });
-            } else {
-                throw new Error("No data centers found");
-            }
+        it("Create an environment", () => {
+            envPromise = CycleApi.Environments.document().create({
+                name: "Test Env",
+                about: {
+                    description: "Testing Environment Creation"
+                }
+            });
             return envPromise;
         });
 
