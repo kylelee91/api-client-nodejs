@@ -90,12 +90,12 @@ export interface LoadBalance {
     datacenter: Id;
     max: number;
     min: number;
-    public_iface?: boolean;
+    public_interface?: boolean;
 }
 
 export interface Persistent {
     datacenter: string;
-    public_iface?: boolean;
+    public_interface?: boolean;
 }
 
 export interface ContainerVolumes {
