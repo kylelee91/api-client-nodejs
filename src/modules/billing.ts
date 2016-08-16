@@ -252,10 +252,12 @@ export interface ActiveServicesResource {
     type: "active_services";
     attributes: {
         term: Term;
-        environments: EnvironmentResource[];
-        containers: {[key: string]: ContainerLineItem[]};
+        containers: ContainerLineItem[];
         due: number;
         tier: TierSummary & {due: number};
+    };
+    meta: {
+        environments: {[key: string]: EnvironmentResource};
     };
 }
 
