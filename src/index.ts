@@ -1,17 +1,16 @@
 // Cycle API
-import * as Accounts from "./modules/accounts";
-import * as Billing from "./modules/billing";
-import * as Containers from "./modules/containers";
-import * as DataCenters from "./modules/datacenters";
-import * as Dns from "./modules/dns";
-import * as Environments from "./modules/environments";
-import * as Images from "./modules/images";
-import * as Instances from "./modules/instances";
-import * as Jobs from "./modules/jobs";
-import * as Plans from "./modules/plans";
-import * as Repos from "./modules/repos";
-import * as Teams from "./modules/teams";
-import * as Tiers from "./modules/tiers";
+import * as Accounts from "./modules/accounts/index";
+import * as Billing from "./modules/billing/index";
+import * as Containers from "./modules/containers/index";
+import * as DataCenters from "./modules/datacenters/index";
+import * as Dns from "./modules/dns/index";
+import * as Environments from "./modules/environments/index";
+import * as Images from "./modules/images/index";
+import * as Jobs from "./modules/jobs/index";
+import * as Plans from "./modules/plans/index";
+import * as Repos from "./modules/repos/index";
+import * as Teams from "./modules/teams/index";
+import * as Tiers from "./modules/tiers/index";
 
 import * as Auth from "./auth/index";
 import * as Errors from "./common/errors";
@@ -30,7 +29,6 @@ export {
     Dns,
     Environments,
     Images,
-    Instances,
     Jobs,
     Plans,
     Repos,
