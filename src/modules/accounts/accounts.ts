@@ -1,21 +1,22 @@
-import * as JsonApi from "../jsonapi/index";
-import * as ApiRequest from "../common/request";
-import { BillingProfile } from "./billing";
-import { Id, State, Events, Task } from "../common/structures";
+import * as JsonApi from "../../jsonapi/index";
+import * as ApiRequest from "../../common/request";
+import * as Logins from "./logins";
+import * as Billing from "../billing/index";
+import { Id, State, Events, Task } from "../../common/structures";
 
 export function document(): typeof AccountRequest {
     return AccountRequest;
 }
 
-export interface AccountCollection extends JsonApi.CollectionDocument {
-    data: AccountResource[];
+export interface Collection extends JsonApi.CollectionDocument {
+    data: Resource[];
 }
 
-export interface Account extends JsonApi.ResourceDocument {
-    data: AccountResource | null;
+export interface Single extends JsonApi.ResourceDocument {
+    data: Resource | null;
 }
 
-export interface AccountResource extends JsonApi.Resource {
+export interface Resource extends JsonApi.Resource {
     id: Id;
     type: "accounts";
     attributes: {
@@ -35,29 +36,11 @@ export interface AccountResource extends JsonApi.Resource {
         teams: { id: string; role: number; joined: string }[];
         state: State<"">;
         events: Events;
-        billing: BillingProfile;
+        billing: Billing.Profile;
     };
 
     meta?: {
         role: string;
-    };
-}
-
-export interface LoginCollection extends JsonApi.CollectionDocument {
-    data: LoginResource[];
-}
-
-export interface Login extends JsonApi.ResourceDocument {
-    data: LoginResource | null;
-}
-
-export interface LoginResource {
-    id: Id;
-    type: string;
-    attributes: {
-        account: string;
-        time: string;
-        success: string;
     };
 }
 
@@ -83,25 +66,25 @@ type AccountActions = "change_tier";
 export class AccountRequest {
     private static target: string = "account";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Account> {
-        return ApiRequest._get<Account>(this.target);
+    public static async get(query?: ApiRequest.QueryParams): Promise<Single> {
+        return ApiRequest._get<Single>(this.target);
     }
 
-    public static async update(doc: UpdateParams, query?: ApiRequest.QueryParams): Promise<Account> {
+    public static async update(doc: UpdateParams, query?: ApiRequest.QueryParams): Promise<Single> {
 
-        return ApiRequest._patch<Account>(this.target, new AccountUpdate(doc), query);
+        return ApiRequest._patch<Single>(this.target, new AccountUpdate(doc), query);
     }
 
-    public static async logins(query?: ApiRequest.QueryParams): Promise<LoginCollection> {
-        return ApiRequest._get<LoginCollection>("account/logins", query);
+    public static async logins(query?: ApiRequest.QueryParams): Promise<Logins.Collection> {
+        return ApiRequest._get<Logins.Collection>("account/logins", query);
     }
 
-    public static async lookup(query?: ApiRequest.QueryParams): Promise<AccountCollection> {
-        return ApiRequest._get<AccountCollection>("account/lookup", query);
+    public static async lookup(query?: ApiRequest.QueryParams): Promise<Collection> {
+        return ApiRequest._get<Collection>("account/lookup", query);
     }
 
-    public static async changePassword(doc: ChangePasswordParams, query?: ApiRequest.QueryParams): Promise<Account> {
-        return ApiRequest._patch<Account>("account/password", new AccountUpdate(doc), query);
+    public static async changePassword(doc: ChangePasswordParams, query?: ApiRequest.QueryParams): Promise<Single> {
+        return ApiRequest._patch<Single>("account/password", new AccountUpdate(doc), query);
     }
 
     public static async changeTier(tier: string) {
