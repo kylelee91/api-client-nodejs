@@ -1,4 +1,4 @@
+import * as Zones from "./zones";
 import * as Records from "./records";
 
-export * from "./zones";
-export { Records };
+export { Records, Zones };

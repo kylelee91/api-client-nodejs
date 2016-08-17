@@ -1,5 +1,6 @@
 import * as JsonApi from "../../jsonapi/index";
 import * as ApiRequest from "../../common/request";
+import * as Instances from "./instances";
 import * as Images from "../images/index";
 import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
 
@@ -44,8 +45,8 @@ export interface Resource extends JsonApi.Resource {
             override: boolean;
         }
         spawns: number;
-        scaling: ScalingStructure;
-        volumes: ContainerVolumesStructure[];
+        scaling: Scaling;
+        volumes: Volume[];
         state: State<States>;
         events: Events;
     };
@@ -98,7 +99,7 @@ export interface ModifyTaskParams {
     plan?: Id;
     domain?: Id;
     hostname?: string;
-    config?: ConfigStructure;
+    config?: Config;
 }
 
 /**
@@ -108,7 +109,7 @@ export interface ModifyTaskParams {
  * @prop command.args - List of arguments on container
  * @prop command.override - Whether or not args have been overriden
  */
-export interface ConfigStructure {
+export interface Config {
     env_vars?: { [key: string]: string };
     command?: {
         args: string[];
@@ -117,33 +118,33 @@ export interface ConfigStructure {
 }
 
 export type ScalingMethods = "persistent" | "geodns" | "loadbalance" | "loadbalance-geodns";
-export interface ScalingStructure {
+export interface Scaling {
     method: ScalingMethods;
     hostname: string;
-    geodns?: GeoDNSStructure;
-    loadbalance?: LoadBalanceStructure;
-    persistent?: PersistentStructure;
+    geodns?: GeoDNS;
+    loadbalance?: LoadBalance;
+    persistent?: Persistent;
 }
 
-export interface GeoDNSStructure {
+export interface GeoDNS {
     datacenters: Id[];
     max_per_dc: number;
     min_per_dc: number;
 }
 
-export interface LoadBalanceStructure {
+export interface LoadBalance {
     datacenter: Id;
     max: number;
     min: number;
     public_interface?: boolean;
 }
 
-export interface PersistentStructure {
+export interface Persistent {
     datacenter: string;
     public_interface?: boolean;
 }
 
-export interface ContainerVolumesStructure {
+export interface Volume {
     id?: Id;
     volume_plan: string;
     path: string;
@@ -155,9 +156,9 @@ export interface NewParams {
     environment: Id;
     plan: Id;
     image: Id;
-    scaling: ScalingStructure;
+    scaling: Scaling;
     domain?: Id;
-    volumes: ContainerVolumesStructure[];
+    volumes: Volume[];
 }
 
 export interface UpdateParams {
@@ -214,15 +215,15 @@ export class SingleRequest {
     }
 
     public async start() {
-        return this.task(new Task<SingleActions>("start"));
+        return this.task(new Task<"start">("start"));
     }
 
     public async stop() {
-        return this.task(new Task<SingleActions>("stop"));
+        return this.task(new Task<"stop">("stop"));
     }
 
     public async modify(mods: ModifyTaskParams) {
-        return this.task(new Task<SingleActions>("modify"), mods);
+        return this.task(new Task<"modify">("modify", mods));
     }
 
     public task(t: Task<SingleActions>, query?: ApiRequest.QueryParams): Promise<Task<SingleActions>> {
@@ -239,6 +240,16 @@ export class SingleRequest {
                 return ApiRequest._get<EventCollection>(`${this.target}/events`, query);
             }
         };
+    }
+
+    public instances(): Instances.CollectionRequest;
+    public instances(id: Id): Instances.SingleRequest;
+    public instances(id?: Id): Instances.CollectionRequest | Instances.SingleRequest {
+        if (id) {
+            return new Instances.SingleRequest(this.id, id);
+        }
+
+        return new Instances.CollectionRequest(this.id);
     }
 }
 

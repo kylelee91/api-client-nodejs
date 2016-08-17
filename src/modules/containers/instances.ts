@@ -2,14 +2,18 @@ import * as JsonApi from "../../jsonapi/index";
 import * as ApiRequest from "../../common/request";
 import { Id, State, Events, Time } from "../../common/structures";
 
-export function document(): typeof CollectionRequest;
+export function document(container: Id): CollectionRequest;
 export function document(container: Id, id: Id): SingleRequest;
-export function document(container?: Id, id?: Id): typeof CollectionRequest | SingleRequest {
-    if (container && id) {
+export function document(container?: Id, id?: Id): CollectionRequest | SingleRequest {
+    if (!container) {
+        throw new Error("Getting list of instances not yet supported.");
+    }
+    
+    if (id) {
         return new SingleRequest(container, id);
     }
 
-    return CollectionRequest;
+    return new CollectionRequest(container);
 }
 
 export interface Collection extends JsonApi.CollectionDocument {
