@@ -3,7 +3,7 @@ import * as CycleApi from "../../../src/index";
 import "mocha";
 
 describe("Images", () => {
-    let imgPromise: Promise<CycleApi.Images.Image>;
+    let imgPromise: Promise<CycleApi.Images.Single>;
     beforeEach(config);
     it("Create Image", () => {
         imgPromise = CycleApi.Images.document().dockerhub().import({
@@ -26,7 +26,7 @@ describe("Images", () => {
         });
     });
     describe("Environments", () => {
-        let envPromise: Promise<CycleApi.Environments.Environment>;
+        let envPromise: Promise<CycleApi.Environments.Single>;
         it("Get a list of environments", () => {
             return CycleApi.Environments.document().get();
         });
