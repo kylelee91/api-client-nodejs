@@ -136,25 +136,25 @@ export class Request<T> {
             req = req.set(header.name, header.value);
         });
 
-        req.send(JSON.stringify(this._data)).on("progress", (progress: any) => {
+        req.on("progress", (progress: any) => {
             this._progress = progress;
-        }).on("error", (e: any) => {
-            if (this._retries <= this.max_retries || this.max_retries === null) {
-                if (this._retries > 1) {
-                    setTimeout(() => {
-                        this.buildRequest();
-                    }, this._timeout);
-                } else {
-                    this.buildRequest();
-                }
-                return;
-            }
-            this.results.reject(new Errors.RequestFailedError());
-        }).timeout(this._timeout).end((err, resp) => {
+        })
+        .timeout(this._timeout)
+        .send(JSON.stringify(this._data))
+        .end((err, resp) => {
             if (!resp) {
-                return;
-            }
-            if (!err) {
+                if (this._retries <= this.max_retries || this.max_retries === null) {
+                    if (this._retries > 1) {
+                        setTimeout(() => {
+                            this.buildRequest();
+                        }, this._timeout);
+                    } else {
+                        this.buildRequest();
+                    }
+                    return;
+                }
+                this.results.reject(new Errors.RequestFailedError());
+            } else if (!err) {
                 this.results.resolve(JSON.parse(resp.text));
             } else {
                 try {
