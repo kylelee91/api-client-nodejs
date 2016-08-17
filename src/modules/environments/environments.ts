@@ -47,7 +47,7 @@ export interface Resource extends JsonApi.Resource {
 
 export type States = "live" | "cloning" | "deleting" | "deleted";
 
-export type Actions = "start" | "stop" | "apply_datacenters";
+export type Actions = "start" | "stop";
 
 export interface NewParams {
     name: string;
@@ -116,10 +116,6 @@ export class SingleRequest {
 
     public async stop() {
         return this.tasks().create("stop");
-    }
-
-    public async changeDataCenters(dcs: string[]) {
-        return this.tasks().create("apply_datacenters", { dcs: dcs });
     }
 
     public tasks() {

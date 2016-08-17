@@ -20,7 +20,17 @@ export interface InstanceLineItem {
     hostname: string;
     usage: InstanceUsage[];
     state: Containers.Instances.States;
+    volumes: VolumeLineItem[];
     due: number;
+}
+
+export interface VolumeLineItem {
+    path: string;
+    plan: {
+        id: Id;
+        name: string;
+        price: number;
+    };
 }
 
 export interface InstanceUsage {
