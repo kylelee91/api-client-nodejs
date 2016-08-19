@@ -46,7 +46,7 @@ export interface Resource extends JsonApi.Resource {
                 override: boolean;
             }
         }
-        tls: Tls;
+        tls: TLS;
         spawns: number;
         scaling: Scaling;
         volumes: Volume[];
@@ -103,6 +103,7 @@ export interface ModifyTaskParams {
     domain?: Id;
     hostname?: string;
     config?: Config;
+    tls?: TLS;
 }
 
 /**
@@ -154,8 +155,8 @@ export interface Volume {
     remote_access: boolean;
 }
 
-export interface Tls {
-    enable: boolean;
+export interface TLS {
+    enabled: boolean;
     path: string;
 }
 
@@ -166,6 +167,7 @@ export interface NewParams {
     image: Id;
     scaling: Scaling;
     domain?: Id;
+    tls?: TLS;
     volumes: Volume[];
 }
 

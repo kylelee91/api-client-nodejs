@@ -22,12 +22,10 @@ export default class Cache {
             }
         }
 
-        if (team) {
-            // Different team. Cache miss.
-            if (this.registry[key].team !== team) {
-                return null;
-            } 
-        }
+        // Different team. Cache miss.
+        if (this.registry[key].team !== team) {
+            return null;
+        } 
 
         return this.registry[key].value;
     }
