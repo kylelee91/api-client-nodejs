@@ -25,7 +25,6 @@ export interface Resource {
     id: Id;
     type: "jobs";
     attributes: {
-        caption: string;
         expires: Time;
         queue: string;
         scheduled: Time;

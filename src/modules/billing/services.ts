@@ -1,6 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
 import * as ApiRequest from "../../common/request";
-import * as Environments from "../environments/index";
 import * as Plans from "../plans/index";
 import * as Tiers from "../tiers/tiers";
 import { Term, ContainerLineItem } from "./common";
@@ -24,7 +23,7 @@ export interface Resources {
         tier: Tiers.Summary & {due: number};
     };
     meta: {
-        environments: {[key: string]: Environments.Resource};
+        environments: {[key: string]: {name: string, id: Id}};
     };
 }
 

@@ -29,7 +29,7 @@ export function setUrl(n: string) {
 
 export async function _get<T>(target: string, query?: QueryParams): Promise<T> {
     if (Settings.cache.use) {
-        const c = Cache.get(target, query);
+        const c = Cache.get(target, query, Settings.team);
         if (c) {
             return Promise.resolve(c);
         }
@@ -45,7 +45,7 @@ export async function _get<T>(target: string, query?: QueryParams): Promise<T> {
     }
 
     const resp = Auth.signRequest<T>(req);
-    Cache.set(target, resp, query, Settings.cache.timeout);
+    Cache.set(target, resp, query, Settings.team, Settings.cache.timeout);
     return resp;
 }
 

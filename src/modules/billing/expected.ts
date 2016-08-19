@@ -1,9 +1,10 @@
 import * as JsonApi from "../../jsonapi/index";
 import * as ApiRequest from "../../common/request";
+import { Term } from "./common";
 import { Id } from "../../common/structures";
 
 export function document() {
-    return ExpectedRequest;
+    return SingleRequest;
 }
 
 export interface Single extends JsonApi.ResourceDocument {
@@ -15,10 +16,11 @@ export interface Resource {
     type: "expected";
     attributes: {
         costs: number;
+        term: Term;
     };
 }
 
-export class ExpectedRequest {
+export class SingleRequest {
     private static target = "billing/expected";
 
     public static async get(): Promise<Single> {

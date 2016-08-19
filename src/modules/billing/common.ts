@@ -12,6 +12,7 @@ export interface ContainerLineItem {
     environment: string;
     state: Containers.States;
     due: number;
+    scaling: string;
     instances: InstanceLineItem[];
 }
 
@@ -20,7 +21,6 @@ export interface InstanceLineItem {
     hostname: string;
     usage: InstanceUsage[];
     state: Containers.Instances.States;
-    volumes: VolumeLineItem[];
     due: number;
 }
 
@@ -31,6 +31,7 @@ export interface VolumeLineItem {
         name: string;
         price: number;
     };
+    due: number;
 }
 
 export interface InstanceUsage {
@@ -38,6 +39,7 @@ export interface InstanceUsage {
     state: string;
     due: number;
     hours: number;
+    volumes: VolumeLineItem[];
 }
 
 export interface Profile {

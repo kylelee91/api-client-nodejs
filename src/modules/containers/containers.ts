@@ -39,11 +39,14 @@ export interface Resource extends JsonApi.Resource {
     type: "containers";
     attributes: {
         name: string;
-        env_vars: { [key: string]: string };
-        command: {
-            args: string[];
-            override: boolean;
+        config: {
+            env_vars: { [key: string]: string };
+            command: {
+                args: string[];
+                override: boolean;
+            }
         }
+        tls: Tls;
         spawns: number;
         scaling: Scaling;
         volumes: Volume[];
@@ -149,6 +152,11 @@ export interface Volume {
     volume_plan: string;
     path: string;
     remote_access: boolean;
+}
+
+export interface Tls {
+    enable: boolean;
+    path: string;
 }
 
 export interface NewParams {
