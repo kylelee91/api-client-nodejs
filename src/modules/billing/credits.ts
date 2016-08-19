@@ -2,7 +2,7 @@ import * as JsonApi from "../../jsonapi/index";
 import * as ApiRequest from "../../common/request";
 import { Id, Time, Scope } from "../../common/structures";
 
-export function document(id?: string): typeof CollectionRequest {
+export function document(): typeof CollectionRequest {
     return CollectionRequest;
 }
 
