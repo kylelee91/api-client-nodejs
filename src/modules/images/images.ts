@@ -105,7 +105,6 @@ export interface DockerHubImportParams {
         require: boolean;
         username: string;
         password: string;
-        email: string;
         server: string;
     };
 };

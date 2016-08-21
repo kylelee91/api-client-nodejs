@@ -5,7 +5,7 @@ import { ErrorDetail } from "./structures";
 export class Request<T> {
     protected target: string;
 
-    protected headers: {name: string; value: string}[] = [];
+    protected headers: { name: string; value: string }[] = [];
 
     protected _method: string;
 
@@ -20,7 +20,7 @@ export class Request<T> {
     protected _retries: number = 0;
 
     protected max_retries: number = 3;
-    
+
     protected promise: Promise<T>;
 
     protected results: {
@@ -40,6 +40,12 @@ export class Request<T> {
         this.setHeader("Accept", "application/vnd.api+json");
         this.setHeader("Content-Type", "application/vnd.api+json");
         this.timeout = 10;
+
+        this.promise = new Promise<T>((res, rej) => {
+            this.results.resolve = res;
+            this.results.reject = rej;
+        });
+
     }
 
     public setHeader(name: string, value: string): void {
@@ -48,14 +54,14 @@ export class Request<T> {
             h.value = value;
             return;
         }
-        
-        this.headers.push({name: name, value: value});
+
+        this.headers.push({ name: name, value: value });
     }
 
     public set options(options: {}) {
         this._options = options;
     }
-    
+
     public get options() {
         return this._options;
     }
@@ -97,11 +103,6 @@ export class Request<T> {
 
 
     public send() {
-        this.promise = new Promise<T>((res, rej) => {
-            this.results.resolve = res;
-            this.results.reject = rej;
-        });
-
         return this.buildRequest();
     }
 
@@ -126,7 +127,7 @@ export class Request<T> {
             };
             this.results.reject(new Errors.JsonApiError({
                 errors: [err],
-                name: "Invalid Input", 
+                name: "Invalid Input",
                 message: "Invalid request method"
             }));
             return this.promise;
@@ -139,43 +140,43 @@ export class Request<T> {
         req.on("progress", (progress: any) => {
             this._progress = progress;
         })
-        .timeout(this._timeout)
-        .send(JSON.stringify(this._data))
-        .end((err, resp) => {
-            if (!resp) {
-                if (this._retries <= this.max_retries || this.max_retries === null) {
-                    if (this._retries > 1) {
-                        setTimeout(() => {
+            .timeout(this._timeout)
+            .send(JSON.stringify(this._data))
+            .end((err, resp) => {
+                if (!resp) {
+                    if (this._retries <= this.max_retries || this.max_retries === null) {
+                        if (this._retries > 1) {
+                            setTimeout(() => {
+                                this.buildRequest();
+                            }, this._timeout);
+                        } else {
                             this.buildRequest();
-                        }, this._timeout);
-                    } else {
-                        this.buildRequest();
+                        }
+                        return;
                     }
-                    return;
-                }
-                this.results.reject(new Errors.RequestFailedError());
-            } else if (!err) {
-                this.results.resolve(JSON.parse(resp.text));
-            } else {
-                try {
-                    this.results.reject(new Errors.JsonApiError(JSON.parse(resp.text)));
-                } catch (e) {
+                    this.results.reject(new Errors.RequestFailedError());
+                } else if (!err) {
+                    this.results.resolve(JSON.parse(resp.text));
+                } else {
                     try {
-                        const error = {
-                            name: resp.text,
-                            message: resp.text,
-                            errors: <ErrorDetail[]>[{
-                                status: String(resp.status),
-                                detail: resp.text
-                            }]
-                        };
-                        this.results.reject(new Errors.JsonApiError(error));
+                        this.results.reject(new Errors.JsonApiError(JSON.parse(resp.text)));
                     } catch (e) {
-                        this.results.reject(new Errors.InvalidResponseError());
+                        try {
+                            const error = {
+                                name: resp.text,
+                                message: resp.text,
+                                errors: <ErrorDetail[]>[{
+                                    status: String(resp.status),
+                                    detail: resp.text
+                                }]
+                            };
+                            this.results.reject(new Errors.JsonApiError(error));
+                        } catch (e) {
+                            this.results.reject(new Errors.InvalidResponseError());
+                        }
                     }
                 }
-            }
-        });
+            });
 
         return this.promise;
     }

@@ -52,6 +52,7 @@ export interface Resource {
 
     meta?: {
         amount_due?: number;
+        environments: {[key: string]: {name: string, id: Id}};
     };
 }
 
