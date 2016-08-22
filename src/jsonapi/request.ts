@@ -143,29 +143,40 @@ export class Request<T> {
             .timeout(this._timeout)
             .send(JSON.stringify(this._data))
             .end((err, resp) => {
+                // Don't need to check anything else if there is no response
                 if (!resp) {
                     this._retry(new Errors.RequestFailedError());
-                } else if (!err) {
+                    return;
+                }
+
+                // If there's no error, resolve here
+                if (!err) {
                     this.results.resolve(JSON.parse(resp.text));
-                } else if (err.timeout) {
+                    return;
+                }
+
+                // Catch the timeout error here and retry
+                if (err.timeout) {
                     this._retry(new Errors.RequestTimeoutError());
-                } else {
+                    return;
+                }
+
+                try {
+                    this.results.reject(new Errors.JsonApiError(JSON.parse(resp.text)));
+                } catch (e) {
+                    // Sometimes the response cannot be JSON parsed (i.e. 404 errors), so build an error manually here
                     try {
-                        this.results.reject(new Errors.JsonApiError(JSON.parse(resp.text)));
+                        const error = {
+                            name: resp.text,
+                            message: resp.text,
+                            errors: <ErrorDetail[]>[{
+                                status: String(resp.status),
+                                detail: resp.text
+                            }]
+                        };
+                        this.results.reject(new Errors.JsonApiError(error));
                     } catch (e) {
-                        try {
-                            const error = {
-                                name: resp.text,
-                                message: resp.text,
-                                errors: <ErrorDetail[]>[{
-                                    status: String(resp.status),
-                                    detail: resp.text
-                                }]
-                            };
-                            this.results.reject(new Errors.JsonApiError(error));
-                        } catch (e) {
-                            this.results.reject(new Errors.InvalidResponseError());
-                        }
+                        this.results.reject(new Errors.InvalidResponseError());
                     }
                 }
             });
