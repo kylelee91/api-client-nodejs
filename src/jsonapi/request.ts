@@ -144,19 +144,11 @@ export class Request<T> {
             .send(JSON.stringify(this._data))
             .end((err, resp) => {
                 if (!resp) {
-                    if (this._retries <= this.max_retries || this.max_retries === null) {
-                        if (this._retries > 1) {
-                            setTimeout(() => {
-                                this.buildRequest();
-                            }, this._timeout);
-                        } else {
-                            this.buildRequest();
-                        }
-                        return;
-                    }
-                    this.results.reject(new Errors.RequestFailedError());
+                    this._retry(new Errors.RequestFailedError());
                 } else if (!err) {
                     this.results.resolve(JSON.parse(resp.text));
+                } else if (err.timeout) {
+                    this._retry(new Errors.RequestTimeoutError());
                 } else {
                     try {
                         this.results.reject(new Errors.JsonApiError(JSON.parse(resp.text)));
@@ -179,6 +171,20 @@ export class Request<T> {
             });
 
         return this.promise;
+    }
+
+    private _retry(err: Errors.JsonApiError) {
+        if (this._retries <= this.max_retries || this.max_retries === null) {
+            if (this._retries > 1) {
+                setTimeout(() => {
+                    this.buildRequest();
+                }, this._timeout);
+            } else {
+                this.buildRequest();
+            }
+            return;
+        }
+        this.results.reject(err);
     }
 
     private formatOptions(): string {
