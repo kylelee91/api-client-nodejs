@@ -1,7 +1,7 @@
-import * as JsonApi from "../../jsonapi/index";
+import * as JsonApi from "../../jsonapi";
 import * as ApiRequest from "../../common/request";
 import * as Instances from "./instances";
-import * as Images from "../images/index";
+import * as Images from "../images";
 import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
 
 /**
@@ -96,7 +96,7 @@ export type States = "starting" | "running" | "stopping" | "stopped" | "deleting
  * stop: Stop container
  * modify: Change any properties of a container that will need to propagate to multiple instances
  */
-export type SingleActions = "start" | "stop" | "modify";
+export type SingleActions = "start" | "stop" | "modify" | "reimage";
 
 export interface ModifyTaskParams {
     plan?: Id;
@@ -104,6 +104,10 @@ export interface ModifyTaskParams {
     hostname?: string;
     config?: Config;
     tls?: TLS;
+}
+
+export interface ReimageParams {
+    image: Id;
 }
 
 /**
@@ -189,6 +193,8 @@ export interface EventCollection extends JsonApi.CollectionDocument {
     }[];
 }
 
+export interface CompatibleImages extends Images.Collection {}
+
 export class CollectionRequest {
     private static target = "containers";
 
@@ -234,6 +240,14 @@ export class SingleRequest {
 
     public async modify(mods: ModifyTaskParams) {
         return this.task(new Task<"modify">("modify", mods));
+    }
+
+    public async reimage(params: ReimageParams) {
+        return this.task(new Task<"reimage">("reimage", params));
+    }
+
+    public async compatibleImages(query?: ApiRequest.QueryParams): Promise<CompatibleImages> {
+        return ApiRequest._get<CompatibleImages>(`${this.target}/compatible-images`, query);
     }
 
     public task(t: Task<SingleActions>, query?: ApiRequest.QueryParams): Promise<Task<SingleActions>> {
