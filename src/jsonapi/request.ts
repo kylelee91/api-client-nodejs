@@ -40,12 +40,6 @@ export class Request<T> {
         this.setHeader("Accept", "application/vnd.api+json");
         this.setHeader("Content-Type", "application/vnd.api+json");
         this.timeout = 10;
-
-        this.promise = new Promise<T>((res, rej) => {
-            this.results.resolve = res;
-            this.results.reject = rej;
-        });
-
     }
 
     public setHeader(name: string, value: string): void {
@@ -103,6 +97,11 @@ export class Request<T> {
 
 
     public send() {
+        this.promise = new Promise<T>((res, rej) => {
+            this.results.resolve = res;
+            this.results.reject = rej;
+        });
+
         return this.buildRequest();
     }
 
