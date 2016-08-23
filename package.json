@@ -1,6 +1,6 @@
 {
   "name": "cycle-api",
-  "version": "0.10.5-dev",
+  "version": "0.10.6-dev",
   "description": "NodeJS Client for interacting with Cycle's API.",
   "homepage": "https://cycle.io",
   "bugs": "support@cycle.io",
