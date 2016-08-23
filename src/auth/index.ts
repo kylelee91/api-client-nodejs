@@ -64,12 +64,10 @@ export let refreshToken: (t: Token) => Promise<Token> = (() => {
 
     return async (t: Token) => {
         try {
-            if (lock) {
-                console.log("Waiting on previous call to refresh to resolve.");                
+            if (lock) {             
                 return await lock;
             }
 
-            console.log("Initiating Token Refresh.");                
             const req = new JsonApi.Request<Token>(Settings.auth.refreshUrl);
             req.method = "get";
             req.options = {
@@ -84,7 +82,6 @@ export let refreshToken: (t: Token) => Promise<Token> = (() => {
 
             lock = req.send();
             const token = await lock;
-            console.log("Token retreived: ", token);                
             getStorage().write(token);
             lock = undefined; // Don't forget to do this otherwise second refresh attempt fails.
             return token;
@@ -104,12 +101,9 @@ export async function signRequest<T>(req: JsonApi.Request<T>): Promise<T> {
     } catch (e) {
         const eType = Errors.identify(e);
 
-        console.error("Issue loading request: ", e);
         if ((eType instanceof Errors.TokenNotAuthorizedError) === false) {
             throw eType;
         }
-
-        console.log("Attempting to refresh token");
 
         // Handles the following case:
         // 1) Token expires with failed request
@@ -117,25 +111,18 @@ export async function signRequest<T>(req: JsonApi.Request<T>): Promise<T> {
         // 3) Refresh token request initiated and completes (unlocking this function)
         // 4) Expired token request completes, tries to do refresh with old token and fails
         const currentToken = readToken();
-        console.log("Current Token: ", currentToken);
         if (currentToken && token.refresh_token !== currentToken.refresh_token) {
-            console.log("Token mismatch, must have already refreshed. Loading from cache.");
             req.setHeader("Authorization", "Bearer " + currentToken.access_token);
         } else {
             try {
-                console.log("Contacting refresh server.");
                 const refresh = await refreshToken(token);
                 req.setHeader("Authorization", "Bearer " + refresh.access_token);
-                console.log("Signed request with new token ", refresh);
             } catch (e) {
-                console.error("Error refreshing token: ", e);
                 throw new Errors.TokenRefreshFailedError();
             }
         }
 
-        console.log("Retrying request");
         resp = await req.send();
-        console.log("Request sent successfully");
     }
 
     return resp;
