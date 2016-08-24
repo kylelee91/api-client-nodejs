@@ -1,23 +1,28 @@
 import { ErrorDocument, ErrorDetail } from "./structures";
 
 export class JsonApiError extends Error implements ErrorDocument {
-    public errors: ErrorDetail[]  = [];
+    public errors: ErrorDetail[] = [];
 
     constructor(e?: JsonApiError) {
         super();
+        console.log("New JSON API Error: ", e);
         if (!e) {
+            console.log("No error passed to constructor. returning.");
             return;
         }
 
         if (e.errors) {
+            console.log("Errors object present");
             this.errors = e.errors;
         }
 
         // Standardize error format
         if (this.errors.length) {
+            console.log("Errors has length", this.errors, this.errors.length);
             this.name = <string>e.errors[0].title;
             this.message = <string>e.errors[0].detail;
         } else {
+            console.log("Injecting error: ", e);
             this.errors = [<ErrorDetail>e];
         }
     }
@@ -31,9 +36,9 @@ export class RequestTimeoutError extends JsonApiError {
 }
 
 export class RequestFailedError extends JsonApiError {
-    constructor() {
+    constructor(error?: string) {
         super();
-        this.name = "JsonApi: Request failed";
+        this.name = `JsonApi: ${error || "Request failed"}`;
     }
 }
 
@@ -45,8 +50,8 @@ export class InvalidMethodError extends JsonApiError {
 }
 
 export class InvalidResponseError extends JsonApiError {
-    constructor() {
+    constructor(error?: string) {
         super();
-        this.name = "JsonApi: Unable to decode JSON response data";
+        this.name = `JsonApi: ${error || "JsonApi: Unable to decode JSON response data"}`;
     }
 }

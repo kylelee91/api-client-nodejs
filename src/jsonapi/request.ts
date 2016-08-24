@@ -1,45 +1,57 @@
 import * as Errors from "./errors";
 import * as SuperAgent from "superagent";
-import { ErrorDetail } from "./structures";
 
-export class Request<T> {
-    protected target: string;
+export type Methods = "get" | "post" | "patch" | "delete";
 
-    protected headers: { name: string; value: string }[] = [];
+export default class <T> {
+    /**
+     * Method type used for request
+     */
+    public method: Methods = "get";
 
-    protected _method: string;
+    /**
+     * Query object
+     */
+    public query: { [key: string]: any } = {};
 
-    protected _timeout: number = 10;
+    /**
+     * Timeout in seconds
+     */
+    public timeout = 10;
 
-    protected _data: {} = {};
+    /**
+     * Number of times to retry request
+     */
+    public maxAttempts = 3;
 
-    protected _options: {} = {};
+    /**
+     * Data to be sent with the request
+     */
+    public data: { [key: string]: any } = {};
 
+    /**
+     * Current progress of request if supported
+     */
     protected _progress: ProgressEvent;
 
-    protected _retries: number = 0;
+    /**
+     * Headers sent with request
+     */
+    protected headers: { name: string; value: string }[] = [];
 
-    protected max_retries: number = 3;
+    /**
+     * # of attempts so far on this request
+     */
+    protected attempts = 0;
 
-    protected promise: Promise<T>;
+    /**
+     * If timed out, flag gets set
+     */
+    private didTimeout: boolean = false;
 
-    protected results: {
-        resolve: (v: T) => void,
-        reject: (v: Error) => void
-    } = {
-        resolve: (v: T) => {
-            //
-        },
-        reject: (v: Error) => {
-            //
-        }
-    };
-
-    constructor(target: string) {
-        this.target = target;
+    constructor(protected target: string) {
         this.setHeader("Accept", "application/vnd.api+json");
         this.setHeader("Content-Type", "application/vnd.api+json");
-        this.timeout = 10;
     }
 
     public setHeader(name: string, value: string): void {
@@ -52,159 +64,106 @@ export class Request<T> {
         this.headers.push({ name: name, value: value });
     }
 
-    public set options(options: {}) {
-        this._options = options;
-    }
-
-    public get options() {
-        return this._options;
-    }
-
-    public set cache(c: boolean) {
-        if (!c) {
-            this._options["_"] = new Date().getTime();
-        }
-    }
-
-    public set method(method: string) {
-        let allowed = [
-            "get",
-            "post",
-            "patch",
-            "delete"
-        ];
-
-        method = method.toLowerCase();
-
-        if (allowed.indexOf(method) === -1) {
-            throw new Errors.InvalidMethodError();
-        }
-
-        this._method = method;
-    }
-
-    public set timeout(seconds: number) {
-        this._timeout = seconds * 1000;
-    }
-
-    public set data(data: {}) {
-        this._data = data;
-    }
-
     public get progress() {
         return this._progress;
     }
 
-
-    public send() {
-        this.promise = new Promise<T>((res, rej) => {
-            this.results.resolve = res;
-            this.results.reject = rej;
-        });
-
-        return this.buildRequest();
+    public set cache(c: boolean) {
+        if (!c) {
+            this.query["_"] = new Date().getTime();
+        }
     }
 
-    // Need to be able to reuse a promise resolve/reject
-    // so that we can continue a try catch chain if 
-    // send is called from within this function.
-    private buildRequest(): Promise<T> {
-        this._retries++;
+    public async send() {
+        console.log("Sending request to", this.target);
+        let resp = await this.sendWrapper();
+        console.log("Request was fulfilled", resp);
 
-        if (!this._method) {
-            this._method = "get";
-        }
+        return resp;
+    }
 
-        this.target = this.target + this.formatOptions();
-
-        let req: SuperAgent.Request = SuperAgent[this._method](this.target);
-        if (!req) {
-            const err = {
-                status: "422",
-                title: "Invalid Input",
-                detail: "Invalid request method"
-            };
-            this.results.reject(new Errors.JsonApiError({
-                errors: [err],
-                name: "Invalid Input",
-                message: "Invalid request method"
-            }));
-            return this.promise;
-        }
-
+    private makeRequest() {
+        let req: SuperAgent.Request = SuperAgent[this.method](this.target + this.formatQuery());
         this.headers.forEach((header) => {
             req = req.set(header.name, header.value);
         });
 
-        req.on("progress", (progress: any) => {
+        req = req.on("progress", (progress: any) => {
             this._progress = progress;
-        })
-            .timeout(this._timeout)
-            .send(JSON.stringify(this._data))
-            .end((err, resp) => {
-                // Don't need to check anything else if there is no response
-                if (!resp) {
-                    this._retry(new Errors.RequestFailedError());
-                    return;
-                }
+        });
 
-                // If there's no error, resolve here
-                if (!err) {
-                    this.results.resolve(JSON.parse(resp.text));
-                    return;
-                }
-
-                // Catch the timeout error here and retry
-                if (err.timeout) {
-                    this._retry(new Errors.RequestTimeoutError());
-                    return;
-                }
-
-                try {
-                    this.results.reject(new Errors.JsonApiError(JSON.parse(resp.text)));
-                } catch (e) {
-                    // Sometimes the response cannot be JSON parsed (i.e. 404 errors), so build an error manually here
-                    try {
-                        const error = {
-                            name: resp.text,
-                            message: resp.text,
-                            errors: <ErrorDetail[]>[{
-                                status: String(resp.status),
-                                detail: resp.text
-                            }]
-                        };
-                        this.results.reject(new Errors.JsonApiError(error));
-                    } catch (e) {
-                        this.results.reject(new Errors.InvalidResponseError());
-                    }
-                }
-            });
-
-        return this.promise;
+        req = req.timeout(this.timeout * 1000);
+        return req.send(this.data);
     }
 
-    private _retry(err: Errors.JsonApiError) {
-        if (this._retries <= this.max_retries || this.max_retries === null) {
-            if (this._retries > 1) {
-                setTimeout(() => {
-                    this.buildRequest();
-                }, this._timeout);
-            } else {
-                this.buildRequest();
-            }
-            return;
-        }
-        this.results.reject(err);
-    }
-
-    private formatOptions(): string {
+    private formatQuery(): string {
         let formatted: string = "?";
 
-        for (let key in this._options) {
-            if (this._options.hasOwnProperty(key)) {
-                formatted = formatted.concat(key + "=" + this._options[key] + "&");
+        for (let key in this.query) {
+            if (this.query.hasOwnProperty(key)) {
+                formatted = formatted.concat(key + "=" + this.query[key] + "&");
             }
         }
         return formatted;
+    }
+
+    private async sendWrapper(): Promise<T> {
+        // Check retry attempts
+        this.attempts++;
+        if (this.attempts > this.maxAttempts) {
+            console.error("Max attempts reached");
+            throw this.didTimeout
+                ? new Errors.RequestTimeoutError
+                : new Errors.RequestFailedError("Max attempts reached");
+        }
+
+        let resp: SuperAgent.Response;
+        try {
+            console.log("Attempt #", this.attempts);
+            console.log("starting request", this.target);
+            // Hack to support superagent promise
+            resp = await <SuperAgent.Response | any>this.makeRequest();
+            console.log("RESPONSE: ", resp);
+        } catch (err) {
+            console.error("Request failed: ", err);
+            if (err.timeout) {
+                console.error("Request timed out. Attempting retry");
+                this.didTimeout = true;
+                // Potential max of three layers deep?
+                return await this.sendWrapper();
+            }
+
+            // Superagent sets this flag if the request fails
+            if (err.crosDomain) {
+                // Artificial wait
+                await new Promise(res => setTimeout(() => res, this.timeout * 1000));
+                return await this.sendWrapper();
+            }
+
+            // Other non-infrastructure related errors
+            let throwable: Errors.JsonApiError;
+            try {
+                throwable = new Errors.JsonApiError(JSON.parse(err.response.text));
+            } catch (e) {
+                // In case response couldn't be decoded
+                const error = {
+                    name: err.text,
+                    message: err.text,
+                    errors: e.body
+                };
+
+                throwable = new Errors.JsonApiError(error);
+            }
+
+            throw throwable;
+        }
+
+        // Success
+        try {
+            return resp.body || JSON.parse(resp.text);
+        } catch (e) {
+            throw new Errors.InvalidResponseError();
+        }
+        
     }
 }
