@@ -18,8 +18,8 @@ export async function passwordAuth(options: {
             Client.secret = options.client_secret;
         }
         req.method = "post";
-        req.options = options;
-        req.options["grant_type"] = "password";
+        req.query = options;
+        req.query["grant_type"] = "password";
         const token = await req.send();
         getStorage().write(token);
         return token;
@@ -32,7 +32,7 @@ export async function apiKeyAuth(k: string): Promise<Token> {
     try {
         const req = new JsonApi.Request<Token>(Settings.auth.tokenUrl);
         req.method = "post";
-        req.options = {
+        req.query = {
             grant_type: "apikey",
             key: k
         };
@@ -70,14 +70,14 @@ export let refreshToken: (t: Token) => Promise<Token> = (() => {
 
             const req = new JsonApi.Request<Token>(Settings.auth.refreshUrl);
             req.method = "get";
-            req.options = {
+            req.query = {
                 "grant_type": "refresh_token",
                 "refresh_token": t.refresh_token
             };
 
             if (Client.id && Client.secret) {
-                req.options["client_id"] = Client.id;
-                req.options["client_secret"] = Client.secret;
+                req.query["client_id"] = Client.id;
+                req.query["client_secret"] = Client.secret;
             }
 
             lock = req.send();

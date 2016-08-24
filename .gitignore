@@ -28,6 +28,7 @@ nbproject
 Thumbs.db
 
 # NPM
+npm-debug.log*
 node_modules
 
 # Project Folders

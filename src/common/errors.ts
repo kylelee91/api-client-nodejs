@@ -51,10 +51,6 @@ export function identify(e: JsonApi.JsonApiError): JsonApi.JsonApiError {
             break;
     }
     
-    if (!e.errors || !e.errors.length) {
-        return identifyOAuthError(e);
-    }
-    
     if ("error" in e.errors[0] && "error_description" in e.errors[0]) {
         return identifyOAuthError(e);
     }

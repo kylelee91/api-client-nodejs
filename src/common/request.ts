@@ -37,7 +37,7 @@ export async function _get<T>(target: string, query?: QueryParams): Promise<T> {
 
     const req = new JsonApi.Request<T>(url + target);
     req.method = "get";
-    req.options = format(query) || {};
+    req.query = format(query) || {};
     embedTeam(req, query);
 
     if (!Settings.cache.use) {
@@ -53,7 +53,7 @@ export async function _post<T>(target: string, document: JsonApi.Document, query
     const req = new JsonApi.Request<T>(url + target);
     req.method = "post";
     req.data = document;
-    req.options = format(query) || {};
+    req.query = format(query) || {};
     embedTeam(req, query);    
     return Auth.signRequest<T>(req);
 }
@@ -62,7 +62,7 @@ export async function _patch<T>(target: string, document: JsonApi.Document, quer
     const req = new JsonApi.Request<T>(url + target);
     req.method = "patch";
     req.data = document;
-    req.options = format(query) || {};
+    req.query = format(query) || {};
     embedTeam(req, query);    
     return Auth.signRequest<T>(req);
 }
@@ -70,7 +70,7 @@ export async function _patch<T>(target: string, document: JsonApi.Document, quer
 export async function _delete<T>(target: string, query?: QueryParams): Promise<T> {
     const req = new JsonApi.Request<T>(url + target);
     req.method = "delete";
-    req.options = format(query) || {};
+    req.query = format(query) || {};
     embedTeam(req, query);    
     return Auth.signRequest<T>(req);
 }
