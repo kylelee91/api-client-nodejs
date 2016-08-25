@@ -5,24 +5,19 @@ export class JsonApiError extends Error implements ErrorDocument {
 
     constructor(e?: JsonApiError) {
         super();
-        console.log("New JSON API Error: ", e);
         if (!e) {
-            console.log("No error passed to constructor. returning.");
             return;
         }
 
         if (e.errors) {
-            console.log("Errors object present");
             this.errors = e.errors;
         }
 
         // Standardize error format
         if (this.errors.length) {
-            console.log("Errors has length", this.errors, this.errors.length);
             this.name = <string>e.errors[0].title;
             this.message = <string>e.errors[0].detail;
         } else {
-            console.log("Injecting error: ", e);
             this.errors = [<ErrorDetail>e];
         }
     }

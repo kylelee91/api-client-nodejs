@@ -109,7 +109,6 @@ export default class <T> {
         // Check retry attempts
         this.attempts++;
         if (this.attempts > this.maxAttempts) {
-            console.error("Max attempts reached");
             throw this.didTimeout
                 ? new Errors.RequestTimeoutError
                 : new Errors.RequestFailedError("Max attempts reached");
