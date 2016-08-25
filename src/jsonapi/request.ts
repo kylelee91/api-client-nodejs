@@ -75,9 +75,7 @@ export default class <T> {
     }
 
     public async send() {
-        console.log("Sending request to", this.target);
         let resp = await this.sendWrapper();
-        console.log("Request was fulfilled", resp);
 
         return resp;
     }
@@ -119,24 +117,19 @@ export default class <T> {
 
         let resp: SuperAgent.Response;
         try {
-            console.log("Attempt #", this.attempts);
-            console.log("starting request", this.target);
             // Hack to support superagent promise
             resp = await <SuperAgent.Response | any>this.makeRequest();
-            console.log("RESPONSE: ", resp);
         } catch (err) {
-            console.error("Request failed: ", err);
             if (err.timeout) {
-                console.error("Request timed out. Attempting retry");
                 this.didTimeout = true;
-                // Potential max of three layers deep?
+                // Potential max of three layers deep of promises?
                 return await this.sendWrapper();
             }
 
-            // Superagent sets this flag if the request fails
-            if (err.crosDomain) {
+            // Superagent sets this flag if the request fails to go through due to network
+            if (err.crossDomain) {
                 // Artificial wait
-                await new Promise(res => setTimeout(() => res, this.timeout * 1000));
+                await new Promise(res => setTimeout(() => res(), this.timeout * 1000));
                 return await this.sendWrapper();
             }
 

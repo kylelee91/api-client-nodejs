@@ -86,6 +86,15 @@ export let refreshToken: (t: Token) => Promise<Token> = (() => {
             lock = undefined; // Don't forget to do this otherwise second refresh attempt fails.
             return token;
         } catch (e) {
+            // If open in two tabs in chrome without HTTP/2
+            // both requests to refresh token will go through.
+            // This checks to make sure if it fails to refresh and 
+            // the refresh tokens dont match, to just use the new token.
+            const currentToken = readToken();
+            if (currentToken.refresh_token !== t.refresh_token) {
+                return t;
+            }
+
             throw Errors.identify(e);
         }
     };
