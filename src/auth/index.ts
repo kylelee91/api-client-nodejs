@@ -62,7 +62,7 @@ export function readToken(): Token {
 export let refreshToken: (t: Token) => Promise<Token> = (() => {
     let lock: Promise<Token> | undefined;
 
-    return async (t: Token) => {
+    return async (t: Token): Promise<Token> => {
         try {
             if (lock) {             
                 return await lock;
