@@ -21,10 +21,22 @@ export interface Resources {
         containers: ContainerLineItem[];
         due: number;
         tier: Tiers.Summary & {due: number};
+        resource_pools: ResourcePools
     };
     meta: {
         environments: {[key: string]: {name: string, id: Id}};
     };
+}
+
+export interface ResourcePools {
+    image_storage: ResourceItem;
+    bandwidth: ResourceItem;
+}
+
+export interface ResourceItem {
+    allowed: number;
+    used: number;
+    due: number;
 }
 
 export interface Volumes {
