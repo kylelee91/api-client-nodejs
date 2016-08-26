@@ -2,21 +2,7 @@ import * as JsonApi from "../../jsonapi/index";
 import * as ApiRequest from "../../common/request";
 import * as Logins from "./logins";
 import * as Billing from "../billing/index";
-import { Id, State, Events, Task, FormattedDoc } from "../../common/structures";
-
-export interface EmailVerificationParams {
-    token?: string;
-}
-
-export interface EmailVerificationResult {
-    id: Id;
-    data: {
-        attributes: {
-            status: string;
-            success: boolean;
-        }
-    };
-}
+import { Id, State, Events, Task } from "../../common/structures";
 
 export function document(): typeof AccountRequest {
     return AccountRequest;
@@ -99,11 +85,6 @@ export class AccountRequest {
 
     public static async changePassword(doc: ChangePasswordParams, query?: ApiRequest.QueryParams): Promise<Single> {
         return ApiRequest._patch<Single>("account/password", new AccountUpdate(doc), query);
-    }
-
-    public static async verify(doc: EmailVerificationParams) {
-        return ApiRequest._post<EmailVerificationResult>("account/verify",
-            new FormattedDoc({type: "email_verification", attributes: doc}));
     }
 
     public static async changeTier(tier: string) {
