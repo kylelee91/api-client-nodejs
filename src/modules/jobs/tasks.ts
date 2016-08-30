@@ -3,6 +3,7 @@ import { Id, Time, Events } from "../../common/structures";
 export interface Resource {
     id: Id;
     topic: string;
+    caption: string;
     action: string;
     steps: Step[];
     events: Events;
