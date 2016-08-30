@@ -6,10 +6,10 @@ export interface Resource {
     caption: string;
     action: string;
     steps: Step[];
-    events: Events;
+    events: Events & {
+        queued: Time;
+    };
     error: {
-        block: boolean;
-        time: string;
         message: string;
     };
     async: boolean;
@@ -25,5 +25,5 @@ export interface Step {
 
 export interface ContentsStructure {
     id: Id;
-    additional: {[key: string]: any};
+    extra: {[key: string]: any};
 }

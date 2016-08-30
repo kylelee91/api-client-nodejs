@@ -27,11 +27,14 @@ export interface Resource {
     attributes: {
         expires: Time;
         queue: string;
-        scheduled: Time;
+        caption: string;
+        schedule: Time;
         state: State<States>;
         tasks: Tasks.Resource[];
         owner: Scope;
         events: Events & {
+            created: Time;
+            queued: Time;
             started: Time;
             completed: Time;
         };
