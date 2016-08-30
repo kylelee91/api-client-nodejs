@@ -4,6 +4,7 @@ export interface StorageInterface {
     read(): Token | undefined;
     write(t: Token): void;
     delete(): void;
+    clearCache(): void;
 }
 
 class CacheStorage implements StorageInterface {
@@ -18,6 +19,10 @@ class CacheStorage implements StorageInterface {
     }
     
     public delete(): void {
+        this.token = undefined;
+    }
+
+    public clearCache(): void {
         this.token = undefined;
     }
 }
