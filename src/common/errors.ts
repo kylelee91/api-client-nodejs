@@ -8,6 +8,10 @@ export class TokenNotAuthorizedError extends JsonApi.JsonApiError {
 
 }
 
+export class TokenUndefindedError extends JsonApi.JsonApiError {
+
+}
+
 export class TokenRefreshFailedError extends JsonApi.JsonApiError {
     
 }
