@@ -13,7 +13,7 @@ export class TokenUndefindedError extends JsonApi.JsonApiError {
 }
 
 export class TokenRefreshFailedError extends JsonApi.JsonApiError {
-    
+
 }
 
 export class ResourceForbiddenError extends JsonApi.JsonApiError {
@@ -25,15 +25,19 @@ export class FieldValidationError extends JsonApi.JsonApiError {
 }
 
 export class ResourceNotFoundError extends JsonApi.JsonApiError {
-    
+
 }
 
 export class AuthenticationFailure extends JsonApi.JsonApiError {
-    
+
 }
 
 export class ServerError extends JsonApi.JsonApiError {
-    
+
+}
+
+export class PaymentRequiredError extends JsonApi.JsonApiError {
+
 }
 
 export {
@@ -54,7 +58,7 @@ export function identify(e: JsonApi.JsonApiError): JsonApi.JsonApiError {
         default:
             break;
     }
-    
+
     if ("error" in e.errors[0] && "error_description" in e.errors[0]) {
         return identifyOAuthError(e);
     }
@@ -64,6 +68,8 @@ export function identify(e: JsonApi.JsonApiError): JsonApi.JsonApiError {
             return new BadRequestError();
         case "401":
             return new TokenNotAuthorizedError();
+        case "402":
+            return new PaymentRequiredError();
         case "403":
             return new ResourceForbiddenError(e);
         case "404":
@@ -85,11 +91,11 @@ export class OAuthError extends Error {
 function identifyOAuthError(e: JsonApi.JsonApiError): JsonApi.JsonApiError {
     let err: JsonApi.JsonApiError;
     const oauthErr = <OAuthError>e.errors[0];
-    
+
     if (!oauthErr) {
         return new JsonApi.JsonApiError(e);
     }
-    
+
     switch (oauthErr.error) {
         case "access_denied":
             err = new AuthenticationFailure();
@@ -104,6 +110,6 @@ function identifyOAuthError(e: JsonApi.JsonApiError): JsonApi.JsonApiError {
         default:
             err = new JsonApi.JsonApiError(e);
     }
-    
+
     return err;
 }
