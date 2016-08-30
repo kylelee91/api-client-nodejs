@@ -52,7 +52,7 @@ export async function deleteToken() {
 export function readToken(): Token {
     const t = getStorage().read();
     if (!t) {
-        throw new Errors.TokenNotAuthorizedError();
+        throw new Errors.TokenUndefindedError();
     }
 
     return t;
@@ -102,7 +102,6 @@ export async function signRequest<T>(req: JsonApi.Request<T>): Promise<T> {
             threadedLock = new ThreadedLock("refresh_lock");
             await threadedLock.lock();
         }
-        getStorage().clearCache();
         const currentToken = readToken();
         if (currentToken && token.refresh_token !== currentToken.refresh_token) {
             req.setHeader("Authorization", "Bearer " + currentToken.access_token);
