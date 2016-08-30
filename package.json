@@ -12,7 +12,7 @@
   "typings": "dist/typings/index.d.ts",
   "dependencies": {
     "superagent": "^2.1.0",
-    "threaded-lock": "^0.5.1"
+    "threaded-lock": "^0.6.0"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.29",
