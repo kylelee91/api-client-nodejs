@@ -44,7 +44,7 @@ export interface Resource {
     };
 }
 
-export type States = "new" | "running" | "expired" | "completed";
+export type States = "new" | "running" | "expired" | "completed" | "queued" | "error" | "scheduled";
 
 export class CollectionRequest {
     public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
