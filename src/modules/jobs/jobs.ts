@@ -27,11 +27,14 @@ export interface Resource {
     attributes: {
         expires: Time;
         queue: string;
-        scheduled: Time;
+        caption: string;
+        schedule: Time;
         state: State<States>;
         tasks: Tasks.Resource[];
         owner: Scope;
         events: Events & {
+            created: Time;
+            queued: Time;
             started: Time;
             completed: Time;
         };
@@ -41,7 +44,7 @@ export interface Resource {
     };
 }
 
-export type States = "new" | "running" | "expired" | "completed";
+export type States = "new" | "running" | "expired" | "completed" | "queued" | "error" | "scheduled";
 
 export class CollectionRequest {
     public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
