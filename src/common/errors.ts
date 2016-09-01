@@ -65,11 +65,11 @@ export function identify(e: JsonApi.JsonApiError): JsonApi.JsonApiError {
 
     switch (e.errors[0].status) {
         case "400":
-            return new BadRequestError();
+            return new BadRequestError(e);
         case "401":
-            return new TokenNotAuthorizedError();
+            return new TokenNotAuthorizedError(e);
         case "402":
-            return new PaymentRequiredError();
+            return new PaymentRequiredError(e);
         case "403":
             return new ResourceForbiddenError(e);
         case "404":
