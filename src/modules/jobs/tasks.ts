@@ -1,4 +1,5 @@
-import { Id, Time, Events } from "../../common/structures";
+import { Id, Time, Events, State } from "../../common/structures";
+import { States } from "./jobs";
 
 export interface Resource {
     id: Id;
@@ -13,6 +14,7 @@ export interface Resource {
         message: string;
     };
     async: boolean;
+    state: State<States>;
     contents: ContentsStructure;
     require: boolean;
 }
