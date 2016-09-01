@@ -285,6 +285,7 @@ function generateNewContainerDoc(attr: NewParams) {
         name: attr.name,
         scaling: attr.scaling,
         volumes: attr.volumes,
+        tls: attr.tls
     };
     let relationships = {
         image: {
