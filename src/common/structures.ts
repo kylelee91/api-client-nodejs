@@ -26,15 +26,15 @@ export interface State<T extends string> {
     
     current: T; 
 
-    job: {
+    job?: {
         id: string;
         block: boolean;
         queued: string; //time
     };
 
-    error: {
-        block: boolean;
-        time: string;
+    error?: {
+        block?: boolean;
+        time?: string;
         message: string;
     };
 }
