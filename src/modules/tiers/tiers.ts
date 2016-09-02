@@ -42,7 +42,8 @@ export interface Resource {
         price: {
             month: number;
             custom: boolean;
-        }
+        },
+        release: string;
     };
 }
 
