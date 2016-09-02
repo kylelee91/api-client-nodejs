@@ -45,6 +45,7 @@ export interface InstanceUsage {
 export interface Profile {
     term: Term;
     tier: Id;
+    disable?: boolean;
     restrictions: {
         containers: number;
     };
