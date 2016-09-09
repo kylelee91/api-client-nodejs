@@ -94,7 +94,7 @@ export interface Volume {
 }
 
 // List of container instance documents
-export type LogTypes = "startup_process_first" | "startup_process";
+export type LogTypes = "startup_process_first" | "startup_process" | "shutdown_process";
 
 // List of container instance documents
 export class CollectionRequest {

@@ -11,6 +11,7 @@ import * as Plans from "./modules/plans";
 import * as Repos from "./modules/repos";
 import * as Teams from "./modules/teams";
 import * as Tiers from "./modules/tiers";
+import * as Notifications from "./modules/notifications";
 
 import * as Auth from "./auth";
 import * as Errors from "./common/errors";
@@ -34,6 +35,7 @@ export {
     Repos,
     Teams,
     Tiers,
+    Notifications,
     Auth,
     Errors,
     Structures,

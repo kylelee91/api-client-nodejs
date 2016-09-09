@@ -5,7 +5,7 @@ export interface TopLevel {
 
     links?: TopLinks;
     
-    meta?: {[key: string]: Meta};
+    meta?: Meta;
 
     included?: Resource[];
 }
@@ -80,7 +80,7 @@ export type Link = string | LinkObject;
 
 export interface LinkObject {
     href?: string;
-    meta?: {[key: string]: Meta};
+    meta?: Meta;
 }
 
 //Meta

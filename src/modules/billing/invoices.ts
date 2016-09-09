@@ -86,6 +86,7 @@ export interface Payment {
     time: Time;
     description: string;
     amount: number;
+    amount_refunded: number;    
     method: string;
     result: {
         success: boolean;
