@@ -23,7 +23,7 @@ export interface Single extends JsonApi.ResourceDocument {
 
 export interface Resource extends JsonApi.Resource {
     id: Id;
-    type: "datacenters";
+    type: "notifications";
     attributes: {
         code: string;
         url: string;
@@ -43,7 +43,7 @@ export type States = "new" | "read" | "hidden";
 
 export class CollectionRequest {
     public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>("datacenters", query);
+        return ApiRequest._get<Collection>("notifications", query);
     }
 }
 
@@ -51,6 +51,6 @@ export class SingleRequest {
     private target: string;
 
     constructor(id: string) {
-        this.target = `datacenters/${id}`;
+        this.target = `notifications/${id}`;
     }
 }
