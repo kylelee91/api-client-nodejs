@@ -82,4 +82,8 @@ export class SingleRequest {
             query
         );
     }
+
+    public async get(query?: ApiRequest.QueryParams) {
+        return ApiRequest._get<Single>(this.target);
+    }
 }
