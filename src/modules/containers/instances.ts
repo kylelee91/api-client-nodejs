@@ -6,7 +6,7 @@ export function document(container: Id): CollectionRequest;
 export function document(container: Id, id: Id): SingleRequest;
 export function document(container?: Id, id?: Id): CollectionRequest | SingleRequest {
     if (!container) {
-        throw new Error("Getting list of instances not yet supported!");
+        throw new Error("Getting list of instances not yet supported.");
     }
     
     if (id) {
