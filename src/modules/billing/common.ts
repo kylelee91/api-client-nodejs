@@ -55,5 +55,5 @@ export interface Profile {
 export interface Trial {
     start: Time;
     end: Time;
-    disable_limits: boolean;
+    ended: Time;
 }
