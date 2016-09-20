@@ -27,6 +27,7 @@ export interface Resource extends JsonApi.Resource {
         name: string;
         public: boolean;
         resources: ResourceLimits;
+        trial: boolean; // available in trial?
         most_popular: boolean;
         price: {
             month: string;

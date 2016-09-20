@@ -43,10 +43,17 @@ export interface InstanceUsage {
 }
 
 export interface Profile {
+    trial: Trial;
     term: Term;
     tier: Id;
     disable?: boolean;
     restrictions: {
         containers: number;
     };
+}
+
+export interface Trial {
+    start: Time;
+    end: Time;
+    disable_limits: boolean;
 }
