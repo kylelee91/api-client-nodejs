@@ -62,7 +62,7 @@ export interface ChangePasswordParams {
     new: string;
 }
 
-type AccountActions = "change_tier";
+type AccountActions = "apply";
 export class AccountRequest {
     private static target: string = "account";
 
@@ -88,7 +88,7 @@ export class AccountRequest {
     }
 
     public static async changeTier(tier: string) {
-        return this.tasks().create("change_tier", { tier: tier });
+        return this.tasks().create("apply", { tier: tier });
     }
 
     public static tasks() {
