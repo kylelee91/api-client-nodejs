@@ -39,14 +39,7 @@ export interface Resource extends JsonApi.Resource {
     type: "containers";
     attributes: {
         name: string;
-        config: {
-            env_vars: { [key: string]: string };
-            command: {
-                args: string[];
-                override: boolean;
-            }
-        }
-        tls: TLS;
+        config: Config;
         spawns: number;
         scaling: Scaling;
         volumes: Volume[];
@@ -94,16 +87,17 @@ export type States = "starting" | "running" | "stopping" | "stopped" | "deleting
  * Possible actions that can be taken on a container.
  * start: Start container
  * stop: Stop container
- * modify: Change any properties of a container that will need to propagate to multiple instances
+ * apply: Change any properties of a container that will need to propagate to multiple instances
  */
-export type SingleActions = "start" | "stop" | "modify" | "reimage";
+export type SingleActions = "start" | "stop" | "apply" | "reimage";
 
 export interface ModifyTaskParams {
     plan?: Id;
     domain?: Id;
     hostname?: string;
-    config?: Config;
+    runtime?: RuntimeConfig;
     tls?: TLS;
+    flags?: Flags;
 }
 
 export interface ReimageParams {
@@ -118,12 +112,23 @@ export interface ReimageParams {
  * @prop command.override - Whether or not args have been overriden
  */
 export interface Config {
+    flags: Flags;
+    tls: TLS;
+    dnsrecord: Id;
+    runtime: RuntimeConfig;
+}
+
+export interface Flags {
+    auto_restart: boolean;
+}
+
+export interface RuntimeConfig {
     env_vars?: { [key: string]: string };
     command?: {
         args: string[];
         override: boolean;
     };
-}
+};
 
 export type ScalingMethods = "persistent" | "geodns" | "loadbalance" | "loadbalance-geodns";
 export interface Scaling {
@@ -238,8 +243,8 @@ export class SingleRequest {
         return this.task(new Task<"stop">("stop"));
     }
 
-    public async modify(mods: ModifyTaskParams) {
-        return this.task(new Task<"modify">("modify", mods));
+    public async apply(mods: ModifyTaskParams) {
+        return this.task(new Task<"apply">("apply", mods));
     }
 
     public async reimage(params: ReimageParams) {
