@@ -95,7 +95,7 @@ export interface ModifyTaskParams {
     plan?: Id;
     domain?: Id;
     hostname?: string;
-    runtime_config?: RuntimeConfig;
+    runtime?: RuntimeConfig;
     tls?: TLS;
     flags?: Flags;
 }
