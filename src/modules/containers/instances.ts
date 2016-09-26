@@ -19,80 +19,80 @@ export function document(container?: Id, id?: Id): CollectionRequest | SingleReq
 }
 
 export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+    readonly data: Resource[];
 }
 
 export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+    readonly data: Resource | null;
 }
 
 export interface Log extends JsonApi.ResourceDocument {
-    data: {
-        id: Id;
-        type: string;
-        attributes: {
-            events: Events;
-            output: string;
-            type: string;
+    readonly data: {
+        readonly id: Id;
+        readonly type: string;
+        readonly attributes: {
+            readonly events: Events;
+            readonly output: string;
+            readonly type: string;
         };
-        relationships: {
-            instance: JsonApi.ToOneRelationship;
+        readonly relationships: {
+            readonly instance: JsonApi.ToOneRelationship;
         };
     };
 }
 
 export type States = "starting" | "running" | "stopping" | "stopped" | "deleting" | "deleted" | "error";
 export interface Resource extends JsonApi.Resource {
-    id: Id;
-    type: "instances";
-    attributes: {
-        hostname: string;
-        volumes: Volume[];
-        state: State<States>;
-        location: Location;
-        events: Events & {
-            first_boot: Time;
-            started: Time;
+    readonly id: Id;
+    readonly type: "instances";
+    readonly attributes: {
+        readonly hostname: string;
+        readonly volumes: Volume[];
+        readonly state: State<States>;
+        readonly location: Location;
+        readonly events: Events & {
+            readonly first_boot: Time;
+            readonly started: Time;
         };
     };
 
-    relationships?: {
-        environment: JsonApi.ToOneRelationship;
-        container: JsonApi.ToOneRelationship;
+    readonly relationships?: {
+        readonly environment: JsonApi.ToOneRelationship;
+        readonly container: JsonApi.ToOneRelationship;
     };
 
-    meta: {
-        location?: {
-            continent: string;
-            country: string;
-            city: string;
-            state: string;
+    readonly meta: {
+        readonly location?: {
+            readonly continent: string;
+            readonly country: string;
+            readonly city: string;
+            readonly state: string;
         };
 
-        networks?: {
-            id: string;
-            gateway: string;
-            broadcast: string;
-            name: string;
-            cidr: string;
-            type: string;
-            assignment: {
-                ip: {
-                    address: string;
-                    mask: number;
+        readonly networks?: {
+            readonly id: string;
+            readonly gateway: string;
+            readonly broadcast: string;
+            readonly name: string;
+            readonly cidr: string;
+            readonly type: string;
+            readonly assignment: {
+                readonly ip: {
+                    readonly address: string;
+                    readonly mask: number;
                 };
             };
-            instance: string;
-            released: string;
-            claimed: string;
+            readonly instance: string;
+            readonly released: string;
+            readonly claimed: string;
         }[];
     };
 }
 
 export interface Volume {
-    container_volume: Id;
-    path: string;
-    password: string;
+    readonly container_volume: Id;
+    readonly path: string;
+    readonly password: string;
 }
 
 // List of container instance documents

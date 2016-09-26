@@ -23,66 +23,66 @@ export function document(id?: string): typeof CollectionRequest | SingleRequest 
  * A JSON API Document containing a collection of containers 
  */
 export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+    readonly data: Resource[];
 }
 
 /**
  * A JSON API Document containing a container resource
  */
 export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+    readonly data: Resource | null;
 }
 
 /**
  * An individual container resource
  */
 export interface Resource extends JsonApi.Resource {
-    id: Id;
-    type: "containers";
-    attributes: {
-        name: string;
-        config: {
-            env_vars: { [key: string]: string };
-            command: {
-                args: string[];
-                override: boolean;
+    readonly id: Id;
+    readonly type: "containers";
+    readonly attributes: {
+        readonly name: string;
+        readonly config: {
+            readonly env_vars: { [key: string]: string };
+            readonly command: {
+                readonly args: string[];
+                readonly override: boolean;
             }
         }
-        tls: TLS;
-        spawns: number;
-        scaling: Scaling;
-        volumes: Volume[];
-        state: State<States>;
-        events: Events;
+        readonly tls: TLS;
+        readonly spawns: number;
+        readonly scaling: Scaling;
+        readonly volumes: Volume[];
+        readonly state: State<States>;
+        readonly events: Events;
     };
-    relationships?: {
-        environment: JsonApi.ToOneRelationship;
-        image: JsonApi.ToOneRelationship;
-        plan: JsonApi.ToOneRelationship;
-        domain: JsonApi.ToOneRelationship;
+    readonly relationships?: {
+        readonly environment: JsonApi.ToOneRelationship;
+        readonly image: JsonApi.ToOneRelationship;
+        readonly plan: JsonApi.ToOneRelationship;
+        readonly domain: JsonApi.ToOneRelationship;
     };
-    meta?: {
-        counts?: {
-            instances: {
-                starting: number;
-                running: number;
-                stopping: number;
-                stopped: number;
-                deleting: number;
-                deleted: number;
-                errored: number;
+    readonly meta?: {
+        readonly counts?: {
+            readonly instances: {
+                readonly starting: number;
+                readonly running: number;
+                readonly stopping: number;
+                readonly stopped: number;
+                readonly deleting: number;
+                readonly deleted: number;
+                readonly errored: number;
             }
         };
-        location?: {
-            continent: string;
-            country: string;
-            city: string;
-            state: string;
+        readonly location?: {
+            readonly continent: string;
+            readonly country: string;
+            readonly city: string;
+            readonly state: string;
         };
-        image?: Images.Resource;
-        ip?: {
-            address: string;
-            mask: string;
+        readonly image?: Images.Resource;
+        readonly ip?: {
+            readonly address: string;
+            readonly mask: string;
         }
     };
 }
@@ -120,50 +120,50 @@ export interface ReimageParams {
  * @prop command.override - Whether or not args have been overriden
  */
 export interface Config {
-    env_vars?: { [key: string]: string };
-    command?: {
-        args: string[];
-        override: boolean;
+    readonly env_vars?: { [key: string]: string };
+    readonly command?: {
+        readonly args: string[];
+        readonly override: boolean;
     };
 }
 
 export type ScalingMethods = "persistent" | "geodns" | "loadbalance" | "loadbalance-geodns";
 export interface Scaling {
-    method: ScalingMethods;
-    hostname: string;
-    geodns?: GeoDNS;
-    loadbalance?: LoadBalance;
-    persistent?: Persistent;
+    readonly method: ScalingMethods;
+    readonly hostname: string;
+    readonly geodns?: GeoDNS;
+    readonly loadbalance?: LoadBalance;
+    readonly persistent?: Persistent;
 }
 
 export interface GeoDNS {
-    datacenters: Id[];
-    max_per_dc: number;
-    min_per_dc: number;
+    readonly datacenters: Id[];
+    readonly max_per_dc: number;
+    readonly min_per_dc: number;
 }
 
 export interface LoadBalance {
-    datacenter: Id;
-    max: number;
-    min: number;
-    public_interface?: boolean;
+    readonly datacenter: Id;
+    readonly max: number;
+    readonly min: number;
+    readonly public_interface?: boolean;
 }
 
 export interface Persistent {
-    datacenter: string;
-    public_interface?: boolean;
+    readonly datacenter: string;
+    readonly public_interface?: boolean;
 }
 
 export interface Volume {
-    id?: Id;
-    volume_plan: string;
-    path: string;
-    remote_access: boolean;
+    readonly id?: Id;
+    readonly volume_plan: string;
+    readonly path: string;
+    readonly remote_access: boolean;
 }
 
 export interface TLS {
-    enabled: boolean;
-    path: string;
+    readonly enabled: boolean;
+    readonly path: string;
 }
 
 export interface NewParams {
@@ -183,14 +183,14 @@ export interface UpdateParams {
 }
 
 export interface EventCollection extends JsonApi.CollectionDocument {
-    data: {
-        id: Id;
-        type: string;
-        attributes: {
-            caption: string;
-            time: string;
-            platform: boolean,
-            type: string;
+    readonly data: {
+        readonly id: Id;
+        readonly type: string;
+        readonly attributes: {
+            readonly caption: string;
+            readonly time: string;
+            readonly platform: boolean,
+            readonly type: string;
         }
     }[];
 }

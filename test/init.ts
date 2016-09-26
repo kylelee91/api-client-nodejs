@@ -9,31 +9,26 @@ Cycle.Settings.update({
     }
 });
 
-describe("Authorize", () => {
-    it("Auth via Password", async() => {
-        let result = await Cycle.Auth.passwordAuth({
-            username: "alex",
-            password: "",
-            client_id: "",
-            client_secret: ""
-        });
+// describe("Authorize", () => {
+//     it("Auth via Password", async() => {
+//         let result = await Cycle.Auth.passwordAuth({
+//             username: "alex",
+//             password: "",
+//             client_id: "",
+//             client_secret: ""
+//         });
 
-        if (!result.ok) {
-            throw new Error(result.error.detail);
-        }
+//         if (!result.ok) {
+//             throw new Error(result.error.detail);
+//         }
 
-        console.log(result.value);
-    });
-});
+//         console.log(result.value);
+//     });
+// });
 
 describe("Environments", () => {
     it("Get a list of environments", async () => {
         let e = await Cycle.Environments.document().get();
-        if (!e.ok) {
-            console.error(e.error);
-            return;
-        }
 
-        console.log(e.value);
     });
 });
