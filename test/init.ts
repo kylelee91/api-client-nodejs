@@ -13,7 +13,7 @@ describe("Authorize", () => {
     it("Auth via Password", async() => {
         let result = await Cycle.Auth.passwordAuth({
             username: "alex",
-            password: "9IXVnU8tH9baHA7",
+            password: "",
             client_id: "",
             client_secret: ""
         });
