@@ -1,6 +1,6 @@
 import * as JsonApi from "../../jsonapi/index";
 import { Id } from "../../common/structures";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 
 export function document(): typeof CollectionRequest;
 export function document(id: string): SingleRequest;
@@ -40,8 +40,8 @@ export interface LocationStructure {
 }
 
 export class CollectionRequest {
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>("datacenters", query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>("datacenters", query);
     }
 }
 

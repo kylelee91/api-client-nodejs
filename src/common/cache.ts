@@ -9,22 +9,22 @@ export default class Cache {
 
     private static registry: {[key: string]: Entry} = {};
 
-    public static get(key: string, options?: {}, team?: string) {
+    public static get<T>(key: string, options?: {}, team?: string): T | undefined {
         if (!this.registry[key]) {
             // Cache miss
-            return null;
+            return undefined;
         }
         
         if (options) {
             // Different options. Cache miss.
             if (JSON.stringify(this.registry[key].options) !== JSON.stringify(options)) {
-                return null;
+                return undefined;
             }
         }
 
         // Different team. Cache miss.
         if (this.registry[key].team !== team) {
-            return null;
+            return undefined;
         } 
 
         return this.registry[key].value;

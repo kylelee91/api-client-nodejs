@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import * as Records from "./records";
 import { Id, State, Events, Task, FormattedDoc } from "../../common/structures";
 
@@ -52,12 +52,12 @@ export interface UpdateParams {
 export class CollectionRequest {
     private static target = "dns/zones";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._post<Single>(
+    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+        return API.post<Single>(
             this.target,
             new FormattedDoc({ type: "zones", attributes: doc }),
             query
@@ -72,36 +72,32 @@ export class SingleRequest {
         this.target = `${this.target}/${id}`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._patch<Single>(
-            this.target, 
-            new FormattedDoc({ id: this.id, type: "zones", attributes: doc }), 
+    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+        return API.patch<Single>(
+            this.target,
+            new FormattedDoc({ id: this.id, type: "zones", attributes: doc }),
             query
         );
     }
 
-    public async verify(): Promise<Task<"verify">> {
-        return this.tasks().create("verify");
+    public async verify(): API.Response<Task<"verify">> {
+        return this.task("verify");
     }
 
-    public tasks() {
-        return {
-            create: async (action: SingleActions, contents?: Object, query?: ApiRequest.QueryParams): Promise<Task<SingleActions>> => {
-                return ApiRequest._post<Task<SingleActions>>(
-                    `${this.target}/tasks`,
-                    new Task<SingleActions>(action, contents),
-                    query
-                );
-            }
-        };
+    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams): API.Response<Task<SingleActions>> {
+        return API.post<Task<SingleActions>>(
+            `${this.target}/tasks`,
+            new Task<SingleActions>(action, contents),
+            query
+        );
     }
 
-    public async delete() {
-        return ApiRequest._delete(this.target);
+    public async delete(): API.Response<Task<SingleActions>> {
+        return API.del<Task<SingleActions>>(this.target);
     }
 
     public records(): Records.CollectionRequest;

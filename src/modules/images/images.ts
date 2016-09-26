@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import { Id, State, Events, Task, Scope, FormattedDoc } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
@@ -118,30 +118,19 @@ export interface UpdateParams {
 
 export type CollectionActions = "cleanup";
 export class CollectionRequest {
+    public static dockerhub = new DockerHub();
     private static target = "images";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._post<Single>(this.target, new FormattedDoc({ type: "images", attributes: doc }), query);
+    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+        return API.post<Single>(this.target, new FormattedDoc({ type: "images", attributes: doc }), query);
     }
 
-    public static async deleteUnused() {
-        return ApiRequest._post<Task<CollectionActions>>(`${this.target}/tasks`, new Task("cleanup"));
-    }
-
-    public static dockerhub() {
-        return {
-            import: async (doc: DockerHubImportParams, query?: ApiRequest.QueryParams): Promise<Single> => {
-                return ApiRequest._post<Single>(
-                    `${this.target}/dockerhub`, 
-                    new FormattedDoc({ type: "images", attributes: doc }), 
-                    query
-                );
-            }
-        };
+    public static async deleteUnused(): API.Response<Task<CollectionActions>> {
+        return API.post<Task<CollectionActions>>(`${this.target}/tasks`, new Task("cleanup"));
     }
 }
 
@@ -153,28 +142,33 @@ export class SingleRequest {
         this.target = `images/${id}`;
     }
 
-    public async get(query?: ApiRequest.QueryParams) {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._patch<Single>(this.target, new FormattedDoc({ id: this.id, type: "images", attributes: doc }), query);
+    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+        return API.patch<Single>(this.target, new FormattedDoc({ id: this.id, type: "images", attributes: doc }), query);
     }
 
-    public async delete(query?: ApiRequest.QueryParams): Promise<Task<SingleActions>> {
-        return ApiRequest._delete<Task<SingleActions>>(this.target, query);
+    public async delete(query?: API.QueryParams): API.Response<Task<SingleActions>> {
+        return API.del<Task<SingleActions>>(this.target, query);
     }
 
-    public async build() {
-        return this.tasks().create("build");
+    public async build(): API.Response<Task<"build">> {
+        return this.task("build");
     }
 
-    public tasks() {
-        return {
-            create: async (action: SingleActions, contents?: Object): Promise<Task<SingleActions>> => {
-                return ApiRequest._post<Task<SingleActions>>(`${this.target}/tasks`, new Task(action, contents));
-            }
-        };
+    public async task(action: SingleActions, contents?: Object): API.Response<Task<SingleActions>> {
+        return API.post<Task<SingleActions>>(`${this.target}/tasks`, new Task(action, contents));
     }
 }
 
+export class DockerHub {
+    public async import(doc: DockerHubImportParams, query?: API.QueryParams): API.Response<Single> {
+        return API.post<Single>(
+            `images/dockerhub`,
+            new FormattedDoc({ type: "images", attributes: doc }),
+            query
+        );
+    }
+}

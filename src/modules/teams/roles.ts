@@ -1,13 +1,9 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import { Id } from "../../common/structures";
 
 export function document() {
-    return {
-        get: async (query?: ApiRequest.QueryParams): Promise<Collection> => {
-            return ApiRequest._get<Collection>(`teams/roles`, query);
-        }
-    };
+    return RolesResponse;
 }
 
 export interface Collection extends JsonApi.CollectionDocument {
@@ -33,3 +29,9 @@ export enum Names {
     Analyst = 8
 }
 
+
+export class RolesResponse {
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(`teams/roles`, query);
+    }
+}

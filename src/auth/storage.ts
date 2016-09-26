@@ -1,4 +1,4 @@
-import Token from "./token";
+import { Token } from "./token";
 
 export interface StorageInterface {
     read(): Token | undefined;
@@ -6,7 +6,7 @@ export interface StorageInterface {
     delete(): void;
 }
 
-class CacheStorage implements StorageInterface {
+export class CacheStorage implements StorageInterface {
     private token: Token | undefined;    
     
     public read(): Token | undefined {
@@ -21,14 +21,3 @@ class CacheStorage implements StorageInterface {
         this.token = undefined;
     }
 }
-
-let inst: StorageInterface = new CacheStorage();
-
-export function getStorage() {
-    return inst;
-}
-
-export function setStorage(storage: StorageInterface) {
-    inst = storage;
-}
-

@@ -11,15 +11,14 @@
   "main": "dist/index.js",
   "typings": "dist/typings/index.d.ts",
   "dependencies": {
-    "superagent": "^2.1.0",
-    "threaded-lock": "^0.6.0"
+    "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {
+    "@types/isomorphic-fetch": "0.0.31",
     "@types/mocha": "^2.2.29",
-    "@types/superagent": "^1.4.28",
     "mocha": "^3.0.0",
     "tslint": "^3.2.0",
-    "typescript": "^2.0.0"
+    "typescript": "^2.1.0-dev.20160925"
   },
   "scripts": {
     "prepublish": "tsc",

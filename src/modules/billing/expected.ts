@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import { Term } from "./common";
 import { Id } from "../../common/structures";
 
@@ -23,7 +23,7 @@ export interface Resource {
 export class SingleRequest {
     private static target = "billing/expected";
 
-    public static async get(): Promise<Single> {
-        return ApiRequest._get<Single>(this.target);
+    public static async get(): API.Response<Single> {
+        return API.get<Single>(this.target);
     }
 }

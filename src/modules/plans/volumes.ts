@@ -1,13 +1,9 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import { Id } from "../../common/structures";
 
 export function document() {
-    return {
-        get: async (query?: ApiRequest.QueryParams): Promise<Collection> => {
-            return ApiRequest._get<Collection>("plans/volumes", query);
-        }
-    };
+    return VolumeRequest;
 }
 
 export interface Collection extends JsonApi.CollectionDocument {
@@ -34,4 +30,10 @@ export interface Resource extends JsonApi.Resource {
         };
         type: string;
     };
+}
+
+export class VolumeRequest {
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>("plans/volumes", query);
+    }
 }

@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import * as Instances from "./instances";
 import * as Images from "../images";
 import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
@@ -193,17 +193,17 @@ export interface EventCollection extends JsonApi.CollectionDocument {
     }[];
 }
 
-export interface CompatibleImages extends Images.Collection {}
+export interface CompatibleImages extends Images.Collection { }
 
 export class CollectionRequest {
     private static target = "containers";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._post<Single>(this.target, generateNewContainerDoc(doc), query);
+    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+        return API.post<Single>(this.target, generateNewContainerDoc(doc), query);
     }
 }
 
@@ -214,56 +214,52 @@ export class SingleRequest {
         this.target = `containers/${id}`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._patch<Single>(
+    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+        return API.patch<Single>(
             this.target,
             new FormattedDoc({ id: this.id, type: "containers", attributes: doc }),
             query
         );
     }
 
-    public async delete(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._delete<Single>(this.target, query);
+    public async delete(query?: API.QueryParams): API.Response<Single> {
+        return API.del<Single>(this.target, query);
     }
 
-    public async start() {
+    public async start(): API.Response<Task<SingleActions>> {
         return this.task(new Task<"start">("start"));
     }
 
-    public async stop() {
+    public async stop(): API.Response<Task<SingleActions>> {
         return this.task(new Task<"stop">("stop"));
     }
 
-    public async modify(mods: ModifyTaskParams) {
+    public async modify(mods: ModifyTaskParams): API.Response<Task<SingleActions>> {
         return this.task(new Task<"modify">("modify", mods));
     }
 
-    public async reimage(params: ReimageParams) {
+    public async reimage(params: ReimageParams): API.Response<Task<SingleActions>> {
         return this.task(new Task<"reimage">("reimage", params));
     }
 
-    public async compatibleImages(query?: ApiRequest.QueryParams): Promise<CompatibleImages> {
-        return ApiRequest._get<CompatibleImages>(`${this.target}/compatible-images`, query);
+    public async compatibleImages(query?: API.QueryParams): API.Response<CompatibleImages> {
+        return API.get<CompatibleImages>(`${this.target}/compatible-images`, query);
     }
 
-    public task(t: Task<SingleActions>, query?: ApiRequest.QueryParams): Promise<Task<SingleActions>> {
-        return ApiRequest._post<Task<SingleActions>>(
+    public task(t: Task<SingleActions>, query?: API.QueryParams): API.Response<Task<SingleActions>> {
+        return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             t,
             query
         );
     }
 
-    public events() {
-        return {
-            get: async (query?: ApiRequest.QueryParams): Promise<EventCollection> => {
-                return ApiRequest._get<EventCollection>(`${this.target}/events`, query);
-            }
-        };
+    public async events(query?: API.QueryParams): API.Response<EventCollection> {
+        return API.get<EventCollection>(`${this.target}/events`, query);
     }
 
     public instances(): Instances.CollectionRequest;

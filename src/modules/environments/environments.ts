@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import { Id, State, Events, Task, Time, FormattedDoc, Scope } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
@@ -74,12 +74,12 @@ export interface UpdateParams {
 export class CollectionRequest {
     private static target = "environments";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._post<Single>(
+    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+        return API.post<Single>(
             this.target,
             new FormattedDoc({ type: "environments", attributes: doc }),
             query
@@ -94,43 +94,35 @@ export class SingleRequest {
         this.target = `environments/${id}`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._patch<Single>(
+    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+        return API.patch<Single>(
             this.target,
             new FormattedDoc({ id: this.id, type: "environments", attributes: doc }),
             query
         );
     }
 
-    public async delete(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._delete<Single>(this.target, query);
+    public async delete(query?: API.QueryParams): API.Response<Single> {
+        return API.del<Single>(this.target, query);
     }
 
-    public async start() {
-        return this.tasks().create("start");
+    public async start(): API.Response<Task<Actions>>  {
+        return this.task("start");
     }
 
-    public async stop() {
-        return this.tasks().create("stop");
+    public async stop(): API.Response<Task<Actions>>  {
+        return this.task("stop");
     }
 
-    public tasks() {
-        return {
-            create: async (
-                action: Actions,
-                contents?: Object,
-                query?: ApiRequest.QueryParams
-            ): Promise<Task<Actions>> => {
-                return ApiRequest._post<Task<Actions>>(
-                    `${this.target}/tasks`,
-                    new Task(action, contents),
-                    query
-                );
-            }
-        };
+    public task(action: Actions, contents?: Object, query?: API.QueryParams): API.Response<Task<Actions>> {
+        return API.post<Task<Actions>>(
+            `${this.target}/tasks`,
+            new Task(action, contents),
+            query
+        );
     }
 }

@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import * as Billing from "../billing/index";
 import * as Accounts from "../accounts/index";
 import * as Invites from "./invites";
@@ -65,12 +65,12 @@ export type SingleActions = "change_tier";
 export class CollectionRequest {
     private static target = "teams";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._post<Single>(this.target, new FormattedDoc({ type: "teams", attributes: doc }), query);
+    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+        return API.post<Single>(this.target, new FormattedDoc({ type: "teams", attributes: doc }), query);
     }
 
     public static invitations(): Invites.CollectionRequest;
@@ -91,32 +91,28 @@ export class SingleRequest {
         this.target = `teams/${id}`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._patch<Single>(this.target, new FormattedDoc({ type: "teams", attributes: doc }), query);
+    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+        return API.patch<Single>(this.target, new FormattedDoc({ type: "teams", attributes: doc }), query);
     }
 
-    public async delete(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._delete<Single>(this.target, query);
+    public async delete(query?: API.QueryParams): API.Response<Single> {
+        return API.del<Single>(this.target, query);
     }
 
-    public async changeTier(tier: string) {
-        return this.tasks().create("change_tier", { tier: tier });
+    public async changeTier(tier: string): API.Response<Task<SingleActions>> {
+        return this.task("change_tier", { tier: tier });
     }
 
-    public tasks() {
-        return {
-            create: async (action: SingleActions, contents?: Object, query?: ApiRequest.QueryParams): Promise<Task<SingleActions>> => {
-                return ApiRequest._post<Task<SingleActions>>(
-                    `${this.target}/tasks`,
-                    new Task<SingleActions>(action, contents),
-                    query
-                );
-            }
-        };
+    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams): API.Response<Task<SingleActions>> {
+        return API.post<Task<SingleActions>>(
+            `${this.target}/tasks`,
+            new Task<SingleActions>(action, contents),
+            query
+        );
     }
 
     public members(): MembersRequest;
@@ -147,8 +143,8 @@ export class MembersRequest {
         this.target = `teams/${team_id}/members`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Accounts.Collection> {
-        return ApiRequest._get<Accounts.Collection>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Accounts.Collection> {
+        return API.get<Accounts.Collection>(this.target, query);
     }
 }
 
@@ -159,7 +155,7 @@ export class MemberRequest {
         this.target = `teams/${team_id}/members/${member_id}`;
     }
 
-    public async delete(query?: ApiRequest.QueryParams): Promise<Task<SingleActions>> {
-        return ApiRequest._delete<Task<SingleActions>>(this.target, query);
+    public async delete(query?: API.QueryParams): API.Response<Task<SingleActions>> {
+        return API.del<Task<SingleActions>>(this.target, query);
     }
 }

@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
@@ -78,13 +78,13 @@ export interface UpdateParams {
 export class CollectionRequest {
     private static target = "billing/methods";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 
     // Methods if no ID
-    public static async create(method: NewParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._post<Single>(
+    public static async create(method: NewParams, query?: API.QueryParams): API.Response<Single> {
+        return API.post<Single>(
             this.target,
             new FormattedDoc({ type: "billing_methods", attributes: method }),
             query
@@ -99,35 +99,31 @@ export class SingleRequest {
         this.target = `${this.target}/${id}`;
     }
 
-    public async update(doc: UpdateParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._patch<Single>(
+    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+        return API.patch<Single>(
             this.target,
             new FormattedDoc({ id: this.id, type: "billing_methods", attributes: doc }),
             query
         );
     }
 
-    public makePrimary() {
-        return this.tasks().create("make_primary");
+    public makePrimary(): API.Response<Task<SingleActions>> {
+        return this.task("make_primary");
     }
 
-    public tasks() {
-        return {
-            create: async (action: SingleActions, contents?: Object, query?: ApiRequest.QueryParams): Promise<Task<SingleActions>> => {
-                return ApiRequest._post<Task<SingleActions>>(
-                    `${this.target}/tasks`,
-                    new Task(action, contents),
-                    query
-                );
-            }
-        };
+    public task(action: SingleActions, contents?: Object, query?: API.QueryParams): API.Response<Task<SingleActions>> {
+        return API.post<Task<SingleActions>>(
+            `${this.target}/tasks`,
+            new Task(action, contents),
+            query
+        );
     }
 
-    public async delete(): Promise<Task<"delete">> {
-        return ApiRequest._delete<Task<"delete">>(this.target);
+    public async delete(): API.Response<Task<"delete">> {
+        return API.del<Task<"delete">>(this.target);
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 }

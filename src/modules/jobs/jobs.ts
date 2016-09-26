@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import * as Tasks from "./tasks";
 import { Id, Time, State, Events, Scope } from "../../common/structures";
 
@@ -47,8 +47,8 @@ export interface Resource {
 export type States = "new" | "running" | "expired" | "completed" | "queued" | "error" | "scheduled";
 
 export class CollectionRequest {
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>("jobs", query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>("jobs", query);
     }
 }
 
@@ -59,8 +59,8 @@ export class SingleRequest {
         this.target = `jobs/${id}`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 }
 

@@ -1,13 +1,9 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import { Id, FormattedDoc } from "../../common/structures";
 
-export function document() {
-    return {
-        get: async (query?: ApiRequest.QueryParams): Promise<Collection> => {
-            return ApiRequest._get<Collection>("dns/domains", query);
-        }
-    };
+export function domains(query?: API.QueryParams): API.Response<Collection>  {
+    return API.get<Collection>("dns/domains", query);
 }
 
 export interface Collection extends JsonApi.CollectionDocument {
@@ -77,12 +73,12 @@ export class CollectionRequest {
         this.target = `dns/zones/${zoneId}/records`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 
-    public async create(doc: NewParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._post<Single>(this.target, new FormattedDoc({ type: "records", attributes: doc }), query);
+    public async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+        return API.post<Single>(this.target, new FormattedDoc({ type: "records", attributes: doc }), query);
     }
 }
 
@@ -93,19 +89,19 @@ export class SingleRequest {
         this.target = `dns/zones/${zoneId}/records/${recordId}`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._patch<Single>(
+    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+        return API.patch<Single>(
             this.target,
             new FormattedDoc({ id: this.recordId, type: "records", attributes: doc }),
             query
         );
     }
 
-    public async delete() {
-        return ApiRequest._delete(this.target);
+    public async delete(): API.Response<Single> {
+        return API.del<Single>(this.target);
     }
 }

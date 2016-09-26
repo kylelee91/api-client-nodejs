@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import * as Logins from "./logins";
 import * as Billing from "../billing/index";
 import { Id, State, Events, Task } from "../../common/structures";
@@ -62,45 +62,41 @@ export interface ChangePasswordParams {
     new: string;
 }
 
-type AccountActions = "change_tier";
+export type AccountActions = "change_tier";
 export class AccountRequest {
     private static target: string = "account";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target);
+    public static async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target);
     }
 
-    public static async update(doc: UpdateParams, query?: ApiRequest.QueryParams): Promise<Single> {
+    public static async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
 
-        return ApiRequest._patch<Single>(this.target, new AccountUpdate(doc), query);
+        return API.patch<Single>(this.target, new AccountUpdate(doc), query);
     }
 
-    public static async logins(query?: ApiRequest.QueryParams): Promise<Logins.Collection> {
-        return ApiRequest._get<Logins.Collection>("account/logins", query);
+    public static async logins(query?: API.QueryParams): API.Response<Logins.Collection> {
+        return API.get<Logins.Collection>("account/logins", query);
     }
 
-    public static async lookup(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>("account/lookup", query);
+    public static async lookup(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>("account/lookup", query);
     }
 
-    public static async changePassword(doc: ChangePasswordParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._patch<Single>("account/password", new AccountUpdate(doc), query);
+    public static async changePassword(doc: ChangePasswordParams, query?: API.QueryParams): API.Response<Single> {
+        return API.patch<Single>("account/password", new AccountUpdate(doc), query);
     }
 
-    public static async changeTier(tier: string) {
-        return this.tasks().create("change_tier", { tier: tier });
+    public static async changeTier(tier: string): API.Response<Task<AccountActions>> {
+        return this.task("change_tier", { tier: tier });
     }
 
-    public static tasks() {
-        return {
-            create: async (action: AccountActions, contents?: Object, query?: ApiRequest.QueryParams): Promise<Task<AccountActions>> => {
-                return ApiRequest._post<Task<AccountActions>>(
-                    `${this.target}/tasks`,
-                    new Task<AccountActions>(action, contents),
-                    query
-                );
-            }
-        };
+    public static async task(action: AccountActions, contents?: Object, query?: API.QueryParams): API.Response<Task<AccountActions>> {
+        return API.post<Task<AccountActions>>(
+            `${this.target}/tasks`,
+            new Task<AccountActions>(action, contents),
+            query
+        );
     }
 }
 
@@ -110,5 +106,5 @@ class AccountUpdate {
         attributes: this.doc
     };
 
-    constructor(private doc: UpdateParams | ChangePasswordParams) {}
+    constructor(private doc: UpdateParams | ChangePasswordParams) { }
 };

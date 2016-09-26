@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import * as Roles from "./roles";
 import { Id, Time, Events, FormattedDoc } from "../../common/structures";
 
@@ -54,13 +54,13 @@ export class CollectionRequest {
         }
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 
-    public async create(doc: NewParams, query?: ApiRequest.QueryParams): Promise<Single> {
+    public async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
         const relationship = { invitee: { type: "accounts" }, id: doc.invitee };
-        return ApiRequest._post<Single>(
+        return API.post<Single>(
             this.target,
             new FormattedDoc({ type: "invites", relationships: { invitee: relationship } }),
             query
@@ -83,19 +83,19 @@ export class SingleRequest {
         }
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 
-    public async accept(query?: ApiRequest.QueryParams) {
+    public async accept(query?: API.QueryParams): API.Response<Single> {
         return this.action("accept", query);
     }
 
-    public async decline(query?: ApiRequest.QueryParams) {
+    public async decline(query?: API.QueryParams): API.Response<Single> {
         return this.action("decline", query);
     }
 
-    public action(action: "accept" | "decline", query?: ApiRequest.QueryParams) {
+    public action(action: "accept" | "decline", query?: API.QueryParams): API.Response<Single> {
         this.target += "/actions";
         const invite_id = this.invite_id;
         class InviteAction {
@@ -113,6 +113,6 @@ export class SingleRequest {
             }
         }
 
-        return ApiRequest._post<Single>(this.target, new InviteAction(), query);
+        return API.post<Single>(this.target, new InviteAction(), query);
     }
 }

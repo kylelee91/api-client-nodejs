@@ -1,6 +1,6 @@
 import * as JsonApi from "../../jsonapi/index";
 import { Id, Scope, Time, Events, State, Task } from "../../common/structures";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 
 export function document(): typeof CollectionRequest;
 export function document(id: string): SingleRequest;
@@ -47,16 +47,16 @@ export type CollectionActions = "mark_read";
 export class CollectionRequest {
     public static readonly target = "notifications";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 
-    public static async markAllAsRead() {
+    public static async markAllAsRead(): API.Response<Task<CollectionActions>> {
         return this.task(new Task("mark_read"));
     }
 
-    public static async task(t: Task<CollectionActions>, query?: ApiRequest.QueryParams): Promise<Task<CollectionActions>> {
-        return ApiRequest._post<Task<CollectionActions>>(
+    public static async task(t: Task<CollectionActions>, query?: API.QueryParams): API.Response<Task<CollectionActions>> {
+        return API.post<Task<CollectionActions>>(
             `${this.target}/tasks`,
             t,
             query
@@ -71,19 +71,19 @@ export class SingleRequest {
         this.target = `notifications/${id}`;
     }
 
-    public async markAsRead() {
+    public async markAsRead(): API.Response<Task<CollectionActions>> {
         return this.task(new Task("mark_read"));
     }
 
-    public async task(t: Task<CollectionActions>, query?: ApiRequest.QueryParams): Promise<Task<CollectionActions>> {
-        return ApiRequest._post<Task<CollectionActions>>(
+    public async task(t: Task<CollectionActions>, query?: API.QueryParams): API.Response<Task<CollectionActions>> {
+        return API.post<Task<CollectionActions>>(
             `${this.target}/tasks`,
             t,
             query
         );
     }
 
-    public async get(query?: ApiRequest.QueryParams) {
-        return ApiRequest._get<Single>(this.target);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target);
     }
 }

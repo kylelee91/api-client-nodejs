@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import * as Tiers from "../tiers/tiers";
 import { Term, ContainerLineItem } from "./common";
 import { Id, State, Time, Events, Task } from "../../common/structures";
@@ -52,7 +52,7 @@ export interface Resource {
 
     meta?: {
         amount_due?: number;
-        environments: {[key: string]: {name: string, id: Id}};
+        environments: { [key: string]: { name: string, id: Id } };
     };
 }
 
@@ -86,7 +86,7 @@ export interface Payment {
     time: Time;
     description: string;
     amount: number;
-    amount_refunded: number;    
+    amount_refunded: number;
     method: string;
     result: {
         success: boolean;
@@ -131,8 +131,8 @@ export interface LineItem {
 export class CollectionRequest {
     private static target = "billing/invoices";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 }
 
@@ -144,23 +144,19 @@ export class SingleRequest {
         this.target = `${this.target}/${id}`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 
-    public async pay() {
-        return this.tasks().create("pay");
+    public async pay(): API.Response<Task<SingleActions>> {
+        return this.task("pay");
     }
 
-    public tasks() {
-        return {
-            create: async (action: SingleActions, contents?: Object, query?: ApiRequest.QueryParams): Promise<Task<SingleActions>> => {
-                return ApiRequest._post<Task<SingleActions>>(
-                    `${this.target}/tasks`,
-                    new Task<SingleActions>(action, contents),
-                    query
-                );
-            }
-        };
+    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams): API.Response<Task<SingleActions>> {
+        return API.post<Task<SingleActions>>(
+            `${this.target}/tasks`,
+            new Task<SingleActions>(action, contents),
+            query
+        );
     }
 }

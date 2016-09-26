@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import * as Plans from "../plans/index";
 import * as Tiers from "../tiers/tiers";
 import { Term, ContainerLineItem } from "./common";
@@ -48,7 +48,7 @@ export interface Volumes {
 export class SingleRequest {
     private static target = `billing/current`;
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public static async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 }

@@ -17,10 +17,12 @@ import * as Auth from "./auth";
 import * as Errors from "./common/errors";
 import * as Structures from "./common/structures";
 import * as JsonApi from "./jsonapi";
-import * as Request from "./common/request";
+import * as API from "./common/api";
+import "isomorphic-fetch";
 
-export { QueryParams } from "./common/request";
-export { default as Settings } from "./common/settings";
+export { QueryParams } from "./common/api";
+
+export { default as Settings } from "./settings";
 
 export {
     Accounts,
@@ -40,5 +42,5 @@ export {
     Errors,
     Structures,
     JsonApi,
-    Request
+    API
 }

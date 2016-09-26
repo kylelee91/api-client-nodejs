@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import { Id, Time, Scope } from "../../common/structures";
 
 export function document(): typeof CollectionRequest {
@@ -32,7 +32,7 @@ export interface Resource {
 export class CollectionRequest {
     private static target = "billing/credits";
 
-    public static async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public static async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 }

@@ -1,5 +1,5 @@
 import * as JsonApi from "../../jsonapi/index";
-import * as ApiRequest from "../../common/request";
+import * as API from "../../common/api";
 import { Id, State, Events, Time } from "../../common/structures";
 
 export function document(container: Id): CollectionRequest;
@@ -8,7 +8,7 @@ export function document(container?: Id, id?: Id): CollectionRequest | SingleReq
     if (!container) {
         throw new Error("Getting list of instances not yet supported.");
     }
-    
+
     if (id) {
         return new SingleRequest(container, id);
     }
@@ -49,7 +49,7 @@ export interface Resource extends JsonApi.Resource {
         state: State<States>;
         location: Location;
         events: Events & {
-            first_boot: Time;   
+            first_boot: Time;
             started: Time;
         };
     };
@@ -104,8 +104,8 @@ export class CollectionRequest {
         this.target = `containers/${container_id}/instances`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Collection> {
-        return ApiRequest._get<Collection>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Collection> {
+        return API.get<Collection>(this.target, query);
     }
 }
 
@@ -117,14 +117,14 @@ export class SingleRequest {
         this.target = `containers/${container_id}/instances/${instance_id}`;
     }
 
-    public async get(query?: ApiRequest.QueryParams): Promise<Single> {
-        return ApiRequest._get<Single>(this.target, query);
+    public async get(query?: API.QueryParams): API.Response<Single> {
+        return API.get<Single>(this.target, query);
     }
 
-    public log(type: LogTypes) {
+    public log(type: LogTypes): { get: (q: API.QueryParams) => API.Response<Log> } {
         return {
-            get: async (query?: ApiRequest.QueryParams): Promise<Log> => {
-                return ApiRequest._get<Log>(`${this.target}/logs/${type}`, query);
+            get: async (query?: API.QueryParams): API.Response<Log> => {
+                return API.get<Log>(`${this.target}/logs/${type}`, query);
             }
         };
     }
