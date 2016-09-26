@@ -1,7 +1,7 @@
 import { ErrorDetail } from "../jsonapi";
 import { OAuthError } from "../common/errors";
 import { Token } from "./token";
-import { AsyncResult } from "../common/structures";
+import { ResultFail, ResultSuccess } from "../common/structures";
 import Settings from "../settings";
 // import ThreadedLock from "threaded-lock";
 
@@ -12,7 +12,7 @@ export interface PasswordAuth {
     client_secret?: string;
 }
 
-export async function passwordAuth(options: PasswordAuth): AsyncResult<Token, ErrorDetail> {
+export async function passwordAuth(options: PasswordAuth): Promise<ResultSuccess<Token> | ResultFail<ErrorDetail>> {
     // Exceptions thrown ONLY IF the API client can't function
     if (!Settings.storage) {
         throw Error("No token storage defined in settings. Refusing to make request.");
@@ -67,7 +67,7 @@ export async function passwordAuth(options: PasswordAuth): AsyncResult<Token, Er
     }
 }
 
-export async function refreshAuth(): AsyncResult<Token, ErrorDetail> {
+export async function refreshAuth(): Promise<ResultSuccess<Token> | ResultFail<ErrorDetail>> {
     interface Params {
         grant_type: "refresh_token";
         refresh_token: string;

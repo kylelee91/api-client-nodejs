@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import * as Roles from "./roles";
@@ -54,11 +56,11 @@ export class CollectionRequest {
         }
     }
 
-    public async get(query?: API.QueryParams): API.Response<Collection> {
+    public async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+    public async create(doc: NewParams, query?: API.QueryParams) {
         const relationship = { invitee: { type: "accounts" }, id: doc.invitee };
         return API.post<Single>(
             this.target,
@@ -83,19 +85,19 @@ export class SingleRequest {
         }
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async accept(query?: API.QueryParams): API.Response<Single> {
+    public async accept(query?: API.QueryParams) {
         return this.action("accept", query);
     }
 
-    public async decline(query?: API.QueryParams): API.Response<Single> {
+    public async decline(query?: API.QueryParams) {
         return this.action("decline", query);
     }
 
-    public action(action: "accept" | "decline", query?: API.QueryParams): API.Response<Single> {
+    public action(action: "accept" | "decline", query?: API.QueryParams) {
         this.target += "/actions";
         const invite_id = this.invite_id;
         class InviteAction {

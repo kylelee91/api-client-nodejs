@@ -2,7 +2,7 @@ import * as JsonApi from "../jsonapi/index";
 
 export type Id = string;
 
-export interface ResultSucces<T> {
+export interface ResultSuccess<T> {
     ok: true;
     value: T;
 }
@@ -11,9 +11,6 @@ export interface ResultFail<T> {
     ok: false;
     error: T;
 }
-
-export type Result<T, U> = ResultSucces<T> | ResultFail<U>;
-export type AsyncResult<T, U> = Promise<Result<T, U>>;
 
 export interface Events {
     created?: string;

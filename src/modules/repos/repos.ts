@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import { Id, State, Events, Task, FormattedDoc, Scope } from "../../common/structures";
@@ -78,11 +80,11 @@ export interface BuildParams {
 export class CollectionRequest {
     private static target = "repos";
 
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+    public static async create(doc: NewParams, query?: API.QueryParams) {
         return API.post<Single>(
             this.target,
             new FormattedDoc({ type: "repos", attributes: doc }),
@@ -99,23 +101,23 @@ export class SingleRequest {
         this.target = `repos/${id}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+    public async update(doc: UpdateParams, query?: API.QueryParams) {
         return API.patch<Single>(this.target, new FormattedDoc({ type: "repos", attributes: doc }), query);
     }
 
-    public async delete(query?: API.QueryParams): API.Response<Task<SingleActions>> {
+    public async delete(query?: API.QueryParams) {
         return API.del<Task<SingleActions>>(this.target, query);
     }
 
-    public async build(options: BuildParams): API.Response<Task<SingleActions>> {
+    public async build(options: BuildParams) {
         return this.task("build", options);
     }
 
-    public async task(action: SingleActions, contents?: Object): API.Response<Task<SingleActions>> {
+    public async task(action: SingleActions, contents?: Object) {
         return API.post<Task<SingleActions>>(`${this.target}/tasks`, new Task(action, contents));
     }
 }

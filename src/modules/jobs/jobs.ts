@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import * as Tasks from "./tasks";
@@ -47,7 +49,7 @@ export interface Resource {
 export type States = "new" | "running" | "expired" | "completed" | "queued" | "error" | "scheduled";
 
 export class CollectionRequest {
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>("jobs", query);
     }
 }
@@ -59,7 +61,7 @@ export class SingleRequest {
         this.target = `jobs/${id}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams){
         return API.get<Single>(this.target, query);
     }
 }

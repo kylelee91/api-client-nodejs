@@ -1,9 +1,9 @@
 import Cache from "../common/cache";
 import Settings from "../settings";
-import { Id, AsyncResult } from "./structures";
+import { Id, ResultFail, ResultSuccess } from "./structures";
 import { JsonApiRequest, ErrorDocument, ErrorDetail, Document as JsonApiDocument } from "../jsonapi/index";
 
-export type Response<T> = AsyncResult<T, ErrorDetail>;
+export {ErrorDetail, ResultFail, ResultSuccess};
 
 export interface QueryParams {
     include?: string[];
@@ -20,17 +20,17 @@ export interface QueryParams {
     team?: Id;
 }
 
-export async function get<T>(target: string, query?: QueryParams): AsyncResult<T, ErrorDetail> {
+export async function get<T>(target: string, query?: QueryParams): Promise<ResultSuccess<T> | ResultFail<ErrorDetail>> {
     if (Settings.cache && Settings.cache.use) {
         const c = Cache.get<T>(target, query, Settings.team);
         if (c) {
             return (Promise.resolve({
-                ok: true as true, 
+                ok: true as true,
                 value: c
             }));
         }
     }
-    
+
     const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {});
     embedTeam(req);
     let resp = await makeRequest<T>(req);
@@ -40,7 +40,11 @@ export async function get<T>(target: string, query?: QueryParams): AsyncResult<T
     return resp;
 }
 
-export async function post<T>(target: string, doc: JsonApiDocument, query?: QueryParams): AsyncResult<T, ErrorDetail> {
+export async function post<T>(
+    target: string,
+    doc: JsonApiDocument,
+    query?: QueryParams
+): Promise<ResultSuccess<T> | ResultFail<ErrorDetail>> {
     const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {
         method: "POST",
         body: JSON.stringify(doc)
@@ -50,7 +54,11 @@ export async function post<T>(target: string, doc: JsonApiDocument, query?: Quer
     return resp;
 }
 
-export async function patch<T>(target: string, doc: JsonApiDocument, query?: QueryParams): AsyncResult<T, ErrorDetail> {
+export async function patch<T>(
+    target: string,
+    doc: JsonApiDocument,
+    query?: QueryParams
+): Promise<ResultSuccess<T> | ResultFail<ErrorDetail>> {
     const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {
         method: "PATCH",
         body: JSON.stringify(doc)
@@ -60,7 +68,7 @@ export async function patch<T>(target: string, doc: JsonApiDocument, query?: Que
     return resp;
 }
 
-export async function del<T>(target: string, query?: QueryParams): AsyncResult<T, ErrorDetail> {
+export async function del<T>(target: string, query?: QueryParams): Promise<ResultSuccess<T> | ResultFail<ErrorDetail>> {
     const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {
         method: "DELETE",
     });
@@ -69,7 +77,7 @@ export async function del<T>(target: string, query?: QueryParams): AsyncResult<T
     return resp;
 }
 
-async function makeRequest<T>(req: Request): AsyncResult<T, ErrorDetail> {
+async function makeRequest<T>(req: Request): Promise<ResultSuccess<T> | ResultFail<ErrorDetail>> {
     if (!Settings.storage) {
         throw new Error("No token storage in settings.");
     }

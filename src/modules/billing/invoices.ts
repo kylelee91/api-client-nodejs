@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import * as Tiers from "../tiers/tiers";
@@ -131,7 +133,7 @@ export interface LineItem {
 export class CollectionRequest {
     private static target = "billing/invoices";
 
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 }
@@ -144,15 +146,15 @@ export class SingleRequest {
         this.target = `${this.target}/${id}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async pay(): API.Response<Task<SingleActions>> {
+    public async pay() {
         return this.task("pay");
     }
 
-    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams): API.Response<Task<SingleActions>> {
+    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             new Task<SingleActions>(action, contents),

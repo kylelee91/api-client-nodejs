@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import * as Records from "./records";
@@ -52,11 +54,11 @@ export interface UpdateParams {
 export class CollectionRequest {
     private static target = "dns/zones";
 
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+    public static async create(doc: NewParams, query?: API.QueryParams) {
         return API.post<Single>(
             this.target,
             new FormattedDoc({ type: "zones", attributes: doc }),
@@ -72,11 +74,11 @@ export class SingleRequest {
         this.target = `${this.target}/${id}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+    public async update(doc: UpdateParams, query?: API.QueryParams) {
         return API.patch<Single>(
             this.target,
             new FormattedDoc({ id: this.id, type: "zones", attributes: doc }),
@@ -84,11 +86,11 @@ export class SingleRequest {
         );
     }
 
-    public async verify(): API.Response<Task<"verify">> {
+    public async verify() {
         return this.task("verify");
     }
 
-    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams): API.Response<Task<SingleActions>> {
+    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             new Task<SingleActions>(action, contents),
@@ -96,7 +98,7 @@ export class SingleRequest {
         );
     }
 
-    public async delete(): API.Response<Task<SingleActions>> {
+    public async delete() {
         return API.del<Task<SingleActions>>(this.target);
     }
 

@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import { Id, State, Events, Task, Scope, FormattedDoc } from "../../common/structures";
@@ -116,20 +118,30 @@ export interface UpdateParams {
     };
 }
 
+export class DockerHub {
+    public async import(doc: DockerHubImportParams, query?: API.QueryParams) {
+        return API.post<Single>(
+            `images/dockerhub`,
+            new FormattedDoc({ type: "images", attributes: doc }),
+            query
+        );
+    }
+}
+
 export type CollectionActions = "cleanup";
 export class CollectionRequest {
     public static dockerhub = new DockerHub();
     private static target = "images";
 
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+    public static async create(doc: NewParams, query?: API.QueryParams) {
         return API.post<Single>(this.target, new FormattedDoc({ type: "images", attributes: doc }), query);
     }
 
-    public static async deleteUnused(): API.Response<Task<CollectionActions>> {
+    public static async deleteUnused() {
         return API.post<Task<CollectionActions>>(`${this.target}/tasks`, new Task("cleanup"));
     }
 }
@@ -142,33 +154,23 @@ export class SingleRequest {
         this.target = `images/${id}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+    public async update(doc: UpdateParams, query?: API.QueryParams) {
         return API.patch<Single>(this.target, new FormattedDoc({ id: this.id, type: "images", attributes: doc }), query);
     }
 
-    public async delete(query?: API.QueryParams): API.Response<Task<SingleActions>> {
+    public async delete(query?: API.QueryParams) {
         return API.del<Task<SingleActions>>(this.target, query);
     }
 
-    public async build(): API.Response<Task<"build">> {
+    public async build() {
         return this.task("build");
     }
 
-    public async task(action: SingleActions, contents?: Object): API.Response<Task<SingleActions>> {
+    public async task(action: SingleActions, contents?: Object) {
         return API.post<Task<SingleActions>>(`${this.target}/tasks`, new Task(action, contents));
-    }
-}
-
-export class DockerHub {
-    public async import(doc: DockerHubImportParams, query?: API.QueryParams): API.Response<Single> {
-        return API.post<Single>(
-            `images/dockerhub`,
-            new FormattedDoc({ type: "images", attributes: doc }),
-            query
-        );
     }
 }

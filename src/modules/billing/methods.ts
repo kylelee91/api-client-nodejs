@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
@@ -78,12 +80,12 @@ export interface UpdateParams {
 export class CollectionRequest {
     private static target = "billing/methods";
 
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
     // Methods if no ID
-    public static async create(method: NewParams, query?: API.QueryParams): API.Response<Single> {
+    public static async create(method: NewParams, query?: API.QueryParams) {
         return API.post<Single>(
             this.target,
             new FormattedDoc({ type: "billing_methods", attributes: method }),
@@ -99,7 +101,7 @@ export class SingleRequest {
         this.target = `${this.target}/${id}`;
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+    public async update(doc: UpdateParams, query?: API.QueryParams) {
         return API.patch<Single>(
             this.target,
             new FormattedDoc({ id: this.id, type: "billing_methods", attributes: doc }),
@@ -107,11 +109,11 @@ export class SingleRequest {
         );
     }
 
-    public makePrimary(): API.Response<Task<SingleActions>> {
+    public makePrimary() {
         return this.task("make_primary");
     }
 
-    public task(action: SingleActions, contents?: Object, query?: API.QueryParams): API.Response<Task<SingleActions>> {
+    public task(action: SingleActions, contents?: Object, query?: API.QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             new Task(action, contents),
@@ -119,11 +121,11 @@ export class SingleRequest {
         );
     }
 
-    public async delete(): API.Response<Task<"delete">> {
+    public async delete() {
         return API.del<Task<"delete">>(this.target);
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 }

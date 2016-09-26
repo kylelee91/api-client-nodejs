@@ -1,4 +1,5 @@
 // Cycle API
+import "isomorphic-fetch";
 import * as Accounts from "./modules/accounts";
 import * as Billing from "./modules/billing";
 import * as Containers from "./modules/containers";
@@ -12,18 +13,14 @@ import * as Repos from "./modules/repos";
 import * as Teams from "./modules/teams";
 import * as Tiers from "./modules/tiers";
 import * as Notifications from "./modules/notifications";
-
 import * as Auth from "./auth";
 import * as Errors from "./common/errors";
 import * as Structures from "./common/structures";
 import * as JsonApi from "./jsonapi";
 import * as API from "./common/api";
-import "isomorphic-fetch";
 
 export { QueryParams } from "./common/api";
-
-export { default as Settings } from "./settings";
-
+export { default as Settings, setSettings } from "./settings";
 export {
     Accounts,
     Billing,

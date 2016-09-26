@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import { Id, State, Events, Task, Time, FormattedDoc, Scope } from "../../common/structures";
@@ -74,11 +76,11 @@ export interface UpdateParams {
 export class CollectionRequest {
     private static target = "environments";
 
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+    public static async create(doc: NewParams, query?: API.QueryParams) {
         return API.post<Single>(
             this.target,
             new FormattedDoc({ type: "environments", attributes: doc }),
@@ -94,11 +96,11 @@ export class SingleRequest {
         this.target = `environments/${id}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+    public async update(doc: UpdateParams, query?: API.QueryParams) {
         return API.patch<Single>(
             this.target,
             new FormattedDoc({ id: this.id, type: "environments", attributes: doc }),
@@ -106,19 +108,19 @@ export class SingleRequest {
         );
     }
 
-    public async delete(query?: API.QueryParams): API.Response<Single> {
+    public async delete(query?: API.QueryParams) {
         return API.del<Single>(this.target, query);
     }
 
-    public async start(): API.Response<Task<Actions>>  {
+    public async start() {
         return this.task("start");
     }
 
-    public async stop(): API.Response<Task<Actions>>  {
+    public async stop()  {
         return this.task("stop");
     }
 
-    public task(action: Actions, contents?: Object, query?: API.QueryParams): API.Response<Task<Actions>> {
+    public task(action: Actions, contents?: Object, query?: API.QueryParams) {
         return API.post<Task<Actions>>(
             `${this.target}/tasks`,
             new Task(action, contents),

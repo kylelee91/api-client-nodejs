@@ -1,8 +1,10 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import { Id, FormattedDoc } from "../../common/structures";
 
-export function domains(query?: API.QueryParams): API.Response<Collection>  {
+export function domains(query?: API.QueryParams) {
     return API.get<Collection>("dns/domains", query);
 }
 
@@ -73,11 +75,11 @@ export class CollectionRequest {
         this.target = `dns/zones/${zoneId}/records`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Collection> {
+    public async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+    public async create(doc: NewParams, query?: API.QueryParams) {
         return API.post<Single>(this.target, new FormattedDoc({ type: "records", attributes: doc }), query);
     }
 }
@@ -89,11 +91,11 @@ export class SingleRequest {
         this.target = `dns/zones/${zoneId}/records/${recordId}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+    public async update(doc: UpdateParams, query?: API.QueryParams) {
         return API.patch<Single>(
             this.target,
             new FormattedDoc({ id: this.recordId, type: "records", attributes: doc }),
@@ -101,7 +103,7 @@ export class SingleRequest {
         );
     }
 
-    public async delete(): API.Response<Single> {
+    public async delete() {
         return API.del<Single>(this.target);
     }
 }

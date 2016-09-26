@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import { Id } from "../../common/structures";
@@ -65,7 +67,7 @@ export interface Summary {
 export class CollectionRequest {
     private static target = "tiers";
     
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);    
     }
 }
@@ -77,7 +79,7 @@ export class SingleRequest {
         this.target = `tiers/${id}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);    
     }
 }

@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi";
 import * as API from "../../common/api";
 import * as Instances from "./instances";
@@ -198,11 +200,11 @@ export interface CompatibleImages extends Images.Collection { }
 export class CollectionRequest {
     private static target = "containers";
 
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+    public static async create(doc: NewParams, query?: API.QueryParams) {
         return API.post<Single>(this.target, generateNewContainerDoc(doc), query);
     }
 }
@@ -214,11 +216,11 @@ export class SingleRequest {
         this.target = `containers/${id}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+    public async update(doc: UpdateParams, query?: API.QueryParams) {
         return API.patch<Single>(
             this.target,
             new FormattedDoc({ id: this.id, type: "containers", attributes: doc }),
@@ -226,31 +228,31 @@ export class SingleRequest {
         );
     }
 
-    public async delete(query?: API.QueryParams): API.Response<Single> {
+    public async delete(query?: API.QueryParams) {
         return API.del<Single>(this.target, query);
     }
 
-    public async start(): API.Response<Task<SingleActions>> {
+    public async start() {
         return this.task(new Task<"start">("start"));
     }
 
-    public async stop(): API.Response<Task<SingleActions>> {
+    public async stop() {
         return this.task(new Task<"stop">("stop"));
     }
 
-    public async modify(mods: ModifyTaskParams): API.Response<Task<SingleActions>> {
+    public async modify(mods: ModifyTaskParams) {
         return this.task(new Task<"modify">("modify", mods));
     }
 
-    public async reimage(params: ReimageParams): API.Response<Task<SingleActions>> {
+    public async reimage(params: ReimageParams) {
         return this.task(new Task<"reimage">("reimage", params));
     }
 
-    public async compatibleImages(query?: API.QueryParams): API.Response<CompatibleImages> {
+    public async compatibleImages(query?: API.QueryParams) {
         return API.get<CompatibleImages>(`${this.target}/compatible-images`, query);
     }
 
-    public task(t: Task<SingleActions>, query?: API.QueryParams): API.Response<Task<SingleActions>> {
+    public task(t: Task<SingleActions>, query?: API.QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             t,
@@ -258,7 +260,7 @@ export class SingleRequest {
         );
     }
 
-    public async events(query?: API.QueryParams): API.Response<EventCollection> {
+    public async events(query?: API.QueryParams) {
         return API.get<EventCollection>(`${this.target}/events`, query);
     }
 

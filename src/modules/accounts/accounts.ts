@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import * as Logins from "./logins";
@@ -66,32 +68,32 @@ export type AccountActions = "change_tier";
 export class AccountRequest {
     private static target: string = "account";
 
-    public static async get(query?: API.QueryParams): API.Response<Single> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Single>(this.target);
     }
 
-    public static async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+    public static async update(doc: UpdateParams, query?: API.QueryParams) {
 
         return API.patch<Single>(this.target, new AccountUpdate(doc), query);
     }
 
-    public static async logins(query?: API.QueryParams): API.Response<Logins.Collection> {
+    public static async logins(query?: API.QueryParams) {
         return API.get<Logins.Collection>("account/logins", query);
     }
 
-    public static async lookup(query?: API.QueryParams): API.Response<Collection> {
+    public static async lookup(query?: API.QueryParams) {
         return API.get<Collection>("account/lookup", query);
     }
 
-    public static async changePassword(doc: ChangePasswordParams, query?: API.QueryParams): API.Response<Single> {
+    public static async changePassword(doc: ChangePasswordParams, query?: API.QueryParams) {
         return API.patch<Single>("account/password", new AccountUpdate(doc), query);
     }
 
-    public static async changeTier(tier: string): API.Response<Task<AccountActions>> {
+    public static async changeTier(tier: string) {
         return this.task("change_tier", { tier: tier });
     }
 
-    public static async task(action: AccountActions, contents?: Object, query?: API.QueryParams): API.Response<Task<AccountActions>> {
+    public static async task(action: AccountActions, contents?: Object, query?: API.QueryParams) {
         return API.post<Task<AccountActions>>(
             `${this.target}/tasks`,
             new Task<AccountActions>(action, contents),

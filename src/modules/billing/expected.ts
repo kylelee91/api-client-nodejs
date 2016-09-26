@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import { Term } from "./common";
@@ -23,7 +25,7 @@ export interface Resource {
 export class SingleRequest {
     private static target = "billing/expected";
 
-    public static async get(): API.Response<Single> {
+    public static async get() {
         return API.get<Single>(this.target);
     }
 }

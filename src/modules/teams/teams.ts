@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import * as Billing from "../billing/index";
@@ -65,11 +67,11 @@ export type SingleActions = "change_tier";
 export class CollectionRequest {
     private static target = "teams";
 
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams): API.Response<Single> {
+    public static async create(doc: NewParams, query?: API.QueryParams) {
         return API.post<Single>(this.target, new FormattedDoc({ type: "teams", attributes: doc }), query);
     }
 
@@ -91,23 +93,23 @@ export class SingleRequest {
         this.target = `teams/${id}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams): API.Response<Single> {
+    public async update(doc: UpdateParams, query?: API.QueryParams) {
         return API.patch<Single>(this.target, new FormattedDoc({ type: "teams", attributes: doc }), query);
     }
 
-    public async delete(query?: API.QueryParams): API.Response<Single> {
+    public async delete(query?: API.QueryParams) {
         return API.del<Single>(this.target, query);
     }
 
-    public async changeTier(tier: string): API.Response<Task<SingleActions>> {
+    public async changeTier(tier: string) {
         return this.task("change_tier", { tier: tier });
     }
 
-    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams): API.Response<Task<SingleActions>> {
+    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             new Task<SingleActions>(action, contents),
@@ -143,7 +145,7 @@ export class MembersRequest {
         this.target = `teams/${team_id}/members`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Accounts.Collection> {
+    public async get(query?: API.QueryParams): Promise<ResultSuccess<Accounts.Collection> | ResultFail<ErrorDetail>> {
         return API.get<Accounts.Collection>(this.target, query);
     }
 }
@@ -155,7 +157,7 @@ export class MemberRequest {
         this.target = `teams/${team_id}/members/${member_id}`;
     }
 
-    public async delete(query?: API.QueryParams): API.Response<Task<SingleActions>> {
+    public async delete(query?: API.QueryParams) {
         return API.del<Task<SingleActions>>(this.target, query);
     }
 }

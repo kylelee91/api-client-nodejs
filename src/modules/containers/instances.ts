@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import { Id, State, Events, Time } from "../../common/structures";
@@ -104,7 +106,7 @@ export class CollectionRequest {
         this.target = `containers/${container_id}/instances`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Collection> {
+    public async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 }
@@ -117,13 +119,13 @@ export class SingleRequest {
         this.target = `containers/${container_id}/instances/${instance_id}`;
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public log(type: LogTypes): { get: (q: API.QueryParams) => API.Response<Log> } {
+    public log(type: LogTypes) {
         return {
-            get: async (query?: API.QueryParams): API.Response<Log> => {
+            get: async (query?: API.QueryParams) => {
                 return API.get<Log>(`${this.target}/logs/${type}`, query);
             }
         };

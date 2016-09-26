@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import { Id, Scope, Time, Events, State, Task } from "../../common/structures";
 import * as API from "../../common/api";
@@ -47,15 +49,15 @@ export type CollectionActions = "mark_read";
 export class CollectionRequest {
     public static readonly target = "notifications";
 
-    public static async get(query?: API.QueryParams): API.Response<Collection> {
+    public static async get(query?: API.QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async markAllAsRead(): API.Response<Task<CollectionActions>> {
+    public static async markAllAsRead() {
         return this.task(new Task("mark_read"));
     }
 
-    public static async task(t: Task<CollectionActions>, query?: API.QueryParams): API.Response<Task<CollectionActions>> {
+    public static async task(t: Task<CollectionActions>, query?: API.QueryParams) {
         return API.post<Task<CollectionActions>>(
             `${this.target}/tasks`,
             t,
@@ -71,11 +73,11 @@ export class SingleRequest {
         this.target = `notifications/${id}`;
     }
 
-    public async markAsRead(): API.Response<Task<CollectionActions>> {
+    public async markAsRead() {
         return this.task(new Task("mark_read"));
     }
 
-    public async task(t: Task<CollectionActions>, query?: API.QueryParams): API.Response<Task<CollectionActions>> {
+    public async task(t: Task<CollectionActions>, query?: API.QueryParams) {
         return API.post<Task<CollectionActions>>(
             `${this.target}/tasks`,
             t,
@@ -83,7 +85,7 @@ export class SingleRequest {
         );
     }
 
-    public async get(query?: API.QueryParams): API.Response<Single> {
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target);
     }
 }
