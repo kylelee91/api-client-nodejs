@@ -21,25 +21,25 @@ export interface SettingsProps {
     readonly autoRefreshToken?: boolean;
 }
 
-const defaults = {
-    version: 1 as Version,
-    team: undefined,
-    cache: {
+export class Settings implements SettingsProps {
+    readonly version: Version = 1;
+    readonly team: Id | undefined = undefined;
+    readonly cache = {
         use: true,
         refresh: 1000,
-    },
-    auth: {
-        tokenUrl: "",
-        refreshUrl: "",
-    },
-    storage: new CacheStorage(),
-    url: "//api.cycle.io",
-    autoRefreshToken: true
+    };
+    readonly auth = {
+        tokenUrl: "https://api.cycle.io:14000/auth/token",
+        refreshUrl: "https://api.cycle.io:14000/auth/refresh",
+    };
+    readonly client: Client | undefined;
+    readonly storage: StorageInterface = new CacheStorage();
+    readonly url = "https://api.cycle.io";
+    readonly autoRefreshToken = true;
+
+    public update(s: SettingsProps) {
+        Object.assign(this, s);
+    }
 };
 
-let settings: SettingsProps = defaults;
-export default settings;
-
-export function setSettings(s: SettingsProps) {
-    settings = Object.assign(s, defaults);
-}
+export default new Settings();

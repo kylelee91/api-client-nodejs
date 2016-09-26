@@ -20,7 +20,7 @@ import * as JsonApi from "./jsonapi";
 import * as API from "./common/api";
 
 export { QueryParams } from "./common/api";
-export { default as Settings, setSettings } from "./settings";
+export { default as Settings } from "./settings";
 export {
     Accounts,
     Billing,
