@@ -172,6 +172,7 @@ export interface TLS {
 export interface NewParams {
     name: string;
     environment: Id;
+    config: Config;
     plan: Id;
     image: Id;
     scaling: Scaling;
@@ -290,7 +291,8 @@ function generateNewContainerDoc(attr: NewParams) {
         name: attr.name,
         scaling: attr.scaling,
         volumes: attr.volumes,
-        tls: attr.tls
+        tls: attr.tls,
+        config: attr.config
     };
     let relationships = {
         image: {
