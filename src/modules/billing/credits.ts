@@ -13,9 +13,7 @@ export interface Collection extends JsonApi.CollectionDocument {
 export interface Single extends JsonApi.ResourceDocument {
     data: Resource | null;
     meta: {
-        total: {
-            remaining: number;
-        }
+        total: number;
     };
 }
 
