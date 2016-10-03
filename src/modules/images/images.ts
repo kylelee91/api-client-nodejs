@@ -182,7 +182,7 @@ export class SingleRequest {
         return this.tasks().create("build");
     }
 
-    public log(query?: ApiRequest.QueryParams): Promise<BuildLog> {
+    public async log(query?: ApiRequest.QueryParams): Promise<BuildLog> {
         return ApiRequest._get<BuildLog>(`${this.target}/build-logs`, query);
     }
 
