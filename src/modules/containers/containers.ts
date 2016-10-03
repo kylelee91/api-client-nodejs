@@ -104,13 +104,6 @@ export interface ReimageParams {
     image: Id;
 }
 
-/**
- * Describes a container's configuration properties
- * @prop env_vars - Environment variables within container
- * @prop command - Arguments inherited from container image
- * @prop command.args - List of arguments on container
- * @prop command.override - Whether or not args have been overriden
- */
 export interface Config {
     flags: Flags;
     tls: TLS;
@@ -172,7 +165,12 @@ export interface TLS {
 export interface NewParams {
     name: string;
     environment: Id;
-    config: Config;
+    config: {
+        flags?: Flags;
+        tls?: TLS;
+        dnsrecord?: Id;
+        runtime?: RuntimeConfig;
+    };
     plan: Id;
     image: Id;
     scaling: Scaling;
