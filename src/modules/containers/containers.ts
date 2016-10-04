@@ -37,36 +37,16 @@ export interface Single extends JsonApi.ResourceDocument {
  * An individual container resource
  */
 export interface Resource extends JsonApi.Resource {
-<<<<<<< HEAD
     readonly id: Id;
     readonly type: "containers";
     readonly attributes: {
         readonly name: string;
-        readonly config: {
-            readonly env_vars: { [key: string]: string };
-            readonly command: {
-                readonly args: string[];
-                readonly override: boolean;
-            }
-        }
-        readonly tls: TLS;
+        readonly config: Config;
         readonly spawns: number;
         readonly scaling: Scaling;
         readonly volumes: Volume[];
         readonly state: State<States>;
         readonly events: Events;
-=======
-    id: Id;
-    type: "containers";
-    attributes: {
-        name: string;
-        config: Config;
-        spawns: number;
-        scaling: Scaling;
-        volumes: Volume[];
-        state: State<States>;
-        events: Events;
->>>>>>> origin/master
     };
     readonly relationships?: {
         readonly environment: JsonApi.ToOneRelationship;
@@ -127,12 +107,6 @@ export interface ReimageParams {
 }
 
 export interface Config {
-<<<<<<< HEAD
-    readonly env_vars?: { [key: string]: string };
-    readonly command?: {
-        readonly args: string[];
-        readonly override: boolean;
-=======
     flags: Flags;
     tls: TLS;
     dnsrecord: Id;
@@ -148,7 +122,6 @@ export interface RuntimeConfig {
     command?: {
         args: string[];
         override: boolean;
->>>>>>> origin/master
     };
 };
 
