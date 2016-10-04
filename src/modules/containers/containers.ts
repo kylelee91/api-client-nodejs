@@ -37,6 +37,7 @@ export interface Single extends JsonApi.ResourceDocument {
  * An individual container resource
  */
 export interface Resource extends JsonApi.Resource {
+<<<<<<< HEAD
     readonly id: Id;
     readonly type: "containers";
     readonly attributes: {
@@ -54,6 +55,18 @@ export interface Resource extends JsonApi.Resource {
         readonly volumes: Volume[];
         readonly state: State<States>;
         readonly events: Events;
+=======
+    id: Id;
+    type: "containers";
+    attributes: {
+        name: string;
+        config: Config;
+        spawns: number;
+        scaling: Scaling;
+        volumes: Volume[];
+        state: State<States>;
+        events: Events;
+>>>>>>> origin/master
     };
     readonly relationships?: {
         readonly environment: JsonApi.ToOneRelationship;
@@ -96,36 +109,48 @@ export type States = "starting" | "running" | "stopping" | "stopped" | "deleting
  * Possible actions that can be taken on a container.
  * start: Start container
  * stop: Stop container
- * modify: Change any properties of a container that will need to propagate to multiple instances
+ * apply: Change any properties of a container that will need to propagate to multiple instances
  */
-export type SingleActions = "start" | "stop" | "modify" | "reimage";
+export type SingleActions = "start" | "stop" | "apply" | "reimage";
 
 export interface ModifyTaskParams {
     plan?: Id;
     domain?: Id;
     hostname?: string;
-    config?: Config;
+    runtime?: RuntimeConfig;
     tls?: TLS;
+    flags?: Flags;
 }
 
 export interface ReimageParams {
     image: Id;
 }
 
-/**
- * Describes a container's configuration properties
- * @prop env_vars - Environment variables within container
- * @prop command - Arguments inherited from container image
- * @prop command.args - List of arguments on container
- * @prop command.override - Whether or not args have been overriden
- */
 export interface Config {
+<<<<<<< HEAD
     readonly env_vars?: { [key: string]: string };
     readonly command?: {
         readonly args: string[];
         readonly override: boolean;
-    };
+=======
+    flags: Flags;
+    tls: TLS;
+    dnsrecord: Id;
+    runtime: RuntimeConfig;
 }
+
+export interface Flags {
+    auto_restart: boolean;
+}
+
+export interface RuntimeConfig {
+    env_vars?: { [key: string]: string };
+    command?: {
+        args: string[];
+        override: boolean;
+>>>>>>> origin/master
+    };
+};
 
 export type ScalingMethods = "persistent" | "geodns" | "loadbalance" | "loadbalance-geodns";
 export interface Scaling {
@@ -169,6 +194,12 @@ export interface TLS {
 export interface NewParams {
     name: string;
     environment: Id;
+    config: {
+        flags?: Flags;
+        tls?: TLS;
+        dnsrecord?: Id;
+        runtime?: RuntimeConfig;
+    };
     plan: Id;
     image: Id;
     scaling: Scaling;
@@ -240,8 +271,8 @@ export class SingleRequest {
         return this.task(new Task<"stop">("stop"));
     }
 
-    public async modify(mods: ModifyTaskParams) {
-        return this.task(new Task<"modify">("modify", mods));
+    public async apply(mods: ModifyTaskParams) {
+        return this.task(new Task<"apply">("apply", mods));
     }
 
     public async reimage(params: ReimageParams) {
@@ -283,7 +314,8 @@ function generateNewContainerDoc(attr: NewParams) {
         name: attr.name,
         scaling: attr.scaling,
         volumes: attr.volumes,
-        tls: attr.tls
+        tls: attr.tls,
+        config: attr.config
     };
     let relationships = {
         image: {

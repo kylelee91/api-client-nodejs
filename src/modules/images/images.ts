@@ -51,6 +51,19 @@ export interface Resource extends JsonApi.Resource {
     };
 }
 
+export interface BuildLog {
+    id: Id;
+    type: "build_logs";
+    attributes: {
+        owner: Scope;
+        output: string;
+        Events: Events;
+    };
+    relationships?: {
+        images: JsonApi.ToOneRelationship;
+    };
+}
+
 export type States =
     "new"
     | "claimed"
@@ -170,7 +183,20 @@ export class SingleRequest {
         return this.task("build");
     }
 
+<<<<<<< HEAD
     public async task(action: SingleActions, contents?: Object) {
         return API.post<Task<SingleActions>>(`${this.target}/tasks`, new Task(action, contents));
+=======
+    public async log(query?: ApiRequest.QueryParams): Promise<BuildLog> {
+        return ApiRequest._get<BuildLog>(`${this.target}/build-logs`, query);
+    }
+
+    public tasks() {
+        return {
+            create: async (action: SingleActions, contents?: Object): Promise<Task<SingleActions>> => {
+                return ApiRequest._post<Task<SingleActions>>(`${this.target}/tasks`, new Task(action, contents));
+            }
+        };
+>>>>>>> origin/master
     }
 }
