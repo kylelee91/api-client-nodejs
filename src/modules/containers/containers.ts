@@ -50,7 +50,6 @@ export interface Resource extends JsonApi.Resource {
         environment: JsonApi.ToOneRelationship;
         image: JsonApi.ToOneRelationship;
         plan: JsonApi.ToOneRelationship;
-        domain: JsonApi.ToOneRelationship;
     };
     meta?: {
         counts?: {
@@ -174,8 +173,6 @@ export interface NewParams {
     plan: Id;
     image: Id;
     scaling: Scaling;
-    domain?: Id;
-    tls?: TLS;
     volumes: Volume[];
 }
 
@@ -289,7 +286,6 @@ function generateNewContainerDoc(attr: NewParams) {
         name: attr.name,
         scaling: attr.scaling,
         volumes: attr.volumes,
-        tls: attr.tls,
         config: attr.config
     };
     let relationships = {
@@ -309,12 +305,6 @@ function generateNewContainerDoc(attr: NewParams) {
             data: {
                 type: "environments",
                 id: attr.environment
-            }
-        },
-        domain: {
-            data: {
-                type: "domains",
-                id: attr.domain
             }
         }
     };
