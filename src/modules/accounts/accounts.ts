@@ -62,7 +62,7 @@ export interface ChangePasswordParams {
     new: string;
 }
 
-type AccountActions = "apply";
+export type AccountActions = "apply";
 export class AccountRequest {
     private static target: string = "account";
 
@@ -90,7 +90,7 @@ export class AccountRequest {
     public static async changeTier(tier: string) {
         return this.tasks().create("apply", { tier: tier });
     }
-
+    
     public static tasks() {
         return {
             create: async (action: AccountActions, contents?: Object, query?: ApiRequest.QueryParams): Promise<Task<AccountActions>> => {
@@ -110,5 +110,5 @@ class AccountUpdate {
         attributes: this.doc
     };
 
-    constructor(private doc: UpdateParams | ChangePasswordParams) {}
+    constructor(private doc: UpdateParams | ChangePasswordParams) { }
 };
