@@ -51,7 +51,7 @@ export async function passwordAuth(options: PasswordAuth): Promise<ResultSuccess
         }
 
         const token = await resp.json<Token>();
-        Settings.storage.write(await resp.json<Token>());
+        Settings.storage.write(token);
         return {
             ok: true as true,
             value: token
