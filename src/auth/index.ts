@@ -3,7 +3,6 @@ import { OAuthError } from "../common/errors";
 import { Token } from "./token";
 import { ResultFail, ResultSuccess } from "../common/structures";
 import Settings from "../settings";
-// import ThreadedLock from "threaded-lock";
 
 export interface PasswordAuth {
     username: string;
@@ -137,54 +136,3 @@ export async function refreshAuth(): Promise<ResultSuccess<Token> | ResultFail<E
         };
     }
 }
-
-// export async function signRequest<T>(req: Request): Promise<T> {
-//     if (!Settings.storage) {
-//         throw Error("No token storage defined in settings. Refusing to make request.");
-//     }
-
-//     const token = Settings.storage.read();
-//     req.setHeader("Authorization", "Bearer " + token.access_token);
-
-//     try {
-//         resp = await req.send();
-//     } catch (e) {
-//         const eType = Errors.identify(e);
-
-//         if ((eType instanceof Errors.TokenNotAuthorizedError) === false) {
-//             throw eType;
-//         }
-
-//         // Handles the following case:
-//         // 1) Token expires with failed request
-//         // 2) Another request with expired token is made
-//         // 3) Refresh token request initiated and completes (unlocking this function)
-//         // 4) Expired token request completes, tries to do refresh with old token and fails
-//         let threadedLock: ThreadedLock | undefined;
-//         if (window && window.localStorage) {
-//             threadedLock = new ThreadedLock("refresh_lock");
-//             await threadedLock.lock();
-//         }
-//         const currentToken = readToken();
-//         if (currentToken && token.refresh_token !== currentToken.refresh_token) {
-//             req.setHeader("Authorization", "Bearer " + currentToken.access_token);
-//         } else {
-//             try {
-//                 const refresh = await refreshToken(token);
-//                 req.setHeader("Authorization", "Bearer " + refresh.access_token);
-//             } catch (e) {
-//                 if (threadedLock) {
-//                     threadedLock.unlock();
-//                 }
-//                 throw new Errors.TokenRefreshFailedError();
-//             }
-//         }
-//         if (threadedLock) {
-//             threadedLock.unlock();
-//         }
-
-//         resp = await req.send();
-//     }
-
-//     return resp;
-// } 
