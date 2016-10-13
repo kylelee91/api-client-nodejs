@@ -118,7 +118,7 @@ async function makeRequest<T>(req: Request): Promise<ResultSuccess<T> | ResultFa
 
 function formatParams(q: QueryParams | undefined) {
     if (!q) {
-        return;
+        return "";
     }
 
     const f = {};

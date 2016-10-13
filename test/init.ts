@@ -1,6 +1,10 @@
 import * as Cycle from "../src";
 import "mocha";
 
+declare var process: {
+    readonly env: any;
+};
+
 Cycle.Settings.url = "https://api.dev.cycle.io";
 Cycle.Settings.auth.tokenUrl = "https://portal.dev.cycle.io/auth/token";
 Cycle.Settings.auth.refreshUrl = "https://portal.dev.cycle.io/auth/refresh";

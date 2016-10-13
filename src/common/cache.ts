@@ -36,12 +36,12 @@ export default class Cache {
         }
         this.clear(key);
         this.registry[key] = {value: value, options: options, timer: null, team: team};
-        this.registry[key].timer = setTimeout(this.clear.bind(this, key), timeout);
+        this.registry[key].timer = setTimeout(() => this.clear(key), timeout);
         return value;
     }
 
     public static clear(key: string) {
-        if (! this.registry[key]) {
+        if (!this.registry[key]) {
             return;
         }
         this.registry[key].value = null;

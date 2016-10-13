@@ -122,7 +122,7 @@ export async function refreshAuth(): Promise<ResultSuccess<Token> | ResultFail<E
         }
 
         const refresh = await resp.json<Token>();
-        Settings.storage.write(await resp.json<Token>());
+        Settings.storage.write(refresh);
         return {
             ok: true as true,
             value: refresh

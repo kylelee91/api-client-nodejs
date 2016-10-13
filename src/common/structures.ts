@@ -2,6 +2,8 @@ import * as JsonApi from "../jsonapi/index";
 
 export type Id = string;
 
+export type ApiResult = ResultSuccess<any> | ResultFail<JsonApi.ErrorDetail>;
+
 export interface ResultSuccess<T> {
     ok: true;
     value: T;
