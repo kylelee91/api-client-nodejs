@@ -84,13 +84,20 @@ async function makeRequest<T>(req: Request): Promise<ResultSuccess<T> | ResultFa
 
     const token = Settings.storage.read();
     if (!token) {
-        throw new Error("Attempting to make request without token.");
+        return {
+            ok: false as false,
+            error: {
+                status: "401",
+                title: "Not authorized",
+                detail: "Token not found."
+            }
+        };
     }
 
     req.headers.append("Authorization", `Bearer ${token.access_token}`);
 
     try {
-        // Do Timeout Here?
+        //TODO: Do Timeout Here?
         const resp = await fetch(req);
         if (!resp.ok) {
             const err = await resp.json<ErrorDocument>();

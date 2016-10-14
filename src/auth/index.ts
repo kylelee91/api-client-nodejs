@@ -82,10 +82,16 @@ export async function refreshAuth(): Promise<ResultSuccess<Token> | ResultFail<E
         throw Error("No refresh url defined in settings. Refusing to make request.");
     }
 
-    // TODO: Should we throw an exception here?
     const token = Settings.storage.read();
     if (!token) {
-        throw Error("No token in storage.");
+        return {
+            ok: false as false,
+            error: {
+                status: "401",
+                title: "Not authorized",
+                detail: "Token not found."
+            }
+        };
     }
 
     const options: Params = {
