@@ -14,11 +14,11 @@ export interface PasswordAuth {
 export async function passwordAuth(options: PasswordAuth): Promise<ResultSuccess<Token> | ResultFail<ErrorDetail>> {
     // Exceptions thrown ONLY IF the API client can't function
     if (!Settings.storage) {
-        throw Error("No token storage defined in settings. Refusing to make request.");
+        throw new Error("No token storage defined in settings. Refusing to make request.");
     }
 
     if (!Settings.auth) {
-        throw Error("No authorization url defined in settings. Refusing to make request.");
+        throw new Error("No authorization url defined in settings. Refusing to make request.");
     }
 
     if (Settings.client && (!options.client_id || !options.client_secret)) {
@@ -40,7 +40,7 @@ export async function passwordAuth(options: PasswordAuth): Promise<ResultSuccess
         if (!resp.ok) {
             const err = await resp.json<OAuthError>();
             return {
-                ok: false as false,
+                ok: false,
                 error: {
                     status: resp.status.toString(),
                     detail: err.error_description,
@@ -52,12 +52,12 @@ export async function passwordAuth(options: PasswordAuth): Promise<ResultSuccess
         const token = await resp.json<Token>();
         Settings.storage.write(token);
         return {
-            ok: true as true,
+            ok: true,
             value: token
         };
     } catch (e) {
         return {
-            ok: false as false,
+            ok: false,
             error: {
                 detail: e.message,
                 title: "Unable to reach authentication server"
@@ -84,14 +84,7 @@ export async function refreshAuth(): Promise<ResultSuccess<Token> | ResultFail<E
 
     const token = Settings.storage.read();
     if (!token) {
-        return {
-            ok: false as false,
-            error: {
-                status: "401",
-                title: "Not authorized",
-                detail: "Token not found."
-            }
-        };
+        throw new Error("You must load a token before attempting a request.");
     }
 
     const options: Params = {
@@ -117,7 +110,7 @@ export async function refreshAuth(): Promise<ResultSuccess<Token> | ResultFail<E
         if (!resp.ok) {
             const err = await resp.json<OAuthError>();
             return {
-                ok: false as false,
+                ok: false,
                 error: {
                     status: resp.status.toString(),
                     detail: err.error_description,
@@ -129,12 +122,12 @@ export async function refreshAuth(): Promise<ResultSuccess<Token> | ResultFail<E
         const refresh = await resp.json<Token>();
         Settings.storage.write(refresh);
         return {
-            ok: true as true,
+            ok: true,
             value: refresh
         };
     } catch (e) {
         return {
-            ok: false as false,
+            ok: false,
             error: {
                 detail: e.message,
                 title: "Unable to reach authentication server"

@@ -1,5 +1,5 @@
 // tslint:disable-next-line
-import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
+import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import * as Billing from "../billing/index";
@@ -145,7 +145,7 @@ export class MembersRequest {
         this.target = `teams/${team_id}/members`;
     }
 
-    public async get(query?: API.QueryParams): Promise<ResultSuccess<Accounts.Collection> | ResultFail<ErrorDetail>> {
+    public async get(query?: API.QueryParams): Promise<ResultSuccess<Accounts.Collection> | ResultFail<CycleErrorDetail>> {
         return API.get<Accounts.Collection>(this.target, query);
     }
 }

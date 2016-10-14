@@ -1,9 +1,9 @@
 import Cache from "../common/cache";
 import Settings from "../settings";
-import { Id, ResultFail, ResultSuccess } from "./structures";
-import { JsonApiRequest, ErrorDocument, ErrorDetail, Document as JsonApiDocument } from "../jsonapi/index";
+import { Id, ResultFail, ResultSuccess, CycleErrorDetail } from "./structures";
+import { JsonApiRequest, ErrorDocument, Document as JsonApiDocument } from "../jsonapi/index";
 
-export {ErrorDetail, ResultFail, ResultSuccess};
+export {CycleErrorDetail, ResultFail, ResultSuccess};
 
 export interface QueryParams {
     include?: string[];
@@ -20,14 +20,14 @@ export interface QueryParams {
     team?: Id;
 }
 
-export async function get<T>(target: string, query?: QueryParams): Promise<ResultSuccess<T> | ResultFail<ErrorDetail>> {
+export async function get<T>(target: string, query?: QueryParams): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
     if (Settings.cache && Settings.cache.use) {
         const c = Cache.get<T>(target, query, Settings.team);
         if (c) {
-            return (Promise.resolve({
-                ok: true as true,
+            return ({
+                ok: true,
                 value: c
-            }));
+            });
         }
     }
 
@@ -44,7 +44,7 @@ export async function post<T>(
     target: string,
     doc: JsonApiDocument,
     query?: QueryParams
-): Promise<ResultSuccess<T> | ResultFail<ErrorDetail>> {
+): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
     const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {
         method: "POST",
         body: JSON.stringify(doc)
@@ -58,7 +58,7 @@ export async function patch<T>(
     target: string,
     doc: JsonApiDocument,
     query?: QueryParams
-): Promise<ResultSuccess<T> | ResultFail<ErrorDetail>> {
+): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
     const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {
         method: "PATCH",
         body: JSON.stringify(doc)
@@ -68,7 +68,7 @@ export async function patch<T>(
     return resp;
 }
 
-export async function del<T>(target: string, query?: QueryParams): Promise<ResultSuccess<T> | ResultFail<ErrorDetail>> {
+export async function del<T>(target: string, query?: QueryParams): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
     const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {
         method: "DELETE",
     });
@@ -77,21 +77,14 @@ export async function del<T>(target: string, query?: QueryParams): Promise<Resul
     return resp;
 }
 
-async function makeRequest<T>(req: Request): Promise<ResultSuccess<T> | ResultFail<ErrorDetail>> {
+async function makeRequest<T>(req: Request): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
     if (!Settings.storage) {
         throw new Error("No token storage in settings.");
     }
 
     const token = Settings.storage.read();
     if (!token) {
-        return {
-            ok: false as false,
-            error: {
-                status: "401",
-                title: "Not authorized",
-                detail: "Token not found."
-            }
-        };
+        throw new Error("You must load a token before attempting a request.");
     }
 
     req.headers.append("Authorization", `Bearer ${token.access_token}`);
@@ -102,19 +95,19 @@ async function makeRequest<T>(req: Request): Promise<ResultSuccess<T> | ResultFa
         if (!resp.ok) {
             const err = await resp.json<ErrorDocument>();
             return {
-                ok: false as false,
-                error: err.errors[0]
+                ok: false,
+                error: (<CycleErrorDetail>err.errors[0])
             };
         }
 
         const result = await resp.json<T>();
         return {
-            ok: true as true,
+            ok: true,
             value: result
         };
     } catch (e) {
         return {
-            ok: false as false,
+            ok: false,
             error: {
                 title: "Unable to reach server",
                 detail: "There was an error attempting to fetch data from server."

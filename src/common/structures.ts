@@ -1,4 +1,5 @@
 import * as JsonApi from "../jsonapi/index";
+import { ErrorCode } from "./errors";
 
 export type Id = string;
 
@@ -12,6 +13,10 @@ export interface ResultSuccess<T> {
 export interface ResultFail<T> {
     ok: false;
     error: T;
+}
+
+export interface CycleErrorDetail extends JsonApi.ErrorDetail {
+    code?: ErrorCode;
 }
 
 export interface Events {

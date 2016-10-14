@@ -1,5 +1,5 @@
 // tslint:disable-next-line
-import { ErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
+import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
 import * as JsonApi from "../../jsonapi/index";
 import { Id, Scope, Time, Events, State, Task } from "../../common/structures";
 import * as API from "../../common/api";
