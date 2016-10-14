@@ -3,7 +3,7 @@ import { ErrorCode } from "./errors";
 
 export type Id = string;
 
-export type ApiResult = ResultSuccess<any> | ResultFail<JsonApi.ErrorDetail>;
+export type ApiResult<T> = ResultSuccess<T> | ResultFail<CycleErrorDetail>;
 
 export interface ResultSuccess<T> {
     ok: true;
