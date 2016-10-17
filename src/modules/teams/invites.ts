@@ -41,6 +41,7 @@ export interface Resource extends JsonApi.Resource {
 
 export interface NewParams {
     invitee: Id;
+    role: Roles.Names;
 }
 
 export class CollectionRequest {
@@ -59,10 +60,10 @@ export class CollectionRequest {
     }
 
     public async create(doc: NewParams, query?: ApiRequest.QueryParams): Promise<Single> {
-        const relationship = { invitee: { type: "accounts" }, id: doc.invitee };
+        const relationship = {data: { type: "accounts", id: doc.invitee }};
         return ApiRequest._post<Single>(
             this.target,
-            new FormattedDoc({ type: "invites", relationships: { invitee: relationship } }),
+            new FormattedDoc({ type: "invitations", relationships: { invitee: relationship }, attributes: { role: doc.role } }),
             query
         );
     }
