@@ -33,7 +33,9 @@ export interface Resource extends JsonApi.Resource {
         };
 
         state: State<States>;
-        events: Events;
+        events: Events & {
+            suspension?: Billing.Suspension;
+        };
         billing: Billing.Profile;
     };
 
