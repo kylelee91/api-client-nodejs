@@ -32,7 +32,7 @@ export interface Resource extends JsonApi.Resource {
         trial: boolean; // available in trial?
         most_popular: boolean;
         price: {
-            month: string;
+            month: number;
         };
     };
 }

@@ -11,8 +11,8 @@
   "main": "dist/index.js",
   "typings": "dist/typings/index.d.ts",
   "dependencies": {
-    "isomorphic-fetch": "^2.2.1",
-    "@types/isomorphic-fetch": "0.0.31"
+    "@types/isomorphic-fetch": "0.0.31",
+    "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.29",
