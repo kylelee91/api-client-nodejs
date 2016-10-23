@@ -22,12 +22,9 @@ export interface QueryParams {
 
 export async function get<T>(target: string, query?: QueryParams): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
     if (Settings.cache && Settings.cache.use) {
-        const c = Cache.get<T>(target, query, Settings.team);
+        const c = Cache.get<ResultSuccess<T>>(target, query, Settings.team);
         if (c) {
-            return ({
-                ok: true,
-                value: c
-            });
+            return c;
         }
     }
 
