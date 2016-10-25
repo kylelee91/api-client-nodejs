@@ -1,17 +1,27 @@
-import * as Cycle from "../src";
 import "mocha";
+import {
+    Environments,
+    Containers,
+    Settings,
+    Auth
+} from "../src";
+import {
+    ResultFail,
+    ResultSuccess,
+    CycleErrorDetail
+} from "../src/common/structures";
 
 declare var process: {
     readonly env: any;
 };
 
-Cycle.Settings.url = "https://api.dev.cycle.io";
-Cycle.Settings.auth.tokenUrl = "https://portal.dev.cycle.io/auth/token";
-Cycle.Settings.auth.refreshUrl = "https://portal.dev.cycle.io/auth/refresh";
+Settings.url = "https://api.dev.cycle.io";
+Settings.auth.tokenUrl = "https://portal.dev.cycle.io/auth/token";
+Settings.auth.refreshUrl = "https://portal.dev.cycle.io/auth/refresh";
 
 describe("Authorize:", () => {
     it("Auth via Password", async() => {
-        let result = await Cycle.Auth.passwordAuth({
+        let result = await Auth.passwordAuth({
             username: process.env.USERNAME,
             password: process.env.PASSWORD
         });
@@ -23,21 +33,45 @@ describe("Authorize:", () => {
 });
 
 describe("Environments:", () => {
-    it("Get a list of environments", async () => {
-        let e = await Cycle.Environments.document().get();
-        
+    let e: ResultFail<CycleErrorDetail>|ResultSuccess<Environments.Collection>;
+    before(async () => {
+        e = await Environments.document().get();
         if (!e.ok) {
             throw new Error(e.error.detail);
+        }
+    });
+
+    it("Verifies that data is an array", async () => {
+        if (!e.ok) {
+            return;
+        }
+
+        if (e.value.data instanceof Array) {
+            return;
+        } else {
+            throw new Error("Data is not an array");
         }
     });
 });
 
 describe("Containers:", () => {
-    it("Get a list of containers", async () => {
-        let c = await Cycle.Containers.document().get();
-        
+    let c: ResultFail<CycleErrorDetail>|ResultSuccess<Containers.Collection>;
+    before(async () => {
+        c = await Containers.document().get();
         if (!c.ok) {
             throw new Error(c.error.detail);
+        }
+    });
+
+    it("Verifies that data is an array", async () => {
+        if (!c.ok) {
+            return;
+        }
+
+        if (c.value.data instanceof Array) {
+            return;
+        } else {
+            throw new Error("Data is not an array");
         }
     });
 });
