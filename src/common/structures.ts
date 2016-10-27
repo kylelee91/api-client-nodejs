@@ -44,7 +44,7 @@ export interface State<T extends string> {
     current: T; 
 
     job?: {
-        id: string;
+        id: Id;
         block: boolean;
         queued: string; //time
     };
@@ -67,7 +67,7 @@ export type Time = string;
 export type DocType = "task";
 export class Task<T extends string> {
     public data: {
-        id?: string;
+        id?: Id;
         type: DocType;
         attributes: {
             action: T;
@@ -93,7 +93,7 @@ export class Task<T extends string> {
 export class FormattedDoc implements JsonApi.ResourceDocument {
     data: JsonApi.Resource;
 
-    constructor(options: {type: string, id?: string, attributes?: Object, relationships?: {[key: string]: JsonApi.Relationship}}) {
+    constructor(options: {type: string, id?: Id, attributes?: Object, relationships?: {[key: string]: JsonApi.Relationship}}) {
         this.data = {
             type: options.type,
         };

@@ -5,8 +5,8 @@ import * as API from "../../common/api";
 import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: string): SingleRequest;
-export function document(id?: string): typeof CollectionRequest | SingleRequest {
+export function document(id: Id): SingleRequest;
+export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     if (id) {
         return new SingleRequest(id);
     }
@@ -97,7 +97,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target = "billing/methods";
 
-    constructor(private id: string) {
+    constructor(private id: Id) {
         this.target = `${this.target}/${id}`;
     }
 

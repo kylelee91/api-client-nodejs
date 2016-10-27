@@ -8,8 +8,8 @@ import * as Invites from "./invites";
 import { Id, State, Events, Task, FormattedDoc } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: string): SingleRequest;
-export function document(id?: string): typeof CollectionRequest | SingleRequest {
+export function document(id: Id): SingleRequest;
+export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -76,8 +76,8 @@ export class CollectionRequest {
     }
 
     public static invitations(): Invites.CollectionRequest;
-    public static invitations(id: string): Invites.SingleRequest;
-    public static invitations(id?: string): Invites.CollectionRequest | Invites.SingleRequest {
+    public static invitations(id: Id): Invites.SingleRequest;
+    public static invitations(id?: Id): Invites.CollectionRequest | Invites.SingleRequest {
         if (id) {
             return new Invites.SingleRequest(undefined, id);
         }
@@ -89,7 +89,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(private id: string) {
+    constructor(private id: Id) {
         this.target = `teams/${id}`;
     }
 
@@ -118,8 +118,8 @@ export class SingleRequest {
     }
 
     public members(): MembersRequest;
-    public members(id: string): MemberRequest;
-    public members(id?: string): MembersRequest | MemberRequest {
+    public members(id: Id): MemberRequest;
+    public members(id?: Id): MembersRequest | MemberRequest {
         if (!id) {
             return new MembersRequest(this.id);
         }
@@ -128,8 +128,8 @@ export class SingleRequest {
     }
 
     public invitations(): Invites.CollectionRequest;
-    public invitations(id: string): Invites.SingleRequest;
-    public invitations(id?: string): any {
+    public invitations(id: Id): Invites.SingleRequest;
+    public invitations(id?: Id): any {
         if (id) {
             return new Invites.SingleRequest(this.id, id);
         }
@@ -141,7 +141,7 @@ export class SingleRequest {
 export class MembersRequest {
     private target: string;
 
-    constructor(team_id: string) {
+    constructor(team_id: Id) {
         this.target = `teams/${team_id}/members`;
     }
 
@@ -153,7 +153,7 @@ export class MembersRequest {
 export class MemberRequest {
     private target: string;
 
-    constructor(team_id: string, member_id: string) {
+    constructor(team_id: Id, member_id: Id) {
         this.target = `teams/${team_id}/members/${member_id}`;
     }
 

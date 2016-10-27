@@ -87,7 +87,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(zoneId: string, private recordId: string) {
+    constructor(zoneId: Id, private recordId: Id) {
         this.target = `dns/zones/${zoneId}/records/${recordId}`;
     }
 

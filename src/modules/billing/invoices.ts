@@ -7,8 +7,8 @@ import { Term, ContainerLineItem } from "./common";
 import { Id, State, Time, Events, Task } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: string): SingleRequest;
-export function document(id?: string): typeof CollectionRequest | SingleRequest {
+export function document(id: Id): SingleRequest;
+export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     if (id) {
         return new SingleRequest(id);
     }
@@ -142,7 +142,7 @@ export class SingleRequest {
     private target: string = "billing/invoices";
 
     // Methods if ID
-    constructor(private id: string) {
+    constructor(private id: Id) {
         this.target = `${this.target}/${id}`;
     }
 

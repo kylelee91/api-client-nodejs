@@ -4,7 +4,7 @@ import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import * as Logins from "./logins";
 import * as Billing from "../billing/index";
-import { Id, State, Events, Task } from "../../common/structures";
+import { Id, State, Events, Task, Time } from "../../common/structures";
 
 export function document(): typeof AccountRequest {
     return AccountRequest;
@@ -35,7 +35,7 @@ export interface Resource extends JsonApi.Resource {
             added: string // Time
         };
         username: string;
-        teams: { id: string; role: number; joined: string }[];
+        teams: { id: Id; role: number; joined: Time }[];
         state: State<"">;
         events: Events;
         billing: Billing.Profile;

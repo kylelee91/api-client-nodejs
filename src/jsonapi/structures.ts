@@ -1,3 +1,5 @@
+import { Id } from "../common/structures";
+
 //Response Document
 export interface TopLevel {
     //http://jsonapi.org/format/#document-top-level
@@ -25,7 +27,7 @@ export interface ResourceDocument extends TopLevel {
 
 //Resource
 export interface ResourceIdentifier {
-    id?: string;
+    id?: Id;
 
     type: string;
 }
@@ -105,7 +107,7 @@ export interface ErrorDocument extends TopLevel {
 }
 
 export interface ErrorDetail {
-    id?: string;
+    id?: Id;
 
     links?: {
         about: Link

@@ -5,8 +5,8 @@ import * as API from "../../common/api";
 import { Id } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: string): SingleRequest;
-export function document(id?: string): typeof CollectionRequest | SingleRequest {
+export function document(id: Id): SingleRequest;
+export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -61,7 +61,7 @@ export interface ResourceLimits {
 }
 
 export interface Summary {
-    id: string;
+    id: Id;
     name: string;
     price: number;
 }
@@ -75,7 +75,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(id: string) {
+    constructor(id: Id) {
         this.target = `plans/${id}`;
     }
 }

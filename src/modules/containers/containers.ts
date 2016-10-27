@@ -10,8 +10,8 @@ import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
  * Entrypoint for interacting with containers API
  */
 export function document(): typeof CollectionRequest;
-export function document(id: string): SingleRequest;
-export function document(id?: string): typeof CollectionRequest | SingleRequest {
+export function document(id: Id): SingleRequest;
+export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     if (id) {
         return new SingleRequest(id);
     }
@@ -183,7 +183,7 @@ export interface NewParams {
 
 export interface UpdateParams {
     name?: string;
-    volumes?: { id: string, remote_access: boolean }[];
+    volumes?: { id: Id, remote_access: boolean }[];
 }
 
 export interface EventCollection extends JsonApi.CollectionDocument {
@@ -216,7 +216,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(private id: string) {
+    constructor(private id: Id) {
         this.target = `containers/${id}`;
     }
 

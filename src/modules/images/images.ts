@@ -5,8 +5,8 @@ import * as API from "../../common/api";
 import { Id, State, Events, Task, Scope, FormattedDoc } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: string): SingleRequest;
-export function document(id?: string): typeof CollectionRequest | SingleRequest {
+export function document(id: Id): SingleRequest;
+export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -163,7 +163,7 @@ export type SingleActions = "build";
 export class SingleRequest {
     private target: string;
 
-    constructor(private id: string) {
+    constructor(private id: Id) {
         this.target = `images/${id}`;
     }
 

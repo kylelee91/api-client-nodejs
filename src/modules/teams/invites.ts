@@ -48,7 +48,7 @@ export interface NewParams {
 export class CollectionRequest {
     private target: string;
 
-    constructor(teamId?: string) {
+    constructor(teamId?: Id) {
         if (teamId) {
             this.target = `teams/${teamId}/invites`;
         } else {
@@ -73,7 +73,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(team_id?: string, private invite_id?: string) {
+    constructor(team_id?: Id, private invite_id?: Id) {
         if (team_id) {
             this.target = `teams/${team_id}/invites`;
         } else {

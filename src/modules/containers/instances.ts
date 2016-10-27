@@ -70,7 +70,7 @@ export interface Resource extends JsonApi.Resource {
         };
 
         readonly networks?: {
-            readonly id: string;
+            readonly id: Id;
             readonly gateway: string;
             readonly broadcast: string;
             readonly name: string;
@@ -102,7 +102,7 @@ export type LogTypes = "startup_process_first" | "startup_process" | "shutdown_p
 export class CollectionRequest {
     private target: string;
 
-    constructor(container_id: string) {
+    constructor(container_id: Id) {
         this.target = `containers/${container_id}/instances`;
     }
 
@@ -115,7 +115,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(private container_id: string, private instance_id: string) {
+    constructor(private container_id: Id, private instance_id: Id) {
         this.target = `containers/${container_id}/instances/${instance_id}`;
     }
 

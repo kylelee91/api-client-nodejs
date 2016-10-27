@@ -6,8 +6,8 @@ import * as Tasks from "./tasks";
 import { Id, Time, State, Events, Scope } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: string): SingleRequest;
-export function document(id?: string): CollectionRequest | SingleRequest {
+export function document(id: Id): SingleRequest;
+export function document(id?: Id): CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -57,11 +57,11 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(id: string) {
+    constructor(id: Id) {
         this.target = `jobs/${id}`;
     }
 
-    public async get(query?: API.QueryParams){
+    public async get(query?: API.QueryParams) {
         return API.get<Single>(this.target, query);
     }
 }

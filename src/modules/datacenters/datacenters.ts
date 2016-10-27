@@ -5,8 +5,8 @@ import { Id } from "../../common/structures";
 import * as API from "../../common/api";
 
 export function document(): typeof CollectionRequest;
-export function document(id: string): SingleRequest;
-export function document(id?: string): typeof CollectionRequest | SingleRequest {
+export function document(id: Id): SingleRequest;
+export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -50,7 +50,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(id: string) {
+    constructor(id: Id) {
         this.target = `datacenters/${id}`;
     }
 }

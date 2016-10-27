@@ -6,8 +6,8 @@ import * as Records from "./records";
 import { Id, State, Events, Task, FormattedDoc } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: string): SingleRequest;
-export function document(id?: string): typeof CollectionRequest | SingleRequest {
+export function document(id: Id): SingleRequest;
+export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -70,7 +70,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string = "dns/zones";
 
-    constructor(private id: string) {
+    constructor(private id: Id) {
         this.target = `${this.target}/${id}`;
     }
 
@@ -103,8 +103,8 @@ export class SingleRequest {
     }
 
     public records(): Records.CollectionRequest;
-    public records(id: string): Records.SingleRequest;
-    public records(id?: string): Records.CollectionRequest | Records.SingleRequest {
+    public records(id: Id): Records.SingleRequest;
+    public records(id?: Id): Records.CollectionRequest | Records.SingleRequest {
         if (id) {
             return new Records.SingleRequest(this.id, id);
         }
