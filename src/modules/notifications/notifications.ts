@@ -16,7 +16,7 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
 
 export interface Collection extends JsonApi.CollectionDocument {
     data: Resource[];
-    meta: CollectionMeta;
+    meta?: CollectionMeta;
 }
 
 export interface Single extends JsonApi.ResourceDocument {
