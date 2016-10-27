@@ -81,7 +81,7 @@ export class AccountRequest {
         return API.get<Logins.Collection>("account/logins", query);
     }
 
-    public static async lookup(query?: API.QueryParams) {
+    public static async lookup(query: API.QueryParams) {
         return API.get<Collection>("account/lookup", query);
     }
 
