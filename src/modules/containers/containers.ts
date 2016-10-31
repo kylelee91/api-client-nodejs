@@ -4,6 +4,7 @@ import * as JsonApi from "../../jsonapi";
 import * as API from "../../common/api";
 import * as Instances from "./instances";
 import * as Images from "../images";
+import * as Plans from "../plans";
 import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
 
 /**
@@ -76,7 +77,8 @@ export interface Resource extends JsonApi.Resource {
         readonly ip?: {
             readonly address: string;
             readonly mask: string;
-        }
+        },
+        readonly plan?: Plans.Resource;
     };
 }
 
