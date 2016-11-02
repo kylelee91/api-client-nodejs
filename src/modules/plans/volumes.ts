@@ -1,23 +1,26 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
-import { Id } from "../../common/structures";
+import * as API from "common/api";
+import {
+    CollectionDoc,
+    SingleDoc,
+    ResourceId,
+    Resource,
+    QueryParams,
+} from "common/structures";
 
 export function document() {
     return VolumeRequest;
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Volume[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Volume | null;
 }
 
-export interface Resource extends JsonApi.Resource {
-    id: Id;
+export interface Volume extends Resource {
+    id: ResourceId;
     type: "volume_plan";
     attributes: {
         name: string;
@@ -35,7 +38,7 @@ export interface Resource extends JsonApi.Resource {
 }
 
 export class VolumeRequest {
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>("plans/volumes", query);
     }
 }

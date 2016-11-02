@@ -1,12 +1,20 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
-import { Id, State, Events, Task, FormattedDoc, Scope } from "../../common/structures";
+import * as API from "common/api";
+import {
+    CollectionDoc,
+    SingleDoc,
+    ResourceId,
+    Resource,
+    QueryParams,
+    Scope,
+    State,
+    Task,
+    Events
+} from "common/structures";
+
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -14,41 +22,29 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return new SingleRequest(id);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    readonly data: Repo[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource;
+export interface Single extends SingleDoc {
+    readonly data: Repo;
 }
 
-export interface Resource extends JsonApi.Resource {
-    id: Id;
-    type: "repos";
-    attributes: {
-        name: string;
-        about: {
-            description: string;
-        };
-        type: Types;
-        owner: Scope;
-        url: string;
-        auth: {
-            private_key: string;
-        };
-        state: State<States>;
-        events: Events;
+export interface Repo extends Resource {
+    readonly id: ResourceId;
+    readonly creator: ResourceId;
+    readonly name: string;
+    readonly about: {
+        readonly description: string;
     };
-
-    relationships?: {
-        creator: JsonApi.ToOneRelationship;
+    readonly type: Types;
+    readonly owner: Scope;
+    readonly url: string;
+    readonly auth: {
+        readonly private_key: string;
     };
-
-    meta?: {
-        counts: {};
-        account: {};
-        team: {};
-    };
+    readonly state: State<States>;
+    readonly events: Events;
 }
 
 export type States = "live" | "building" | "deleting" | "deleted" | "error";
@@ -80,14 +76,14 @@ export interface BuildParams {
 export class CollectionRequest {
     private static target = "repos";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams) {
+    public static async create(doc: NewParams, query?: QueryParams) {
         return API.post<Single>(
             this.target,
-            new FormattedDoc({ type: "repos", attributes: doc }),
+            doc,
             query
         );
     }
@@ -97,19 +93,19 @@ export type SingleActions = "build";
 export class SingleRequest {
     private target: string;
 
-    constructor(private id: Id) {
+    constructor(private id: ResourceId) {
         this.target = `repos/${id}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams) {
-        return API.patch<Single>(this.target, new FormattedDoc({ type: "repos", attributes: doc }), query);
+    public async update(doc: UpdateParams, query?: QueryParams) {
+        return API.patch<Single>(this.target, doc, query);
     }
 
-    public async delete(query?: API.QueryParams) {
+    public async delete(query?: QueryParams) {
         return API.del<Task<SingleActions>>(this.target, query);
     }
 

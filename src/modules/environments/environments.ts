@@ -1,12 +1,20 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
-import { Id, State, Events, Task, Time, FormattedDoc, Scope } from "../../common/structures";
+import * as API from "common/api";
+import {
+    CollectionDoc,
+    SingleDoc,
+    Resource,
+    ResourceId,
+    QueryParams,
+    State,
+    Events,
+    Task,
+    Scope,
+    Time
+} from "common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -14,33 +22,28 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return new SingleRequest(id);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Environment[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Environment | null;
 }
 
-export interface Resource extends JsonApi.Resource {
-    id: Id;
+export interface Environment extends Resource {
+    id: ResourceId;
     type: "environments";
-    attributes: {
-        name: string;
-        about: {
-            description: string;
-        };
-        owner: Scope;
-        state: State<States>;
-        events: Events;
+    name: string;
+    about: {
+        description: string;
     };
-
-    relationships?: {
-        creator: JsonApi.ToOneRelationship;
-    };
+    owner: Scope;
+    state: State<States>;
+    events: Events;
+    creator: ResourceId;
 
     meta?: {
-        counts: {
+        counts?: {
             instances: number;
             containers: number;
         }
@@ -76,39 +79,31 @@ export interface UpdateParams {
 export class CollectionRequest {
     private static target = "environments";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams) {
-        return API.post<Single>(
-            this.target,
-            new FormattedDoc({ type: "environments", attributes: doc }),
-            query
-        );
+    public static async create(doc: NewParams, query?: QueryParams) {
+        return API.post<Single>(this.target, doc, query);
     }
 }
 
 export class SingleRequest {
     private target: string;
 
-    constructor(private id: Id) {
+    constructor(private id: ResourceId) {
         this.target = `environments/${id}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams) {
-        return API.patch<Single>(
-            this.target,
-            new FormattedDoc({ id: this.id, type: "environments", attributes: doc }),
-            query
-        );
+    public async update(doc: UpdateParams, query?: QueryParams) {
+        return API.patch<Single>(this.target, doc, query);
     }
 
-    public async delete(query?: API.QueryParams) {
+    public async delete(query?: QueryParams) {
         return API.del<Single>(this.target, query);
     }
 
@@ -120,7 +115,7 @@ export class SingleRequest {
         return this.task("stop");
     }
 
-    public task(action: Actions, contents?: Object, query?: API.QueryParams) {
+    public task(action: Actions, contents?: Object, query?: QueryParams) {
         return API.post<Task<Actions>>(
             `${this.target}/tasks`,
             new Task(action, contents),

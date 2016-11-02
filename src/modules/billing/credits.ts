@@ -1,43 +1,45 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
-import { Id, Time, Scope } from "../../common/structures";
+import * as API from "common/api";
+import { 
+    CollectionDoc, 
+    SingleDoc, 
+    Resource, 
+    ResourceId, 
+    Time, 
+    Scope, 
+    QueryParams
+} from "common/structures";
 
 export function document(): typeof CollectionRequest {
     return CollectionRequest;
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Credit[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Credit | null;
     meta: {
         total: number;
     };
 }
 
-export interface Resource {
-    id: Id;
-    type: "billing_methods";
-    attributes: {
-        owner: Scope;
-        reason: string;
-        amount: {
-            initial: number;
-            remaining: number;
-        }
-        issued: Time;
-        expired: Time;
+export interface Credit extends Resource {
+    id: ResourceId;
+    owner: Scope;
+    reason: string;
+    amount: {
+        initial: number;
+        remaining: number;
     };
+    issued: Time;
+    expired: Time;
 }
 
 export class CollectionRequest {
     private static target = "billing/credits";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 }

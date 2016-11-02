@@ -1,20 +1,16 @@
-import * as JsonApi from "../../jsonapi/index";
-import { Id } from "../../common/structures";
+import { CollectionDoc, SingleDoc, Resource, ResourceId, Time } from "common/structures";
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Logins[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Logins | null;
 }
 
-export interface Resource {
-    id: Id;
-    type: string;
-    attributes: {
-        account: string;
-        time: string;
-        success: string;
-    };
+export interface Logins extends Resource {
+    readonly id: ResourceId;
+    readonly account: string;
+    readonly time: Time;
+    readonly success: string;
 }

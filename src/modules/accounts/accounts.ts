@@ -1,48 +1,51 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
+import * as API from "common/api";
 import * as Logins from "./logins";
-import * as Billing from "../billing/index";
-import { Id, State, Events, Task, Time } from "../../common/structures";
+import * as Billing from "modules/billing/index";
+import { 
+    CollectionDoc, 
+    SingleDoc, 
+    Resource, 
+    ResourceId, 
+    Time, 
+    State, 
+    Task,
+    Events,
+    QueryParams
+} from "../../common/structures";
 
 export function document(): typeof AccountRequest {
     return AccountRequest;
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Account[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Account | null;
 }
 
-export interface Resource extends JsonApi.Resource {
-    id: Id;
-    type: "accounts";
-    attributes: {
-        name: {
-            first: string;
-            last: string;
-        };
-        auth: {
-            allow_employee_login: boolean;
-        };
-        email: {
-            address: string;
-            verified: boolean;
-            added: string // Time
-        };
-        username: string;
-        teams: { id: Id; role: number; joined: Time }[];
-        state: State<"">;
-        events: Events;
-        billing: Billing.Profile;
+export interface Account extends Resource {
+    id: ResourceId;
+    readonly name: {
+        readonly first: string;
+        readonly last: string;
     };
-
-    meta?: {
-        role: string;
+    readonly auth: {
+        readonly allow_employee_login: boolean;
+    };
+    readonly email: {
+        readonly address: string;
+        readonly verified: boolean;
+        readonly added: string // Time
+    };
+    readonly username: string;
+    readonly teams: { readonly id: ResourceId; readonly role: number; readonly joined: Time }[];
+    readonly state: State<"">;
+    readonly events: Events;
+    readonly billing: Billing.Profile;
+    readonly meta?: {
+        readonly role: string;
     };
 }
 
@@ -68,32 +71,32 @@ export type AccountActions = "apply";
 export class AccountRequest {
     private static target: string = "account";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Single>(this.target);
     }
 
-    public static async update(doc: UpdateParams, query?: API.QueryParams) {
+    public static async update(doc: UpdateParams, query?: QueryParams) {
 
-        return API.patch<Single>(this.target, new AccountUpdate(doc), query);
+        return API.patch<Single>(this.target, doc, query);
     }
 
-    public static async logins(query?: API.QueryParams) {
+    public static async logins(query?: QueryParams) {
         return API.get<Logins.Collection>("account/logins", query);
     }
 
-    public static async lookup(query: API.QueryParams) {
+    public static async lookup(query: QueryParams) {
         return API.get<Collection>("account/lookup", query);
     }
 
-    public static async changePassword(doc: ChangePasswordParams, query?: API.QueryParams) {
-        return API.patch<Single>("account/password", new AccountUpdate(doc), query);
+    public static async changePassword(doc: ChangePasswordParams, query?: QueryParams) {
+        return API.patch<Single>("account/password", doc, query);
     }
 
     public static async changeTier(tier: string) {
         return this.task("apply", { tier: tier });
     }
 
-    public static async task(action: AccountActions, contents?: Object, query?: API.QueryParams) {
+    public static async task(action: AccountActions, contents?: Object, query?: QueryParams) {
         return API.post<Task<AccountActions>>(
             `${this.target}/tasks`,
             new Task<AccountActions>(action, contents),
@@ -101,12 +104,3 @@ export class AccountRequest {
         );
     }
 }
-
-class AccountUpdate {
-    data = {
-        type: "account",
-        attributes: this.doc
-    };
-
-    constructor(private doc: UpdateParams | ChangePasswordParams) { }
-};

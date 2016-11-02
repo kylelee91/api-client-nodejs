@@ -1,40 +1,37 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
-import { Id, FormattedDoc } from "../../common/structures";
+import * as API from "common/api";
+import {
+    CollectionDoc,
+    SingleDoc,
+    Resource,
+    ResourceId,
+    QueryParams
+} from "common/structures";
 
-export function domains(query?: API.QueryParams) {
+export function domains(query?: QueryParams) {
     return API.get<Collection>("dns/domains", query);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Record[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Record | null;
 }
 
-export interface Resource {
-    id: Id;
-    type: "records";
-    attributes: {
-        type: Types;
-        assignable: boolean;
-        ssl?: boolean; // For A Records
-        name: string;
-        domain: string;
-        values: {
-            ip?: string;
-            priority?: number;
-            domain?: string;
-            text?: string;
-        };
-    };
-
-    relationships?: {
-        container: JsonApi.ToOneRelationship;
+export interface Record extends Resource {
+    id: ResourceId;
+    container: ResourceId;    
+    type: Types;
+    assignable: boolean;
+    ssl?: boolean; // For A Records
+    name: string;
+    domain: string;
+    values: {
+        ip?: string;
+        priority?: number;
+        domain?: string;
+        text?: string;
     };
 }
 
@@ -54,7 +51,7 @@ export interface NewParams {
 }
 
 export interface UpdateParams {
-    id: Id;
+    id: ResourceId;
     type?: Types;
     assignable?: boolean;
     name?: string;
@@ -71,36 +68,32 @@ export interface UpdateParams {
 export class CollectionRequest {
     private target: string;
 
-    constructor(zoneId: Id) {
+    constructor(zoneId: ResourceId) {
         this.target = `dns/zones/${zoneId}/records`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public async create(doc: NewParams, query?: API.QueryParams) {
-        return API.post<Single>(this.target, new FormattedDoc({ type: "records", attributes: doc }), query);
+    public async create(doc: NewParams, query?: QueryParams) {
+        return API.post<Single>(this.target, doc, query);
     }
 }
 
 export class SingleRequest {
     private target: string;
 
-    constructor(zoneId: Id, private recordId: Id) {
+    constructor(zoneId: ResourceId, private recordId: ResourceId) {
         this.target = `dns/zones/${zoneId}/records/${recordId}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams) {
-        return API.patch<Single>(
-            this.target,
-            new FormattedDoc({ id: this.recordId, type: "records", attributes: doc }),
-            query
-        );
+    public async update(doc: UpdateParams, query?: QueryParams) {
+        return API.patch<Single>(this.target, doc, query);
     }
 
     public async delete() {

@@ -1,26 +1,22 @@
-import Cache from "../common/cache";
-import Settings from "../settings";
-import { Id, ResultFail, ResultSuccess, CycleErrorDetail } from "./structures";
-import { JsonApiRequest, ErrorDocument, Document as JsonApiDocument } from "../jsonapi/index";
+import Cache from "./cache";
+import Settings from "settings";
+import { ApiRequestInit } from "./request";
+import { QueryParams } from "./structures";
+import { ErrorResource } from "./errors";
 
-export {CycleErrorDetail, ResultFail, ResultSuccess};
+export type ApiResult<T> = ResultSuccess<T> | ResultFail<ErrorResource>;
 
-export interface QueryParams {
-    include?: string[];
-    extra?: string[];
-    sort?: string[];
-    limit?: number;
-    embed?: string[];
-    filter?: { [key: string]: string };
-    page?: {
-        number: number;
-        size: number;
-    };
-    // Override team from settings
-    team?: Id;
+export interface ResultSuccess<T> {
+    ok: true;
+    value: T;
 }
 
-export async function get<T>(target: string, query?: QueryParams): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
+export interface ResultFail<T> {
+    ok: false;
+    error: T;
+}
+
+export async function get<T>(target: string, query?: QueryParams): Promise<ApiResult<T>> {
     if (Settings.cache && Settings.cache.use) {
         const c = Cache.get<ResultSuccess<T>>(target, query, Settings.team);
         if (c) {
@@ -28,7 +24,7 @@ export async function get<T>(target: string, query?: QueryParams): Promise<Resul
         }
     }
 
-    const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {});
+    const req = new Request(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, ApiRequestInit);
     embedTeam(req);
     let resp = await makeRequest<T>(req);
     if (resp.ok && Settings.cache && Settings.cache.use) {
@@ -37,44 +33,48 @@ export async function get<T>(target: string, query?: QueryParams): Promise<Resul
     return resp;
 }
 
-export async function post<T>(
-    target: string,
-    doc: JsonApiDocument,
-    query?: QueryParams
-): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
-    const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {
-        method: "POST",
-        body: JSON.stringify(doc)
-    });
+export async function post<T>(target: string, doc: Object, query?: QueryParams): Promise<ApiResult<T>> {
+    const req = new Request(
+        `${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`,
+        Object.assign({
+            method: "POST",
+            body: JSON.stringify(doc)
+        }, ApiRequestInit)
+    );
+
     embedTeam(req);
     let resp = await makeRequest<T>(req);
     return resp;
 }
 
-export async function patch<T>(
-    target: string,
-    doc: JsonApiDocument,
-    query?: QueryParams
-): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
-    const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {
-        method: "PATCH",
-        body: JSON.stringify(doc)
-    });
+export async function patch<T>(target: string, doc: Object, query?: QueryParams): Promise<ApiResult<T>> {
+    const req = new Request(
+        `${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`,
+        Object.assign(ApiRequestInit, {
+            method: "PATCH",
+            body: JSON.stringify(doc)
+        })
+    );
+
     embedTeam(req);
     let resp = await makeRequest<T>(req);
     return resp;
 }
 
-export async function del<T>(target: string, query?: QueryParams): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
-    const req = new JsonApiRequest(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, {
-        method: "DELETE",
-    });
+export async function del<T>(target: string, query?: QueryParams): Promise<ApiResult<T>> {
+    const req = new Request(
+        `${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`,
+        Object.assign(ApiRequestInit, {
+            method: "DELETE",
+        })
+    );
+
     embedTeam(req);
     let resp = await makeRequest<T>(req);
     return resp;
 }
 
-async function makeRequest<T>(req: Request): Promise<ResultSuccess<T> | ResultFail<CycleErrorDetail>> {
+async function makeRequest<T>(req: Request): Promise<ApiResult<T>> {
     if (!Settings.storage) {
         throw new Error("No token storage in settings.");
     }
@@ -90,10 +90,9 @@ async function makeRequest<T>(req: Request): Promise<ResultSuccess<T> | ResultFa
         //TODO: Do Timeout Here?
         const resp = await fetch(req);
         if (!resp.ok) {
-            const err = await resp.json<ErrorDocument>();
             return {
                 ok: false,
-                error: (<CycleErrorDetail>err.errors[0])
+                error: await resp.json<ErrorResource>()
             };
         }
 
@@ -159,7 +158,7 @@ function formatParams(q: QueryParams | undefined) {
         .join("&");
 }
 
-function embedTeam(req: JsonApiRequest, options?: QueryParams) {
+function embedTeam(req: Request, options?: QueryParams) {
     if (Settings.team) {
         req.headers.append("X-Team-Id", Settings.team);
     }

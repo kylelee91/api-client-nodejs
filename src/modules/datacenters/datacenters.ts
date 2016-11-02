@@ -1,12 +1,16 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import { Id } from "../../common/structures";
-import * as API from "../../common/api";
+import * as API from "common/api";
+import {
+    CollectionDoc,
+    SingleDoc,
+    Resource,
+    ResourceId,
+    QueryParams
+} from "common/structures";
+
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -14,16 +18,16 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return new SingleRequest(id);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: DataCenter[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: DataCenter | null;
 }
 
-export interface Resource extends JsonApi.Resource {
-    id: Id;
+export interface DataCenter extends Resource {
+    id: ResourceId;
     type: "datacenters";
     attributes: {
         name: string;
@@ -42,7 +46,7 @@ export interface LocationStructure {
 }
 
 export class CollectionRequest {
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>("datacenters", query);
     }
 }
@@ -50,7 +54,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(id: Id) {
+    constructor(id: ResourceId) {
         this.target = `datacenters/${id}`;
     }
 }

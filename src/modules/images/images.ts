@@ -1,12 +1,19 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
-import { Id, State, Events, Task, Scope, FormattedDoc } from "../../common/structures";
+import * as API from "common/api";
+import {
+    CollectionDoc,
+    SingleDoc,
+    Resource,
+    ResourceId,
+    QueryParams,
+    State,
+    Events,
+    Task,
+    Scope
+} from "common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -14,54 +21,42 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return new SingleRequest(id);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Image[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Image | null;
 }
 
-export interface Resource extends JsonApi.Resource {
-    id: Id;
-    type: "images";
-    attributes: {
-        name: string;
-        about: {
-            description: string;
-        };
-        source: SourceStructure;
-        tags: string[];
-        size: number;
-        config: ConfigStructure;
-        state: State<States>;
-        events: Events;
-        owner: Scope;
+export interface Image extends Resource {
+    readonly id: ResourceId;
+    readonly name: string;
+    readonly about: {
+        readonly description: string;
     };
-
-    relationships?: {
-        creator: JsonApi.ToOneRelationship;
-        repo: JsonApi.ToOneRelationship;
-    };
-
-    meta: {
-        counts: {
-            containers: number;
+    readonly source: SourceStructure;
+    readonly tags: string[];
+    readonly size: number;
+    readonly config: ConfigStructure;
+    readonly state: State<States>;
+    readonly events: Events;
+    readonly owner: Scope;
+    readonly creator: ResourceId;
+    readonly repo: ResourceId;
+    readonly meta?: {
+        readonly counts?: {
+            readonly containers: number;
         };
     };
 }
 
-export interface BuildLog {
-    id: Id;
-    type: "build_logs";
-    attributes: {
-        owner: Scope;
-        output: string;
-        Events: Events;
-    };
-    relationships?: {
-        images: JsonApi.ToOneRelationship;
-    };
+export interface BuildLog extends Resource {
+    readonly id: ResourceId;
+    readonly image: ResourceId;
+    readonly owner: Scope;
+    readonly output: string;
+    readonly Events: Events;
 }
 
 export type States =
@@ -77,22 +72,22 @@ export type States =
     | "error";
 
 export interface SourceStructure {
-    flavor: string;
-    type: string;
-    target: string;
-    repo: string;
-    tag: string;
+    readonly flavor: string;
+    readonly type: string;
+    readonly target: string;
+    readonly repo: string;
+    readonly tag: string;
 }
 
 export interface ConfigStructure {
-    hostname: string;
-    user: string;
-    env: { [key: string]: string };
-    labels: { [key: string]: string };
-    ports: ConfigPortStructure[];
-    command: string[];
-    entrypoint: string[];
-    volumes: ConfigVolumeStructure[];
+    readonly hostname: string;
+    readonly user: string;
+    readonly env: { [key: string]: string };
+    readonly labels: { [key: string]: string };
+    readonly ports: ConfigPortStructure[];
+    readonly command: string[];
+    readonly entrypoint: string[];
+    readonly volumes: ConfigVolumeStructure[];
 }
 
 export interface ConfigPortStructure {
@@ -101,8 +96,8 @@ export interface ConfigPortStructure {
 }
 
 export interface ConfigVolumeStructure {
-    path: string;
-    mode: number;
+    readonly path: string;
+    readonly mode: number;
 }
 
 export interface NewParams {
@@ -132,12 +127,8 @@ export interface UpdateParams {
 }
 
 export class DockerHub {
-    public async import(doc: DockerHubImportParams, query?: API.QueryParams) {
-        return API.post<Single>(
-            `images/dockerhub`,
-            new FormattedDoc({ type: "images", attributes: doc }),
-            query
-        );
+    public async import(doc: DockerHubImportParams, query?: QueryParams) {
+        return API.post<Single>(`images/dockerhub`, doc, query);
     }
 }
 
@@ -146,12 +137,12 @@ export class CollectionRequest {
     public static dockerhub = new DockerHub();
     private static target = "images";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams) {
-        return API.post<Single>(this.target, new FormattedDoc({ type: "images", attributes: doc }), query);
+    public static async create(doc: NewParams, query?: QueryParams) {
+        return API.post<Single>(this.target, doc, query);
     }
 
     public static async deleteUnused() {
@@ -163,19 +154,19 @@ export type SingleActions = "build";
 export class SingleRequest {
     private target: string;
 
-    constructor(private id: Id) {
+    constructor(private id: ResourceId) {
         this.target = `images/${id}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams) {
-        return API.patch<Single>(this.target, new FormattedDoc({ id: this.id, type: "images", attributes: doc }), query);
+    public async update(doc: UpdateParams, query?: QueryParams) {
+        return API.patch<Single>(this.target, doc, query);
     }
 
-    public async delete(query?: API.QueryParams) {
+    public async delete(query?: QueryParams) {
         return API.del<Task<SingleActions>>(this.target, query);
     }
 
@@ -183,7 +174,7 @@ export class SingleRequest {
         return this.task("build");
     }
 
-    public async log(query?: API.QueryParams) {
+    public async log(query?: QueryParams) {
         return API.get<BuildLog>(`${this.target}/build-logs`, query);
     }
 

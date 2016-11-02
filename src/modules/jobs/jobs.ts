@@ -1,13 +1,20 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
+import * as API from "common/api";
 import * as Tasks from "./tasks";
-import { Id, Time, State, Events, Scope } from "../../common/structures";
+import {
+    CollectionDoc,
+    SingleDoc,
+    ResourceId,
+    QueryParams,
+    State,
+    Events,
+    Scope,
+    Time
+} from "common/structures";
+
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -15,41 +22,36 @@ export function document(id?: Id): CollectionRequest | SingleRequest {
     return new SingleRequest(id);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Job[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource;
+export interface Single extends SingleDoc {
+    data: Job;
 }
 
-export interface Resource {
-    id: Id;
-    type: "jobs";
-    attributes: {
-        expires: Time;
-        queue: string;
-        caption: string;
-        schedule: Time;
-        state: State<States>;
-        tasks: Tasks.Resource[];
-        owner: Scope;
-        events: Events & {
-            created: Time;
-            queued: Time;
-            started: Time;
-            completed: Time;
-        };
-    };
-    relationships?: {
-        creator: JsonApi.ToOneRelationship;
+export interface Job {
+    id: ResourceId;
+    creator: ResourceId;
+    expires: Time;
+    queue: string;
+    caption: string;
+    schedule: Time;
+    state: State<States>;
+    tasks: Tasks.Task[];
+    owner: Scope;
+    events: Events & {
+        created: Time;
+        queued: Time;
+        started: Time;
+        completed: Time;
     };
 }
 
 export type States = "new" | "running" | "expired" | "completed" | "queued" | "error" | "scheduled";
 
 export class CollectionRequest {
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>("jobs", query);
     }
 }
@@ -57,11 +59,11 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(id: Id) {
+    constructor(id: ResourceId) {
         this.target = `jobs/${id}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 }

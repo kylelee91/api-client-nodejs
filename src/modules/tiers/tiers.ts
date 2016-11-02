@@ -1,12 +1,14 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
-import { Id } from "../../common/structures";
+import * as API from "common/api";
+import {
+    CollectionDoc,
+    ResourceId,
+    Resource,
+    QueryParams
+} from "common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -14,10 +16,10 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return new SingleRequest(id);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
-    meta?: {
-        structure: {
+export interface Collection extends CollectionDoc {
+    readonly data: Resource[];
+    readonly meta?: {
+        readonly structure?: {
             resources: MetaFeature[];
             support: MetaFeature[];
             features: MetaFeature[];
@@ -25,28 +27,24 @@ export interface Collection extends JsonApi.CollectionDocument {
     };
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends Resource {
+    readonly data: Tier | null;
 }
 
-export interface Resource {
-    id: Id;
-    type: "tiers";
-    attributes: {
-        name: string;
-        public: boolean;
-        most_popular: boolean;
-        disabled: boolean;
-        descriptors: {title: string, description: string, type: string}[];
-        features: {[key: string]: boolean}
-        resources: {[key: string]: number}
-        support: {[key: string]: boolean};
-        price: {
-            month: number;
-            custom: boolean;
-        },
-        release: string;
+export interface Tier extends Resource {
+    readonly name: string;
+    readonly public: boolean;
+    readonly most_popular: boolean;
+    readonly disabled: boolean;
+    readonly descriptors: {title: string, description: string, type: string}[];
+    readonly features: {[key: string]: boolean};
+    readonly resources: {[key: string]: number};
+    readonly support: {[key: string]: boolean};
+    readonly price: {
+        readonly month: number;
+        readonly custom: boolean;
     };
+    readonly release: string;
 }
 
 export interface MetaFeature {
@@ -59,7 +57,7 @@ export interface MetaFeature {
 }
 
 export interface Summary {
-    id: Id;
+    id: ResourceId;
     name: string;
     price: number;
 }
@@ -67,7 +65,7 @@ export interface Summary {
 export class CollectionRequest {
     private static target = "tiers";
     
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);    
     }
 }
@@ -75,11 +73,11 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
     
-    constructor(private id: Id) {
+    constructor(private id: ResourceId) {
         this.target = `tiers/${id}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);    
     }
 }

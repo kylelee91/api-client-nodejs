@@ -1,33 +1,29 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import * as Plans from "../plans/index";
 import * as Tiers from "../tiers/tiers";
 import { Term, ContainerLineItem } from "./common";
-import { Id } from "../../common/structures";
+import { 
+    SingleDoc, 
+    Resource,
+    ResourceId, 
+    QueryParams
+} from "common/structures";
 
 export function document() {
     return SingleRequest;
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resources | null;
+export interface Single extends SingleDoc {
+    data: Service | null;
 }
 
-export interface Resources {
-    id: Id;
-    type: "active_services";
-    attributes: {
-        term: Term;
-        containers: ContainerLineItem[];
-        due: number;
-        tier: Tiers.Summary & {due: number};
-        resource_pools: ResourcePools
-    };
-    meta: {
-        environments: {[key: string]: {name: string, id: Id}};
-    };
+export interface Service extends Resource {
+    id: ResourceId;
+    term: Term;
+    containers: ContainerLineItem[];
+    due: number;
+    tier: Tiers.Summary & {due: number};
+    resource_pools: ResourcePools;
 }
 
 export interface ResourcePools {
@@ -50,7 +46,7 @@ export interface Volumes {
 export class SingleRequest {
     private static target = `billing/current`;
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 }

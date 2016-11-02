@@ -1,22 +1,56 @@
-import * as JsonApi from "../jsonapi/index";
-import { ErrorCode } from "./errors";
+export type ResourceId = string;
+export type Time = string;
 
-export type Id = string;
-
-export type ApiResult<T> = ResultSuccess<T> | ResultFail<CycleErrorDetail>;
-
-export interface ResultSuccess<T> {
-    ok: true;
-    value: T;
+/**
+ * Common fields that can be in any response
+ */
+export interface TopLevel {
+    meta?: Meta;
+    includes?: Includes;
 }
 
-export interface ResultFail<T> {
-    ok: false;
-    error: T;
+export interface CollectionDoc extends TopLevel {
+    readonly data: Resource[];
 }
 
-export interface CycleErrorDetail extends JsonApi.ErrorDetail {
-    code?: ErrorCode;
+export interface SingleDoc extends TopLevel {
+    readonly data: Resource | null;
+}
+
+export interface Resource {
+    readonly id: ResourceId;
+    readonly meta?: Meta;
+}
+
+export interface Meta {
+    [key: string]: any;
+}
+
+/**
+ * includes: {
+ *  environments: {
+ *      5cdfwe8h3oih: Environment,
+ *      5cdfwe8h3oih: Environment
+ *  }
+ * }
+ */
+export interface Includes {
+    [key: string]: { [key: string]: Resource };
+}
+
+export interface QueryParams {
+    include?: string[];
+    extra?: string[];
+    sort?: string[];
+    limit?: number;
+    embed?: string[];
+    filter?: { [key: string]: string };
+    page?: {
+        number: number;
+        size: number;
+    };
+    // Override team from settings
+    team?: ResourceId;
 }
 
 export interface Events {
@@ -37,17 +71,29 @@ export interface Events {
     completed?: string;
 }
 
+export class Task<T extends string> {
+    public data: {
+        id?: ResourceId;
+        action: T;
+        contents?: Object
+        job?: string;
+    };
+
+    constructor(action: T, contents?: Object) {
+        this.data = {
+            action: action,
+            contents: contents
+        };
+    }
+}
+
 // T is string literal of allowed states
 export interface State<T extends string> {
     changed: string;
-    
-    current: T; 
 
-    job?: {
-        id: Id;
-        block: boolean;
-        queued: string; //time
-    };
+    current: T;
+
+    job: ResourceId;
 
     error?: {
         block?: boolean;
@@ -59,55 +105,5 @@ export interface State<T extends string> {
 export type ScopeType = "account" | "employee" | "team";
 export interface Scope {
     type: ScopeType;
-    id: Id;
-}
-
-export type Time = string;
-
-export type DocType = "task";
-export class Task<T extends string> {
-    public data: {
-        id?: Id;
-        type: DocType;
-        attributes: {
-            action: T;
-            contents?: Object
-        };
-
-        relationships?: {
-            job: JsonApi.ToOneRelationship;
-        };
-    };
-    
-    constructor(action: T, contents?: Object) {
-        this.data = {
-            type: "task",
-            attributes: {
-                action: action,
-                contents: contents
-            }
-        };
-    }
-}
-
-export class FormattedDoc implements JsonApi.ResourceDocument {
-    data: JsonApi.Resource;
-
-    constructor(options: {type: string, id?: Id, attributes?: Object, relationships?: {[key: string]: JsonApi.Relationship}}) {
-        this.data = {
-            type: options.type,
-        };
-
-        if (options.id) {
-            this.data.id = options.id;
-        }
-
-        if (options.attributes) {
-            this.data.attributes = options.attributes;
-        }
-
-        if (options.relationships) {
-            this.data.relationships = options.relationships;
-        }
-    }
+    id: ResourceId;
 }

@@ -16,10 +16,9 @@ import * as Notifications from "./modules/notifications";
 import * as Auth from "./auth";
 import * as Errors from "./common/errors";
 import * as Structures from "./common/structures";
-import * as JsonApi from "./jsonapi";
 import * as API from "./common/api";
 
-export { QueryParams } from "./common/api";
+export { QueryParams } from "./common/structures";
 export { default as Settings } from "./settings";
 export {
     Accounts,
@@ -38,6 +37,5 @@ export {
     Auth,
     Errors,
     Structures,
-    JsonApi,
     API
 }

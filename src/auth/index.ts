@@ -1,6 +1,6 @@
-import { OAuthError } from "../common/errors";
+import { OAuthError } from "common/errors";
 import { Token } from "./token";
-import { ResultFail, ResultSuccess, CycleErrorDetail } from "../common/structures";
+import { ApiResult } from "common/api";
 import Settings from "../settings";
 
 export interface PasswordAuth {
@@ -10,7 +10,7 @@ export interface PasswordAuth {
     client_secret?: string;
 }
 
-export async function passwordAuth(options: PasswordAuth): Promise<ResultSuccess<Token> | ResultFail<CycleErrorDetail>> {
+export async function passwordAuth(options: PasswordAuth): Promise<ApiResult<Token>> {
     // Exceptions thrown ONLY IF the API client can't function
     if (!Settings.storage) {
         throw new Error("No token storage defined in settings. Refusing to make request.");
@@ -41,7 +41,7 @@ export async function passwordAuth(options: PasswordAuth): Promise<ResultSuccess
             return {
                 ok: false,
                 error: {
-                    status: resp.status.toString(),
+                    status: resp.status,
                     detail: err.error_description,
                     title: err.error
                 }
@@ -65,7 +65,7 @@ export async function passwordAuth(options: PasswordAuth): Promise<ResultSuccess
     }
 }
 
-export async function refreshAuth(): Promise<ResultSuccess<Token> | ResultFail<CycleErrorDetail>> {
+export async function refreshAuth(): Promise<ApiResult<Token>> {
     interface Params {
         grant_type: "refresh_token";
         refresh_token: string;
@@ -111,7 +111,7 @@ export async function refreshAuth(): Promise<ResultSuccess<Token> | ResultFail<C
             return {
                 ok: false,
                 error: {
-                    status: resp.status.toString(),
+                    status: resp.status,
                     detail: err.error_description,
                     title: err.error
                 }

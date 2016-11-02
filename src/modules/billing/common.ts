@@ -1,5 +1,5 @@
-import * as Containers from "../containers/index";
-import { Id, Time } from "../../common/structures";
+import * as Containers from "modules/containers/index";
+import { ResourceId, Time } from "common/structures";
 
 export interface Term {
     start: Time;
@@ -7,7 +7,7 @@ export interface Term {
 }
 
 export interface ContainerLineItem {
-    id: Id;
+    id: ResourceId;
     name: string;
     environment: string;
     state: Containers.States;
@@ -17,7 +17,7 @@ export interface ContainerLineItem {
 }
 
 export interface InstanceLineItem {
-    id: Id;
+    id: ResourceId;
     hostname: string;
     usage: InstanceUsage[];
     state: Containers.Instances.States;
@@ -27,7 +27,7 @@ export interface InstanceLineItem {
 export interface VolumeLineItem {
     path: string;
     plan: {
-        id: Id;
+        id: ResourceId;
         name: string;
         price: number;
     };
@@ -45,7 +45,7 @@ export interface InstanceUsage {
 export interface Profile {
     trial: Trial;
     term: Term;
-    tier: Id;
+    tier: ResourceId;
     disable?: boolean;
     restrictions: {
         containers: number;

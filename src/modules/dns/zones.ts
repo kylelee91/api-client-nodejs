@@ -1,13 +1,19 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
+import * as API from "common/api";
 import * as Records from "./records";
-import { Id, State, Events, Task, FormattedDoc } from "../../common/structures";
+import {
+    CollectionDoc,
+    SingleDoc,
+    Resource,
+    ResourceId,
+    QueryParams,
+    State,
+    Events,
+    Task
+} from "common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -15,26 +21,23 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return new SingleRequest(id);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
+export interface Collection extends CollectionDoc {
     data: Resource[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
+export interface Single extends SingleDoc {
     data: Resource | null;
 }
 
-export interface Resource {
-    id: Id;
-    type: "zones";
-    attributes: {
-        origin: string;
-        verified: boolean;
-        records: Records.Resource[];
-        state: State<States>;
-        events: Events & {
-            last_verification: string;
-            verified: string;
-        };
+export interface Zone extends Resource {
+    readonly id: ResourceId;
+    readonly origin: string;
+    readonly verified: boolean;
+    readonly records: Records.Record[];
+    readonly state: State<States>;
+    readonly events: Events & {
+        readonly last_verification: string;
+        readonly verified: string;
     };
 }
 
@@ -54,43 +57,35 @@ export interface UpdateParams {
 export class CollectionRequest {
     private static target = "dns/zones";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams) {
-        return API.post<Single>(
-            this.target,
-            new FormattedDoc({ type: "zones", attributes: doc }),
-            query
-        );
+    public static async create(doc: NewParams, query?: QueryParams) {
+        return API.post<Single>(this.target, doc, query);
     }
 }
 
 export class SingleRequest {
     private target: string = "dns/zones";
 
-    constructor(private id: Id) {
+    constructor(private id: ResourceId) {
         this.target = `${this.target}/${id}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams) {
-        return API.patch<Single>(
-            this.target,
-            new FormattedDoc({ id: this.id, type: "zones", attributes: doc }),
-            query
-        );
+    public async update(doc: UpdateParams, query?: QueryParams) {
+        return API.patch<Single>(this.target, doc, query);
     }
 
     public async verify() {
         return this.task("verify");
     }
 
-    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams) {
+    public async task(action: SingleActions, contents?: Object, query?: QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             new Task<SingleActions>(action, contents),
@@ -103,8 +98,8 @@ export class SingleRequest {
     }
 
     public records(): Records.CollectionRequest;
-    public records(id: Id): Records.SingleRequest;
-    public records(id?: Id): Records.CollectionRequest | Records.SingleRequest {
+    public records(id: ResourceId): Records.SingleRequest;
+    public records(id?: ResourceId): Records.CollectionRequest | Records.SingleRequest {
         if (id) {
             return new Records.SingleRequest(this.id, id);
         }

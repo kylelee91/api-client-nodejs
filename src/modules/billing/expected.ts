@@ -1,25 +1,23 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
+import * as API from "common/api";
 import { Term } from "./common";
-import { Id } from "../../common/structures";
+import { 
+    SingleDoc, 
+    Resource, 
+    ResourceId, 
+} from "common/structures";
 
 export function document() {
     return SingleRequest;
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Expected | null;
 }
 
-export interface Resource {
-    id: Id;
-    type: "expected";
-    attributes: {
-        costs: number;
-        term: Term;
-    };
+export interface Expected extends Resource {
+    id: ResourceId;
+    costs: number;
+    term: Term;
 }
 
 export class SingleRequest {

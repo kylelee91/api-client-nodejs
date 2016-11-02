@@ -1,15 +1,21 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
+import * as API from "common/api";
 import * as Billing from "../billing/index";
 import * as Accounts from "../accounts/index";
 import * as Invites from "./invites";
-import { Id, State, Events, Task, FormattedDoc } from "../../common/structures";
+import {
+    CollectionDoc,
+    SingleDoc,
+    Resource,
+    ResourceId,
+    QueryParams,
+    State,
+    Events,
+    Task
+} from "common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -17,31 +23,23 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return new SingleRequest(id);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Team[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Team | null;
 }
 
-export interface Resource extends JsonApi.Resource {
-    id: Id;
-    type: "teams";
-    attributes: {
-        name: string;
-        about: {
-            description: string;
-        };
-
-        state: State<States>;
-        events: Events;
-        billing: Billing.Profile;
+export interface Team extends Resource {
+    readonly name: string;
+    readonly about: {
+        readonly description: string;
     };
-
-    relationships?: {
-        owner: JsonApi.ToOneRelationship;
-    };
+    readonly state: State<States>;
+    readonly events: Events;
+    readonly billing: Billing.Profile;
+    readonly owner: ResourceId;
 }
 
 export type States = "live" | "deleting" | "deleted";
@@ -67,17 +65,17 @@ export type SingleActions = "change_tier";
 export class CollectionRequest {
     private static target = "teams";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams) {
-        return API.post<Single>(this.target, new FormattedDoc({ type: "teams", attributes: doc }), query);
+    public static async create(doc: NewParams, query?: QueryParams) {
+        return API.post<Single>(this.target, doc, query);
     }
 
     public static invitations(): Invites.CollectionRequest;
-    public static invitations(id: Id): Invites.SingleRequest;
-    public static invitations(id?: Id): Invites.CollectionRequest | Invites.SingleRequest {
+    public static invitations(id: ResourceId): Invites.SingleRequest;
+    public static invitations(id?: ResourceId): Invites.CollectionRequest | Invites.SingleRequest {
         if (id) {
             return new Invites.SingleRequest(undefined, id);
         }
@@ -89,19 +87,19 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(private id: Id) {
+    constructor(private id: ResourceId) {
         this.target = `teams/${id}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams) {
-        return API.patch<Single>(this.target, new FormattedDoc({ type: "teams", attributes: doc }), query);
+    public async update(doc: UpdateParams, query?: QueryParams) {
+        return API.patch<Single>(this.target, doc, query);
     }
 
-    public async delete(query?: API.QueryParams) {
+    public async delete(query?: QueryParams) {
         return API.del<Single>(this.target, query);
     }
 
@@ -109,7 +107,7 @@ export class SingleRequest {
         return this.task("change_tier", { tier: tier });
     }
 
-    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams) {
+    public async task(action: SingleActions, contents?: Object, query?: QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             new Task<SingleActions>(action, contents),
@@ -118,8 +116,8 @@ export class SingleRequest {
     }
 
     public members(): MembersRequest;
-    public members(id: Id): MemberRequest;
-    public members(id?: Id): MembersRequest | MemberRequest {
+    public members(id: ResourceId): MemberRequest;
+    public members(id?: ResourceId): MembersRequest | MemberRequest {
         if (!id) {
             return new MembersRequest(this.id);
         }
@@ -128,8 +126,8 @@ export class SingleRequest {
     }
 
     public invitations(): Invites.CollectionRequest;
-    public invitations(id: Id): Invites.SingleRequest;
-    public invitations(id?: Id): any {
+    public invitations(id: ResourceId): Invites.SingleRequest;
+    public invitations(id?: ResourceId): any {
         if (id) {
             return new Invites.SingleRequest(this.id, id);
         }
@@ -141,11 +139,11 @@ export class SingleRequest {
 export class MembersRequest {
     private target: string;
 
-    constructor(team_id: Id) {
+    constructor(team_id: ResourceId) {
         this.target = `teams/${team_id}/members`;
     }
 
-    public async get(query?: API.QueryParams): Promise<ResultSuccess<Accounts.Collection> | ResultFail<CycleErrorDetail>> {
+    public async get(query?: QueryParams): Promise<API.ApiResult<Accounts.Collection>> {
         return API.get<Accounts.Collection>(this.target, query);
     }
 }
@@ -153,11 +151,11 @@ export class MembersRequest {
 export class MemberRequest {
     private target: string;
 
-    constructor(team_id: Id, member_id: Id) {
+    constructor(team_id: ResourceId, member_id: ResourceId) {
         this.target = `teams/${team_id}/members/${member_id}`;
     }
 
-    public async delete(query?: API.QueryParams) {
+    public async delete(query?: QueryParams) {
         return API.del<Task<SingleActions>>(this.target, query);
     }
 }

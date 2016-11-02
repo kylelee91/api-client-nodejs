@@ -1,12 +1,12 @@
 import { StorageInterface, CacheStorage } from "./auth/storage";
 import { Client } from "./auth/client";
-import { Id } from "./common/structures";
+import { ResourceId } from "./common/structures";
 
 export type Version = 1;
 
 export class Settings {
     version: Version = 1;
-    team: Id | undefined = undefined;
+    team: ResourceId | undefined = undefined;
     cache = {
         use: true,
         refresh: 1000,

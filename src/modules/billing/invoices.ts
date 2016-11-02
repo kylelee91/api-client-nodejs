@@ -1,14 +1,21 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
 import * as API from "../../common/api";
 import * as Tiers from "../tiers/tiers";
 import { Term, ContainerLineItem } from "./common";
-import { Id, State, Time, Events, Task } from "../../common/structures";
+import { 
+    CollectionDoc, 
+    SingleDoc, 
+    Resource, 
+    ResourceId, 
+    Time, 
+    State, 
+    Task,
+    Events,
+    QueryParams
+} from "common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (id) {
         return new SingleRequest(id);
     }
@@ -16,45 +23,36 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return CollectionRequest;
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Invoice[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Invoice | null;
 }
 
-export interface Resource {
-    id: Id;
-    type: "invoices";
-    attributes: {
-        items: LineItem[];
-        approved: boolean;
-        term: Term;
-        charges: number;
-        late_fees: LateFee[];
-        payments: Payment[];
-        credits: Credit[];
-        refunds: Refund[];
-        state: State<States>;
-        events: Events & {
-            billed: Time;
-            paid: Time;
-            due: Time;
-            overdue: Time;
-            credited: Time;
-            voided: Time;
-        };
-    };
-
-    relationships?: {
-        account: JsonApi.ToOneRelationship;
-        team: JsonApi.ToOneRelationship;
+export interface Invoice extends Resource {
+    id: ResourceId;
+    items: LineItem[];
+    approved: boolean;
+    term: Term;
+    charges: number;
+    late_fees: LateFee[];
+    payments: Payment[];
+    credits: Credit[];
+    refunds: Refund[];
+    state: State<States>;
+    events: Events & {
+        billed: Time;
+        paid: Time;
+        due: Time;
+        overdue: Time;
+        credited: Time;
+        voided: Time;
     };
 
     meta?: {
         amount_due?: number;
-        environments: { [key: string]: { name: string, id: Id } };
     };
 }
 
@@ -84,7 +82,7 @@ export type Categories =
     "other";
 
 export interface Payment {
-    id: Id;
+    id: ResourceId;
     time: Time;
     description: string;
     amount: number;
@@ -97,7 +95,7 @@ export interface Payment {
 }
 
 export interface Credit {
-    id: Id;
+    id: ResourceId;
     time: Time;
     description: string;
     amount: number;
@@ -105,14 +103,14 @@ export interface Credit {
 }
 
 export interface LateFee {
-    id: Id;
+    id: ResourceId;
     time: Time;
     amount: number;
     description: string;
 }
 
 export interface Refund {
-    id: Id;
+    id: ResourceId;
     time: Time;
     description: string;
     amount: number;
@@ -133,7 +131,7 @@ export interface LineItem {
 export class CollectionRequest {
     private static target = "billing/invoices";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 }
@@ -142,11 +140,11 @@ export class SingleRequest {
     private target: string = "billing/invoices";
 
     // Methods if ID
-    constructor(private id: Id) {
+    constructor(private id: ResourceId) {
         this.target = `${this.target}/${id}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
@@ -154,7 +152,7 @@ export class SingleRequest {
         return this.task("pay");
     }
 
-    public async task(action: SingleActions, contents?: Object, query?: API.QueryParams) {
+    public async task(action: SingleActions, contents?: Object, query?: QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             new Task<SingleActions>(action, contents),

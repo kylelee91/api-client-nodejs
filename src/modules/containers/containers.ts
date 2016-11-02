@@ -1,18 +1,24 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi";
-import * as API from "../../common/api";
+import * as API from "common/api";
 import * as Instances from "./instances";
 import * as Images from "../images";
 import * as Plans from "../plans";
-import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
+import {
+    CollectionDoc,
+    SingleDoc,
+    Resource,
+    ResourceId,
+    State,
+    Task,
+    Events,
+    QueryParams
+} from "common/structures";
 
 /**
  * Entrypoint for interacting with containers API
  */
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (id) {
         return new SingleRequest(id);
     }
@@ -23,38 +29,41 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
 /**
  * A JSON API Document containing a collection of containers 
  */
-export interface Collection extends JsonApi.CollectionDocument {
-    readonly data: Resource[];
+export interface Collection extends CollectionDoc {
+    readonly data: Container[];
+    includes?: {
+        images: { [key: string]: Images.Image };
+        plans: { [key: string]: Images.Image };
+    };
 }
 
 /**
  * A JSON API Document containing a container resource
  */
-export interface Single extends JsonApi.ResourceDocument {
-    readonly data: Resource | null;
+export interface Single extends SingleDoc {
+    readonly data: Container | null;
+    includes?: {
+        images: { [key: string]: Images.Image }
+        plans: { [key: string]: Images.Image };
+    };
 }
 
 /**
  * An individual container resource
  */
-export interface Resource extends JsonApi.Resource {
-    readonly id: Id;
-    readonly type: "containers";
-    readonly attributes: {
-        readonly name: string;
-        readonly config: Config;
-        readonly spawns: number;
-        readonly scaling: Scaling;
-        readonly volumes: Volume[];
-        readonly state: State<States>;
-        readonly events: Events;
-    };
-    readonly relationships?: {
-        readonly environment: JsonApi.ToOneRelationship;
-        readonly image: JsonApi.ToOneRelationship;
-        readonly plan: JsonApi.ToOneRelationship;
-        readonly domain: JsonApi.ToOneRelationship;
-    };
+export interface Container extends Resource {
+    readonly id: ResourceId;
+    readonly name: string;
+    readonly config: Config;
+    readonly spawns: number;
+    readonly scaling: Scaling;
+    readonly volumes: Volume[];
+    readonly state: State<States>;
+    readonly events: Events;
+    readonly environment: ResourceId;
+    readonly image: ResourceId;
+    readonly plan: ResourceId;
+    readonly domain: ResourceId;
     readonly meta?: {
         readonly counts?: {
             readonly instances: {
@@ -73,12 +82,11 @@ export interface Resource extends JsonApi.Resource {
             readonly city: string;
             readonly state: string;
         };
-        readonly image?: Images.Resource;
         readonly ip?: {
             readonly address: string;
             readonly mask: string;
         },
-        readonly plan?: Plans.Resource;
+        readonly plan?: Plans.Plan;
     };
 }
 
@@ -96,8 +104,8 @@ export type States = "starting" | "running" | "stopping" | "stopped" | "deleting
 export type SingleActions = "start" | "stop" | "apply" | "reimage";
 
 export interface ModifyTaskParams {
-    plan?: Id;
-    domain?: Id;
+    plan?: ResourceId;
+    domain?: ResourceId;
     hostname?: string;
     runtime?: RuntimeConfig;
     tls?: TLS;
@@ -105,13 +113,13 @@ export interface ModifyTaskParams {
 }
 
 export interface ReimageParams {
-    image: Id;
+    image: ResourceId;
 }
 
 export interface Config {
     flags: Flags;
     tls: TLS;
-    dnsrecord: Id;
+    dnsrecord: ResourceId;
     runtime: RuntimeConfig;
 }
 
@@ -137,13 +145,13 @@ export interface Scaling {
 }
 
 export interface GeoDNS {
-    readonly datacenters: Id[];
+    readonly datacenters: ResourceId[];
     readonly max_per_dc: number;
     readonly min_per_dc: number;
 }
 
 export interface LoadBalance {
-    readonly datacenter: Id;
+    readonly datacenter: ResourceId;
     readonly max: number;
     readonly min: number;
     readonly public_interface?: boolean;
@@ -155,7 +163,7 @@ export interface Persistent {
 }
 
 export interface Volume {
-    readonly id?: Id;
+    readonly id?: ResourceId;
     readonly volume_plan: string;
     readonly path: string;
     readonly remote_access: boolean;
@@ -168,29 +176,29 @@ export interface TLS {
 
 export interface NewParams {
     name: string;
-    environment: Id;
+    environment: ResourceId;
     config: {
         flags?: Flags;
         tls?: TLS;
-        dnsrecord?: Id;
+        dnsrecord?: ResourceId;
         runtime?: RuntimeConfig;
     };
-    plan: Id;
-    image: Id;
+    plan: ResourceId;
+    image: ResourceId;
     scaling: Scaling;
-    domain?: Id;
+    domain?: ResourceId;
     tls?: TLS;
     volumes: Volume[];
 }
 
 export interface UpdateParams {
     name?: string;
-    volumes?: { id: Id, remote_access: boolean }[];
+    volumes?: { id: ResourceId, remote_access: boolean }[];
 }
 
-export interface EventCollection extends JsonApi.CollectionDocument {
+export interface EventCollection extends CollectionDoc {
     readonly data: {
-        readonly id: Id;
+        readonly id: ResourceId;
         readonly type: string;
         readonly attributes: {
             readonly caption: string;
@@ -206,35 +214,35 @@ export interface CompatibleImages extends Images.Collection { }
 export class CollectionRequest {
     private static target = "containers";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: API.QueryParams) {
-        return API.post<Single>(this.target, generateNewContainerDoc(doc), query);
+    public static async create(doc: NewParams, query?: QueryParams) {
+        return API.post<Single>(this.target, doc, query);
     }
 }
 
 export class SingleRequest {
     private target: string;
 
-    constructor(private id: Id) {
+    constructor(private id: ResourceId) {
         this.target = `containers/${id}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams) {
+    public async update(doc: UpdateParams, query?: QueryParams) {
         return API.patch<Single>(
             this.target,
-            new FormattedDoc({ id: this.id, type: "containers", attributes: doc }),
+            doc,
             query
         );
     }
 
-    public async delete(query?: API.QueryParams) {
+    public async delete(query?: QueryParams) {
         return API.del<Single>(this.target, query);
     }
 
@@ -254,11 +262,11 @@ export class SingleRequest {
         return this.task(new Task<"reimage">("reimage", params));
     }
 
-    public async compatibleImages(query?: API.QueryParams) {
+    public async compatibleImages(query?: QueryParams) {
         return API.get<CompatibleImages>(`${this.target}/compatible-images`, query);
     }
 
-    public task(t: Task<SingleActions>, query?: API.QueryParams) {
+    public task(t: Task<SingleActions>, query?: QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             t,
@@ -266,58 +274,17 @@ export class SingleRequest {
         );
     }
 
-    public async events(query?: API.QueryParams) {
+    public async events(query?: QueryParams) {
         return API.get<EventCollection>(`${this.target}/events`, query);
     }
 
     public instances(): Instances.CollectionRequest;
-    public instances(id: Id): Instances.SingleRequest;
-    public instances(id?: Id): Instances.CollectionRequest | Instances.SingleRequest {
+    public instances(id: ResourceId): Instances.SingleRequest;
+    public instances(id?: ResourceId): Instances.CollectionRequest | Instances.SingleRequest {
         if (id) {
             return new Instances.SingleRequest(this.id, id);
         }
 
         return new Instances.CollectionRequest(this.id);
     }
-}
-
-/**
- * Internal function for generating new container doc based on new params
- */
-function generateNewContainerDoc(attr: NewParams) {
-    let attributes = {
-        name: attr.name,
-        scaling: attr.scaling,
-        volumes: attr.volumes,
-        tls: attr.tls,
-        config: attr.config
-    };
-    let relationships = {
-        image: {
-            data: {
-                type: "images",
-                id: attr.image
-            }
-        },
-        plan: {
-            data: {
-                type: "plans",
-                id: attr.plan
-            }
-        },
-        environment: {
-            data: {
-                type: "environments",
-                id: attr.environment
-            }
-        },
-        domain: {
-            data: {
-                type: "domains",
-                id: attr.domain
-            }
-        }
-    };
-
-    return new FormattedDoc({ type: "containers", attributes: attributes, relationships: relationships });
 }

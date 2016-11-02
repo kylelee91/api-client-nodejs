@@ -1,12 +1,16 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
-import { Id } from "../../common/structures";
+import * as API from "common/api";
+import {
+    CollectionDoc,
+    SingleDoc,
+    ResourceId,
+    Resource,
+    QueryParams,
+} from "common/structures";
+
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -14,26 +18,23 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return new SingleRequest(id);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Plan[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource;
+export interface Single extends SingleDoc {
+    data: Plan | null;
 }
 
-export interface Resource extends JsonApi.Resource {
-    id: Id;
-    type: "plans";
-    attributes: {
-        name: string;
-        public: boolean;
-        resources: ResourceLimits;
-        trial: boolean; // available in trial?
-        most_popular: boolean;
-        price: {
-            month: number;
-        };
+export interface Plan extends Resource {
+    id: ResourceId;
+    name: string;
+    public: boolean;
+    resources: ResourceLimits;
+    trial: boolean; // available in trial?
+    most_popular: boolean;
+    price: {
+        month: number;
     };
 }
 
@@ -61,13 +62,13 @@ export interface ResourceLimits {
 }
 
 export interface Summary {
-    id: Id;
+    id: ResourceId;
     name: string;
     price: number;
 }
 
 export class CollectionRequest {
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>("plans", query);
     }
 }
@@ -75,7 +76,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(id: Id) {
+    constructor(id: ResourceId) {
         this.target = `plans/${id}`;
     }
 }

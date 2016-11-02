@@ -10,13 +10,9 @@
         "strictNullChecks": true,
         "pretty": true,
         "removeComments": true,
+        "moduleResolution": "node",
         "suppressImplicitAnyIndexErrors": true,
-        "baseUrl": "./src",
-        "paths": {
-            "*": [
-                "./src"
-            ]
-        }
+        "baseUrl": "./src"
     },
     "exclude": [
         "node_modules",

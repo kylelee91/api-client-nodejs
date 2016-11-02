@@ -1,8 +1,8 @@
-import { Id, Time, Events, State } from "../../common/structures";
+import { Resource, ResourceId, Time, Events, State } from "common/structures";
 import { States } from "./jobs";
 
-export interface Resource {
-    id: Id;
+export interface Task extends Resource {
+    id: ResourceId;
     topic: string;
     caption: string;
     action: string;
@@ -26,6 +26,6 @@ export interface Step {
 }
 
 export interface ContentsStructure {
-    id: Id;
+    id: ResourceId;
     extra: {[key: string]: any};
 }

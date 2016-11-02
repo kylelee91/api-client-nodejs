@@ -1,12 +1,18 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
-import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
+import * as API from "common/api";
+import { 
+    CollectionDoc, 
+    SingleDoc, 
+    Resource, 
+    ResourceId, 
+    State, 
+    Task,
+    Events,
+    QueryParams
+} from "common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (id) {
         return new SingleRequest(id);
     }
@@ -14,25 +20,22 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return CollectionRequest;
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Method[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Method | null;
 }
 
-export interface Resource {
-    id: Id;
-    type: "billing_methods";
-    attributes: {
-        name: string;
-        primary: boolean;
-        address: BillingAddress;
-        credit_card: CreditCard;
-        state: State<States>;
-        events: Events;
-    };
+export interface Method extends Resource {
+    id: ResourceId;
+    name: string;
+    primary: boolean;
+    address: BillingAddress;
+    credit_card: CreditCard;
+    state: State<States>;
+    events: Events;
 }
 
 export type States = "active" | "inactive" | "processing" | "deleting" | "deleted";
@@ -80,31 +83,31 @@ export interface UpdateParams {
 export class CollectionRequest {
     private static target = "billing/methods";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
     // Methods if no ID
-    public static async create(method: NewParams, query?: API.QueryParams) {
+    public static async create(method: NewParams, query?: QueryParams) {
         return API.post<Single>(
             this.target,
-            new FormattedDoc({ type: "billing_methods", attributes: method }),
+            method,
             query
         );
     }
 }
 
 export class SingleRequest {
-    private target = "billing/methods";
+    private target: string;
 
-    constructor(private id: Id) {
-        this.target = `${this.target}/${id}`;
+    constructor(private id: ResourceId) {
+        this.target = `billing/methods/${id}`;
     }
 
-    public async update(doc: UpdateParams, query?: API.QueryParams) {
+    public async update(doc: UpdateParams, query?: QueryParams) {
         return API.patch<Single>(
             this.target,
-            new FormattedDoc({ id: this.id, type: "billing_methods", attributes: doc }),
+            doc,
             query
         );
     }
@@ -113,7 +116,7 @@ export class SingleRequest {
         return this.task("make_primary");
     }
 
-    public task(action: SingleActions, contents?: Object, query?: API.QueryParams) {
+    public task(action: SingleActions, contents?: Object, query?: QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             new Task(action, contents),
@@ -125,7 +128,7 @@ export class SingleRequest {
         return API.del<Task<"delete">>(this.target);
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 }

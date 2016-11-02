@@ -1,14 +1,19 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
+import * as API from "common/api";
 import * as Roles from "./roles";
-import { Id, Time, Events, FormattedDoc } from "../../common/structures";
+import {
+    CollectionDoc,
+    SingleDoc,
+    ResourceId,
+    Resource,
+    QueryParams,
+    Events,
+    Time
+} from "common/structures";
 
 export function document(): CollectionRequest;
-export function document(invite: undefined, team: Id): CollectionRequest;
-export function document(invite: Id): SingleRequest;
-export function document(invite?: Id, team?: Id): CollectionRequest | SingleRequest {
+export function document(invite: undefined, team: ResourceId): CollectionRequest;
+export function document(invite: ResourceId): SingleRequest;
+export function document(invite?: ResourceId, team?: ResourceId): CollectionRequest | SingleRequest {
     if (!invite) {
         return new CollectionRequest(team);
     }
@@ -16,39 +21,34 @@ export function document(invite?: Id, team?: Id): CollectionRequest | SingleRequ
     return new SingleRequest(invite);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Invite[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Invite | null;
 }
 
-export interface Resource extends JsonApi.Resource {
-    id: Id;
-    type: "invites";
-    attributes: {
-        events: Events
-        accepted: Time;
-        declined: Time;
-        revoked: Time;
-        role: Roles.Names;
-    };
-    relationships?: {
-        team: JsonApi.ToOneRelationship;
-        inviter: JsonApi.ToOneRelationship;
-        invitee: JsonApi.ToOneRelationship;
-    };
+export interface Invite extends Resource {
+    id: ResourceId;
+    team: ResourceId;
+    inviter: ResourceId;
+    invitee: ResourceId;
+    events: Events;
+    accepted: Time;
+    declined: Time;
+    revoked: Time;
+    role: Roles.Names;
 }
 
 export interface NewParams {
-    invitee: Id;
+    invitee: ResourceId;
 }
 
 export class CollectionRequest {
     private target: string;
 
-    constructor(teamId?: Id) {
+    constructor(teamId?: ResourceId) {
         if (teamId) {
             this.target = `teams/${teamId}/invites`;
         } else {
@@ -56,24 +56,19 @@ export class CollectionRequest {
         }
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
-    public async create(doc: NewParams, query?: API.QueryParams) {
-        const relationship = { invitee: { type: "accounts" }, id: doc.invitee };
-        return API.post<Single>(
-            this.target,
-            new FormattedDoc({ type: "invites", relationships: { invitee: relationship } }),
-            query
-        );
+    public async create(doc: NewParams, query?: QueryParams) {
+        return API.post<Single>(this.target, doc, query);
     }
 }
 
 export class SingleRequest {
     private target: string;
 
-    constructor(team_id?: Id, private invite_id?: Id) {
+    constructor(team_id?: ResourceId, private invite_id?: ResourceId) {
         if (team_id) {
             this.target = `teams/${team_id}/invites`;
         } else {
@@ -85,36 +80,20 @@ export class SingleRequest {
         }
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
-    public async accept(query?: API.QueryParams) {
+    public async accept(query?: QueryParams) {
         return this.action("accept", query);
     }
 
-    public async decline(query?: API.QueryParams) {
+    public async decline(query?: QueryParams) {
         return this.action("decline", query);
     }
 
-    public action(action: "accept" | "decline", query?: API.QueryParams) {
+    public action(action: "accept" | "decline", query?: QueryParams) {
         this.target += "/actions";
-        const invite_id = this.invite_id;
-        class InviteAction {
-            public data = {
-                id: invite_id,
-                type: "actions",
-                attributes: {
-                    accept: false,
-                    decline: false
-                }
-            };
-            constructor() {
-                this.data.attributes.accept = (action === "accept");
-                this.data.attributes.decline = (action !== "accept");
-            }
-        }
-
-        return API.post<Single>(this.target, new InviteAction(), query);
+        return API.post<Single>(this.target, {data: {accept: action === "accept"}}, query);
     }
 }

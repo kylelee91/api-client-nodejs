@@ -1,12 +1,20 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import { Id, Scope, Time, Events, State, Task } from "../../common/structures";
-import * as API from "../../common/api";
+import * as API from "common/api";
+import {
+    CollectionDoc,
+    SingleDoc,
+    ResourceId,
+    Resource,
+    QueryParams,
+    State,
+    Task,
+    Events,
+    Scope,
+    Time
+} from "common/structures";
 
 export function document(): typeof CollectionRequest;
-export function document(id: Id): SingleRequest;
-export function document(id?: Id): typeof CollectionRequest | SingleRequest {
+export function document(id: ResourceId): SingleRequest;
+export function document(id?: ResourceId): typeof CollectionRequest | SingleRequest {
     if (!id) {
         return CollectionRequest;
     }
@@ -14,28 +22,25 @@ export function document(id?: Id): typeof CollectionRequest | SingleRequest {
     return new SingleRequest(id);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
-    data: Resource[];
+export interface Collection extends CollectionDoc {
+    data: Notification[];
     meta?: CollectionMeta;
 }
 
-export interface Single extends JsonApi.ResourceDocument {
-    data: Resource | null;
+export interface Single extends SingleDoc {
+    data: Notification | null;
 }
 
-export interface Resource extends JsonApi.Resource {
-    id: Id;
-    type: "notifications";
-    attributes: {
-        code: string;
-        url: string;
-        message: string;
-        owner: Scope;
-        creator: Id;
-        events: Events & { read: Time };
-        state: State<States>
-        type: Types;
-    };
+export interface Notification extends Resource {
+    id: ResourceId;
+    creator: ResourceId;
+    code: string;
+    url: string;
+    message: string;
+    owner: Scope;
+    events: Events & { read: Time };
+    state: State<States>;
+    type: Types;
 }
 
 export interface CollectionMeta {
@@ -49,7 +54,7 @@ export type CollectionActions = "mark_read";
 export class CollectionRequest {
     public static readonly target = "notifications";
 
-    public static async get(query?: API.QueryParams) {
+    public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 
@@ -57,7 +62,7 @@ export class CollectionRequest {
         return this.task(new Task("mark_read"));
     }
 
-    public static async task(t: Task<CollectionActions>, query?: API.QueryParams) {
+    public static async task(t: Task<CollectionActions>, query?: QueryParams) {
         return API.post<Task<CollectionActions>>(
             `${this.target}/tasks`,
             t,
@@ -69,7 +74,7 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(id: Id) {
+    constructor(id: ResourceId) {
         this.target = `notifications/${id}`;
     }
 
@@ -77,7 +82,7 @@ export class SingleRequest {
         return this.task(new Task("mark_read"));
     }
 
-    public async task(t: Task<CollectionActions>, query?: API.QueryParams) {
+    public async task(t: Task<CollectionActions>, query?: QueryParams) {
         return API.post<Task<CollectionActions>>(
             `${this.target}/tasks`,
             t,
@@ -85,7 +90,7 @@ export class SingleRequest {
         );
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target);
     }
 }

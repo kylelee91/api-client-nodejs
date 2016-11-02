@@ -1,12 +1,18 @@
-// tslint:disable-next-line
-import { CycleErrorDetail, ResultFail, ResultSuccess } from "../../common/api";
-import * as JsonApi from "../../jsonapi/index";
-import * as API from "../../common/api";
-import { Id, State, Events, Time } from "../../common/structures";
+import * as API from "common/api";
+import {
+    CollectionDoc,
+    SingleDoc,
+    Resource,
+    ResourceId,
+    State,
+    Time,
+    Events,
+    QueryParams
+} from "common/structures";
 
-export function document(container: Id): CollectionRequest;
-export function document(container: Id, id: Id): SingleRequest;
-export function document(container?: Id, id?: Id): CollectionRequest | SingleRequest {
+export function document(container: ResourceId): CollectionRequest;
+export function document(container: ResourceId, id: ResourceId): SingleRequest;
+export function document(container?: ResourceId, id?: ResourceId): CollectionRequest | SingleRequest {
     if (!container) {
         throw new Error("Getting list of instances not yet supported.");
     }
@@ -18,79 +24,59 @@ export function document(container?: Id, id?: Id): CollectionRequest | SingleReq
     return new CollectionRequest(container);
 }
 
-export interface Collection extends JsonApi.CollectionDocument {
+export interface Collection extends CollectionDoc {
     readonly data: Resource[];
 }
 
-export interface Single extends JsonApi.ResourceDocument {
+export interface Single extends SingleDoc {
     readonly data: Resource | null;
 }
 
-export interface Log extends JsonApi.ResourceDocument {
+export interface Log extends SingleDoc {
     readonly data: {
-        readonly id: Id;
+        readonly id: ResourceId;
+        readonly events: Events;
+        readonly output: string;
         readonly type: string;
-        readonly attributes: {
-            readonly events: Events;
-            readonly output: string;
-            readonly type: string;
-        };
-        readonly relationships: {
-            readonly instance: JsonApi.ToOneRelationship;
-        };
+        readonly instance: ResourceId;
     };
 }
 
 export type States = "starting" | "running" | "stopping" | "stopped" | "deleting" | "deleted" | "error";
-export interface Resource extends JsonApi.Resource {
-    readonly id: Id;
-    readonly type: "instances";
-    readonly attributes: {
-        readonly hostname: string;
-        readonly volumes: Volume[];
-        readonly state: State<States>;
-        readonly location: Location;
-        readonly events: Events & {
-            readonly first_boot: Time;
-            readonly started: Time;
-        };
+export interface Instance extends Resource {
+    readonly id: ResourceId;
+    readonly hostname: string;
+    readonly volumes: Volume[];
+    readonly state: State<States>;
+    readonly location: Location;
+    readonly environment: ResourceId;
+    readonly container: ResourceId;
+    readonly events: Events & {
+        readonly first_boot: Time;
+        readonly started: Time;
     };
 
-    readonly relationships?: {
-        readonly environment: JsonApi.ToOneRelationship;
-        readonly container: JsonApi.ToOneRelationship;
-    };
-
-    readonly meta: {
-        readonly location?: {
-            readonly continent: string;
-            readonly country: string;
-            readonly city: string;
-            readonly state: string;
-        };
-
-        readonly networks?: {
-            readonly id: Id;
-            readonly gateway: string;
-            readonly broadcast: string;
-            readonly name: string;
-            readonly cidr: string;
-            readonly type: string;
-            readonly assignment: {
-                readonly ip: {
-                    readonly address: string;
-                    readonly mask: number;
-                };
+    readonly networks?: {
+        readonly id: ResourceId;
+        readonly gateway: string;
+        readonly broadcast: string;
+        readonly name: string;
+        readonly cidr: string;
+        readonly type: string;
+        readonly assignment: {
+            readonly ip: {
+                readonly address: string;
+                readonly mask: number;
             };
-            readonly instance: string;
-            readonly released: string;
-            readonly claimed: string;
-        }[];
-    };
+        };
+        readonly instance: string;
+        readonly released: string;
+        readonly claimed: string;
+    }[];
 }
 
 export interface Volume {
-    readonly container_volume: Id;
+    readonly container_volume: ResourceId;
     readonly path: string;
     readonly password: string;
 }
@@ -102,11 +88,11 @@ export type LogTypes = "startup_process_first" | "startup_process" | "shutdown_p
 export class CollectionRequest {
     private target: string;
 
-    constructor(container_id: Id) {
+    constructor(container_id: ResourceId) {
         this.target = `containers/${container_id}/instances`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
     }
 }
@@ -115,17 +101,17 @@ export class CollectionRequest {
 export class SingleRequest {
     private target: string;
 
-    constructor(private container_id: Id, private instance_id: Id) {
+    constructor(private container_id: ResourceId, private instance_id: ResourceId) {
         this.target = `containers/${container_id}/instances/${instance_id}`;
     }
 
-    public async get(query?: API.QueryParams) {
+    public async get(query?: QueryParams) {
         return API.get<Single>(this.target, query);
     }
 
     public log(type: LogTypes) {
         return {
-            get: async (query?: API.QueryParams) => {
+            get: async (query?: QueryParams) => {
                 return API.get<Log>(`${this.target}/logs/${type}`, query);
             }
         };

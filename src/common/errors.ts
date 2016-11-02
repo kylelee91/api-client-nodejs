@@ -1,3 +1,10 @@
+export interface ErrorResource {
+    status?: number;
+    code?: ErrorCode;
+    title?: string;
+    detail?: string;
+}
+
 export interface OAuthError {
     error: string;
     error_description: string;
