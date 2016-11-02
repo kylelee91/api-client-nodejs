@@ -27,7 +27,7 @@ export interface Collection extends CollectionDoc {
 }
 
 export interface Single extends SingleDoc {
-    readonly data: Repo;
+    readonly data: Repo | null;
 }
 
 export interface Repo extends Resource {
