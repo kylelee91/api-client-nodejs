@@ -192,7 +192,7 @@ export interface EventCollection extends JsonApi.CollectionDocument {
     readonly data: EventResource[];
 }
 
-export interface EventResource extends JsonApi.ResourceDocument {
+export interface EventResource extends JsonApi.Resource {
     id: Id;
     type: string;
     attributes: {
