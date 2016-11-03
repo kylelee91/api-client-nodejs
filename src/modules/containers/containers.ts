@@ -189,16 +189,18 @@ export interface UpdateParams {
 }
 
 export interface EventCollection extends JsonApi.CollectionDocument {
-    readonly data: {
-        readonly id: Id;
-        readonly type: string;
-        readonly attributes: {
-            readonly caption: string;
-            readonly time: string;
-            readonly platform: boolean,
-            readonly type: string;
-        }
-    }[];
+    readonly data: EventResource[];
+}
+
+export interface EventResource extends JsonApi.ResourceDocument {
+    id: Id;
+    type: string;
+    attributes: {
+        caption: string;
+        time: string;
+        platform: boolean,
+        type: string;
+    };
 }
 
 export interface CompatibleImages extends Images.Collection { }
