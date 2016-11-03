@@ -62,31 +62,34 @@ export interface Resource extends JsonApi.Resource {
     };
 
     readonly meta: {
-        readonly location?: {
-            readonly continent: string;
-            readonly country: string;
-            readonly city: string;
-            readonly state: string;
-        };
-
-        readonly networks?: {
-            readonly id: Id;
-            readonly gateway: string;
-            readonly broadcast: string;
-            readonly name: string;
-            readonly cidr: string;
-            readonly type: string;
-            readonly assignment: {
-                readonly ip: {
-                    readonly address: string;
-                    readonly mask: number;
-                };
-            };
-            readonly instance: string;
-            readonly released: string;
-            readonly claimed: string;
-        }[];
+        readonly location?: Location;
+        readonly networks?: Network[];
     };
+}
+
+export interface Location {
+    readonly continent: string;
+    readonly country: string;
+    readonly city: string;
+    readonly state: string;
+}
+
+export interface Network {
+    readonly id: Id;
+    readonly gateway: string;
+    readonly broadcast: string;
+    readonly name: string;
+    readonly cidr: string;
+    readonly type: string;
+    readonly assignment: {
+        readonly ip: {
+            readonly address: string;
+            readonly mask: number;
+        };
+    };
+    readonly instance: string;
+    readonly released: string;
+    readonly claimed: string;
 }
 
 export interface Volume {
