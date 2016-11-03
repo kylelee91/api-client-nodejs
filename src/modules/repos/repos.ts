@@ -66,6 +66,7 @@ export interface NewParams {
 
 export interface UpdateParams {
     name?: string;
+    url?: string;
     auth?: {
         private_key: string;
     };
