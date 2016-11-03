@@ -6,6 +6,7 @@ import * as Instances from "./instances";
 import * as Images from "../images";
 import * as Plans from "../plans";
 import * as Accounts from "../accounts";
+import * as DNS from "../dns";
 import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
 
 /**
@@ -80,6 +81,7 @@ export interface Resource extends JsonApi.Resource {
             readonly mask: string;
         },
         readonly plan?: Plans.Resource;
+        readonly domain?: DNS.Records.Resource
     };
 }
 
