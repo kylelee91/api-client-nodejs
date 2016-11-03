@@ -5,6 +5,7 @@ import * as API from "../../common/api";
 import * as Instances from "./instances";
 import * as Images from "../images";
 import * as Plans from "../plans";
+import * as Accounts from "../accounts";
 import { Id, State, Events, FormattedDoc, Task } from "../../common/structures";
 
 /**
@@ -200,6 +201,9 @@ export interface EventResource extends JsonApi.Resource {
         time: string;
         platform: boolean,
         type: string;
+    };
+    meta: {
+        creator: Accounts.Resource;
     };
 }
 
