@@ -132,29 +132,29 @@ export interface RuntimeConfig {
 
 export type ScalingMethods = "persistent" | "geodns" | "loadbalance" | "loadbalance-geodns";
 export interface Scaling {
-    readonly method: ScalingMethods;
-    readonly hostname: string;
-    readonly geodns?: GeoDNS;
-    readonly loadbalance?: LoadBalance;
-    readonly persistent?: Persistent;
+    method: ScalingMethods;
+    hostname: string;
+    geodns?: GeoDNS;
+    loadbalance?: LoadBalance;
+    persistent?: Persistent;
 }
 
 export interface GeoDNS {
-    readonly datacenters: Id[];
-    readonly max_per_dc: number;
-    readonly min_per_dc: number;
+    datacenters: Id[];
+    max_per_dc: number;
+    min_per_dc: number;
 }
 
 export interface LoadBalance {
-    readonly datacenter: Id;
-    readonly max: number;
-    readonly min: number;
-    readonly public_interface?: boolean;
+    datacenter: Id;
+    max: number;
+    min: number;
+    public_interface?: boolean;
 }
 
 export interface Persistent {
-    readonly datacenter: string;
-    readonly public_interface?: boolean;
+    datacenter: string;
+    public_interface?: boolean;
 }
 
 export interface Volume {
