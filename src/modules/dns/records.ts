@@ -25,6 +25,7 @@ export interface Resource {
         ssl?: boolean; // For A Records
         name: string;
         domain: string;
+        container: string;
         values: {
             ip?: string;
             priority?: number;
