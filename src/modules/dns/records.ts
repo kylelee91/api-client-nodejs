@@ -39,6 +39,22 @@ export interface Resource {
     };
 }
 
+export interface Record {
+    id: Id;
+    type: Types;
+    assignable: boolean;
+    ssl?: boolean; // For A Records
+    name: string;
+    domain: string;
+    container: string;
+    values: {
+        ip?: string;
+        priority?: number;
+        domain?: string;
+        text?: string;
+    };
+}
+
 export type Types = "a" | "aaaa" | "cname" | "mx" | "srv" | "ns" | "txt";
 
 export interface NewParams {

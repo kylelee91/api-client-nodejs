@@ -29,12 +29,20 @@ export interface Resource {
     attributes: {
         origin: string;
         verified: boolean;
-        records: Records.Resource[];
+        records: Records.Record[];
         state: State<States>;
         events: Events & {
             last_verification: string;
             verified: string;
         };
+    };
+
+    meta: {
+        containers: {[key: string]: {
+            environment: string;
+            id: string;
+            name: string;
+        }};
     };
 }
 
