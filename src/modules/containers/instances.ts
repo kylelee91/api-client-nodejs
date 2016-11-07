@@ -94,9 +94,13 @@ export interface Network {
 }
 
 export interface Volume {
-    readonly container_volume: Id;
-    readonly path: string;
-    readonly password: string;
+    container_volume: Id;
+    path: string;
+    password: string;
+    ip: string;
+    port: number;
+    username: string;
+    remote_access: boolean;
 }
 
 // List of container instance documents
