@@ -64,6 +64,7 @@ export interface Resource extends JsonApi.Resource {
     readonly meta: {
         readonly location?: Location;
         readonly networks?: Network[];
+        readonly volumes?: Volume[];
     };
 }
 
