@@ -28,7 +28,7 @@ export interface Resource {
     id: Id;
     type: "invoices";
     attributes: {
-        items: LineItem[];
+        items: InvoiceLineItem[];
         approved: boolean;
         term: Term;
         charges: number;
@@ -118,17 +118,26 @@ export interface Refund {
     amount: number;
 }
 
+export type InvoiceLineItem = LineItemWithContainer | LineItemWithTier | LineItem;
+
 export interface LineItem {
     term: Term;
     category: Categories;
     description: string;
-    tier?: Tiers.Summary & { due: number };
-    container?: ContainerLineItem;
     quantity: number;
     due: number;
     discount: number;
 }
 
+export interface LineItemWithTier extends LineItem {
+    category: "tier";
+    tier: Tiers.Summary & { due: number };
+}
+
+export interface LineItemWithContainer extends LineItem {
+    category: "infrastructure";
+    container: ContainerLineItem;
+}
 
 export class CollectionRequest {
     private static target = "billing/invoices";
