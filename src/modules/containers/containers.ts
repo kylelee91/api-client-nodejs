@@ -165,8 +165,8 @@ export interface Volume {
 }
 
 export interface TLS {
-    readonly enabled: boolean;
-    readonly path: string;
+    enabled: boolean;
+    path: string;
 }
 
 export interface NewParams {
