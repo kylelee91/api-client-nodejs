@@ -295,7 +295,6 @@ function generateNewContainerDoc(attr: NewParams) {
         name: attr.name,
         scaling: attr.scaling,
         volumes: attr.volumes,
-        tls: attr.tls,
         config: attr.config
     };
     let relationships = {
@@ -315,12 +314,6 @@ function generateNewContainerDoc(attr: NewParams) {
             data: {
                 type: "environments",
                 id: attr.environment
-            }
-        },
-        domain: {
-            data: {
-                type: "domains",
-                id: attr.domain
             }
         }
     };
