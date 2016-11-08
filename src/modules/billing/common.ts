@@ -40,6 +40,11 @@ export interface InstanceUsage {
     due: number;
     hours: number;
     volumes: VolumeLineItem[];
+    plan: {
+        id: string;
+        name: string;
+        price: number;
+    };
 }
 
 export interface Profile {

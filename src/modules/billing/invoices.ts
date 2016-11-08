@@ -75,8 +75,6 @@ export type States =
     "voided";
 
 export type Categories =
-    "tier" |
-    "infrastructure" |
     "overages" |
     "overages_bandwidth" |
     "overages_image_storage" |
@@ -118,11 +116,10 @@ export interface Refund {
     amount: number;
 }
 
-export type InvoiceLineItem = LineItemWithContainer | LineItemWithTier | LineItem;
+export type InvoiceLineItem = LineItemWithContainer | LineItemWithTier | LineItemOther;
 
 export interface LineItem {
     term: Term;
-    category: Categories;
     description: string;
     quantity: number;
     due: number;
@@ -136,6 +133,11 @@ export interface LineItemWithTier extends LineItem {
 
 export interface LineItemWithContainer extends LineItem {
     category: "infrastructure";
+    container: ContainerLineItem;
+}
+
+export interface LineItemOther extends LineItem {
+    category: Categories;
     container: ContainerLineItem;
 }
 
