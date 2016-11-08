@@ -17,7 +17,7 @@ export interface Resource {
     id: Id;
     type: "expected";
     attributes: {
-        costs: number;
+        cost: number;
         term: Term;
     };
 }
