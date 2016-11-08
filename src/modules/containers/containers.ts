@@ -114,7 +114,7 @@ export interface ReimageParams {
 export interface Config {
     flags: Flags;
     tls: TLS;
-    dnsrecord: Id | null;
+    dnsrecord: Id;
     runtime: RuntimeConfig;
 }
 
@@ -175,7 +175,7 @@ export interface NewParams {
     config: {
         flags?: Flags;
         tls?: TLS;
-        dnsrecord?: Id;
+        dnsrecord: Id | null;
         runtime?: RuntimeConfig;
     };
     plan: Id;
