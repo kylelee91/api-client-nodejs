@@ -100,7 +100,7 @@ export type SingleActions = "start" | "stop" | "apply" | "reimage";
 
 export interface ModifyTaskParams {
     plan?: Id;
-    domain?: Id;
+    domain?: Id | null;
     hostname?: string;
     runtime?: RuntimeConfig;
     tls?: TLS;
