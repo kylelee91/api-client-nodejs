@@ -158,10 +158,10 @@ export interface Persistent {
 }
 
 export interface Volume {
-    readonly id?: Id;
-    readonly volume_plan: string;
-    readonly path: string;
-    readonly remote_access: boolean;
+    id?: Id;
+    volume_plan: string;
+    path: string;
+    remote_access: boolean;
 }
 
 export interface TLS {
@@ -181,8 +181,6 @@ export interface NewParams {
     plan: Id;
     image: Id;
     scaling: Scaling;
-    domain?: Id;
-    tls?: TLS;
     volumes: Volume[];
 }
 
