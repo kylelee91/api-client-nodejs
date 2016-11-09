@@ -10,16 +10,16 @@ export interface TopLevel {
 }
 
 export interface CollectionDoc extends TopLevel {
-    readonly data: Resource[];
+    data: Resource[];
 }
 
 export interface SingleDoc extends TopLevel {
-    readonly data: Resource | null;
+    data: Resource | null;
 }
 
 export interface Resource {
-    readonly id: ResourceId;
-    readonly meta?: Meta;
+    id: ResourceId;
+    meta?: Meta;
 }
 
 export interface Meta {

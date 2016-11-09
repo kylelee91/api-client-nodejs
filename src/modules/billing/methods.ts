@@ -53,6 +53,7 @@ export interface BillingAddress {
 export interface CreditCard {
     name: string;
     brand: string;
+    last_4: string;
     expiration: {
         month: number;
         year: number

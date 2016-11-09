@@ -30,14 +30,23 @@ export interface Single extends SingleDoc {
 }
 
 export interface Zone extends Resource {
-    readonly id: ResourceId;
-    readonly origin: string;
-    readonly verified: boolean;
-    readonly records: Records.Record[];
-    readonly state: State<States>;
-    readonly events: Events & {
-        readonly last_verification: string;
-        readonly verified: string;
+    id: ResourceId;
+    origin: string;
+    verified: boolean;
+    records: Records.Record[];
+    state: State<States>;
+    events: Events & {
+        last_verification: string;
+        verified: string;
+    };
+    meta?: {
+        containers: {
+            [key: string]: {
+                environment: string;
+                id: string;
+                name: string;
+            }
+        }
     };
 }
 

@@ -30,33 +30,33 @@ export interface Single extends SingleDoc {
 }
 
 export interface Image extends Resource {
-    readonly id: ResourceId;
-    readonly name: string;
-    readonly about: {
-        readonly description: string;
+    id: ResourceId;
+    name: string;
+    about: {
+        description: string;
     };
-    readonly source: SourceStructure;
-    readonly tags: string[];
-    readonly size: number;
-    readonly config: ConfigStructure;
-    readonly state: State<States>;
-    readonly events: Events;
-    readonly owner: Scope;
-    readonly creator: ResourceId;
-    readonly repo: ResourceId;
-    readonly meta?: {
-        readonly counts?: {
-            readonly containers: number;
+    source: SourceStructure;
+    tags: string[];
+    size: number;
+    config: ConfigStructure;
+    state: State<States>;
+    events: Events;
+    owner: Scope;
+    creator: ResourceId;
+    repo: ResourceId;
+    meta?: {
+        counts?: {
+            containers: number;
         };
     };
 }
 
 export interface BuildLog extends Resource {
-    readonly id: ResourceId;
-    readonly image: ResourceId;
-    readonly owner: Scope;
-    readonly output: string;
-    readonly Events: Events;
+    id: ResourceId;
+    image: ResourceId;
+    owner: Scope;
+    output: string;
+    Events: Events;
 }
 
 export type States =
@@ -72,22 +72,22 @@ export type States =
     | "error";
 
 export interface SourceStructure {
-    readonly flavor: string;
-    readonly type: string;
-    readonly target: string;
-    readonly repo: string;
-    readonly tag: string;
+    flavor: string;
+    type: string;
+    target: string;
+    repo: string;
+    tag: string;
 }
 
 export interface ConfigStructure {
-    readonly hostname: string;
-    readonly user: string;
-    readonly env: { [key: string]: string };
-    readonly labels: { [key: string]: string };
-    readonly ports: ConfigPortStructure[];
-    readonly command: string[];
-    readonly entrypoint: string[];
-    readonly volumes: ConfigVolumeStructure[];
+    hostname: string;
+    user: string;
+    env: { [key: string]: string };
+    labels: { [key: string]: string };
+    ports: ConfigPortStructure[];
+    command: string[];
+    entrypoint: string[];
+    volumes: ConfigVolumeStructure[];
 }
 
 export interface ConfigPortStructure {
@@ -96,8 +96,8 @@ export interface ConfigPortStructure {
 }
 
 export interface ConfigVolumeStructure {
-    readonly path: string;
-    readonly mode: number;
+    path: string;
+    mode: number;
 }
 
 export interface NewParams {

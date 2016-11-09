@@ -9,8 +9,8 @@ export interface Single extends SingleDoc {
 }
 
 export interface Logins extends Resource {
-    readonly id: ResourceId;
-    readonly account: string;
-    readonly time: Time;
-    readonly success: string;
+    id: ResourceId;
+    account: string;
+    time: Time;
+    success: string;
 }

@@ -27,25 +27,25 @@ export interface Single extends SingleDoc {
 
 export interface Account extends Resource {
     id: ResourceId;
-    readonly name: {
-        readonly first: string;
-        readonly last: string;
+    name: {
+        first: string;
+        last: string;
     };
-    readonly auth: {
-        readonly allow_employee_login: boolean;
+    auth: {
+        allow_employee_login: boolean;
     };
-    readonly email: {
-        readonly address: string;
-        readonly verified: boolean;
-        readonly added: string // Time
+    email: {
+        address: string;
+        verified: boolean;
+        added: string // Time
     };
-    readonly username: string;
-    readonly teams: { readonly id: ResourceId; readonly role: number; readonly joined: Time }[];
-    readonly state: State<"">;
-    readonly events: Events;
-    readonly billing: Billing.Profile;
-    readonly meta?: {
-        readonly role: string;
+    username: string;
+    teams: { id: ResourceId; role: number; joined: Time }[];
+    state: State<"">;
+    events: Events;
+    billing: Billing.Profile;
+    meta?: {
+        role: string;
     };
 }
 

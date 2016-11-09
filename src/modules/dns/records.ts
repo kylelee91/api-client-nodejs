@@ -21,12 +21,28 @@ export interface Single extends SingleDoc {
 
 export interface Record extends Resource {
     id: ResourceId;
-    container: ResourceId;    
+    container: ResourceId;
     type: Types;
     assignable: boolean;
     ssl?: boolean; // For A Records
     name: string;
     domain: string;
+    values: {
+        ip?: string;
+        priority?: number;
+        domain?: string;
+        text?: string;
+    };
+}
+
+export interface Record {
+    id: ResourceId;
+    type: Types;
+    assignable: boolean;
+    ssl?: boolean; // For A Records
+    name: string;
+    domain: string;
+    container: string;
     values: {
         ip?: string;
         priority?: number;

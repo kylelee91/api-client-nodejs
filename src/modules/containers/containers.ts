@@ -2,6 +2,7 @@ import * as API from "common/api";
 import * as Instances from "./instances";
 import * as Images from "../images";
 import * as Plans from "../plans";
+import * as DNS from "../dns";
 import {
     CollectionDoc,
     SingleDoc,
@@ -30,7 +31,7 @@ export function document(id?: ResourceId): typeof CollectionRequest | SingleRequ
  * A JSON API Document containing a collection of containers 
  */
 export interface Collection extends CollectionDoc {
-    readonly data: Container[];
+    data: Container[];
     includes?: {
         images: { [key: string]: Images.Image };
         plans: { [key: string]: Images.Image };
@@ -41,7 +42,7 @@ export interface Collection extends CollectionDoc {
  * A JSON API Document containing a container resource
  */
 export interface Single extends SingleDoc {
-    readonly data: Container | null;
+    data: Container | null;
     includes?: {
         images: { [key: string]: Images.Image }
         plans: { [key: string]: Images.Image };
@@ -52,41 +53,42 @@ export interface Single extends SingleDoc {
  * An individual container resource
  */
 export interface Container extends Resource {
-    readonly id: ResourceId;
-    readonly name: string;
-    readonly config: Config;
-    readonly spawns: number;
-    readonly scaling: Scaling;
-    readonly volumes: Volume[];
-    readonly state: State<States>;
-    readonly events: Events;
-    readonly environment: ResourceId;
-    readonly image: ResourceId;
-    readonly plan: ResourceId;
-    readonly domain: ResourceId;
-    readonly meta?: {
-        readonly counts?: {
-            readonly instances: {
-                readonly starting: number;
-                readonly running: number;
-                readonly stopping: number;
-                readonly stopped: number;
-                readonly deleting: number;
-                readonly deleted: number;
-                readonly errored: number;
+    id: ResourceId;
+    name: string;
+    config: Config;
+    spawns: number;
+    scaling: Scaling;
+    volumes: Volume[];
+    state: State<States>;
+    events: Events;
+    environment: ResourceId;
+    image: ResourceId;
+    plan: ResourceId;
+    domain: ResourceId;
+    meta?: {
+        counts?: {
+            instances: {
+                starting: number;
+                running: number;
+                stopping: number;
+                stopped: number;
+                deleting: number;
+                deleted: number;
+                errored: number;
             }
         };
-        readonly location?: {
-            readonly continent: string;
-            readonly country: string;
-            readonly city: string;
-            readonly state: string;
+        location?: {
+            continent: string;
+            country: string;
+            city: string;
+            state: string;
         };
-        readonly ip?: {
-            readonly address: string;
-            readonly mask: string;
+        ip?: {
+            address: string;
+            mask: string;
         },
-        readonly plan?: Plans.Plan;
+        plan?: Plans.Plan;
+        domain?: DNS.Records.Record;
     };
 }
 
@@ -105,7 +107,7 @@ export type SingleActions = "start" | "stop" | "apply" | "reimage";
 
 export interface ModifyTaskParams {
     plan?: ResourceId;
-    domain?: ResourceId;
+    domain?: ResourceId | null;
     hostname?: string;
     runtime?: RuntimeConfig;
     tls?: TLS;
@@ -119,7 +121,7 @@ export interface ReimageParams {
 export interface Config {
     flags: Flags;
     tls: TLS;
-    dnsrecord: ResourceId;
+    dnsrecord: ResourceId | null;
     runtime: RuntimeConfig;
 }
 
@@ -137,41 +139,41 @@ export interface RuntimeConfig {
 
 export type ScalingMethods = "persistent" | "geodns" | "loadbalance" | "loadbalance-geodns";
 export interface Scaling {
-    readonly method: ScalingMethods;
-    readonly hostname: string;
-    readonly geodns?: GeoDNS;
-    readonly loadbalance?: LoadBalance;
-    readonly persistent?: Persistent;
+    method: ScalingMethods;
+    hostname: string;
+    geodns?: GeoDNS;
+    loadbalance?: LoadBalance;
+    persistent?: Persistent;
 }
 
 export interface GeoDNS {
-    readonly datacenters: ResourceId[];
-    readonly max_per_dc: number;
-    readonly min_per_dc: number;
+    datacenters: ResourceId[];
+    max_per_dc: number;
+    min_per_dc: number;
 }
 
 export interface LoadBalance {
-    readonly datacenter: ResourceId;
-    readonly max: number;
-    readonly min: number;
-    readonly public_interface?: boolean;
+    datacenter: ResourceId;
+    max: number;
+    min: number;
+    public_interface?: boolean;
 }
 
 export interface Persistent {
-    readonly datacenter: string;
-    readonly public_interface?: boolean;
+    datacenter: string;
+    public_interface?: boolean;
 }
 
 export interface Volume {
-    readonly id?: ResourceId;
-    readonly volume_plan: string;
-    readonly path: string;
-    readonly remote_access: boolean;
+    id?: ResourceId;
+    volume_plan: string;
+    path: string;
+    remote_access: boolean;
 }
 
 export interface TLS {
-    readonly enabled: boolean;
-    readonly path: string;
+    enabled: boolean;
+    path: string;
 }
 
 export interface NewParams {
@@ -180,14 +182,12 @@ export interface NewParams {
     config: {
         flags?: Flags;
         tls?: TLS;
-        dnsrecord?: ResourceId;
+        dnsrecord?: ResourceId | null;
         runtime?: RuntimeConfig;
     };
     plan: ResourceId;
     image: ResourceId;
     scaling: Scaling;
-    domain?: ResourceId;
-    tls?: TLS;
     volumes: Volume[];
 }
 
@@ -197,16 +197,18 @@ export interface UpdateParams {
 }
 
 export interface EventCollection extends CollectionDoc {
-    readonly data: {
-        readonly id: ResourceId;
-        readonly type: string;
-        readonly attributes: {
-            readonly caption: string;
-            readonly time: string;
-            readonly platform: boolean,
-            readonly type: string;
-        }
-    }[];
+    data: Event[];
+}
+
+export interface Event {
+    id: ResourceId;
+    type: string;
+    attributes: {
+        caption: string;
+        time: string;
+        platform: boolean,
+        type: string;
+    };
 }
 
 export interface CompatibleImages extends Images.Collection { }

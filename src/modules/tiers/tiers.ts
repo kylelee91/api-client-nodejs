@@ -17,9 +17,9 @@ export function document(id?: ResourceId): typeof CollectionRequest | SingleRequ
 }
 
 export interface Collection extends CollectionDoc {
-    readonly data: Resource[];
-    readonly meta?: {
-        readonly structure?: {
+    data: Resource[];
+    meta?: {
+        structure?: {
             resources: MetaFeature[];
             support: MetaFeature[];
             features: MetaFeature[];
@@ -28,23 +28,23 @@ export interface Collection extends CollectionDoc {
 }
 
 export interface Single extends Resource {
-    readonly data: Tier | null;
+    data: Tier | null;
 }
 
 export interface Tier extends Resource {
-    readonly name: string;
-    readonly public: boolean;
-    readonly most_popular: boolean;
-    readonly disabled: boolean;
-    readonly descriptors: {title: string, description: string, type: string}[];
-    readonly features: {[key: string]: boolean};
-    readonly resources: {[key: string]: number};
-    readonly support: {[key: string]: boolean};
-    readonly price: {
-        readonly month: number;
-        readonly custom: boolean;
+    name: string;
+    public: boolean;
+    most_popular: boolean;
+    disabled: boolean;
+    descriptors: {title: string, description: string, type: string}[];
+    features: {[key: string]: boolean};
+    resources: {[key: string]: number};
+    support: {[key: string]: boolean};
+    price: {
+        month: number;
+        custom: boolean;
     };
-    readonly release: string;
+    release: string;
 }
 
 export interface MetaFeature {

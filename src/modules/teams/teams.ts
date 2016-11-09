@@ -32,14 +32,14 @@ export interface Single extends SingleDoc {
 }
 
 export interface Team extends Resource {
-    readonly name: string;
-    readonly about: {
-        readonly description: string;
+    name: string;
+    about: {
+        description: string;
     };
-    readonly state: State<States>;
-    readonly events: Events;
-    readonly billing: Billing.Profile;
-    readonly owner: ResourceId;
+    state: State<States>;
+    events: Events;
+    billing: Billing.Profile;
+    owner: ResourceId;
 }
 
 export type States = "live" | "deleting" | "deleted";

@@ -11,15 +11,15 @@ export function document() {
 }
 
 export interface Collection extends CollectionDoc {
-    readonly data: Role[];
+    data: Role[];
 }
 
 export interface Single extends SingleDoc {
-    readonly data: Role | null;
+    data: Role | null;
 }
 
 export interface Role extends Resource {
-    readonly name: string;
+    name: string;
 }
 
 export enum Names {

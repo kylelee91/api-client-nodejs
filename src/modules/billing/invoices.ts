@@ -33,7 +33,9 @@ export interface Single extends SingleDoc {
 
 export interface Invoice extends Resource {
     id: ResourceId;
-    items: LineItem[];
+    account: ResourceId;
+    team: ResourceId;
+    items: InvoiceLineItem[];
     approved: boolean;
     term: Term;
     charges: number;
@@ -50,7 +52,6 @@ export interface Invoice extends Resource {
         credited: Time;
         voided: Time;
     };
-
     meta?: {
         amount_due?: number;
     };
@@ -73,8 +74,6 @@ export type States =
     "voided";
 
 export type Categories =
-    "tier" |
-    "infrastructure" |
     "overages" |
     "overages_bandwidth" |
     "overages_image_storage" |
@@ -116,17 +115,30 @@ export interface Refund {
     amount: number;
 }
 
+export type InvoiceLineItem = LineItemWithContainer | LineItemWithTier | LineItemOther;
+
 export interface LineItem {
     term: Term;
-    category: Categories;
     description: string;
-    tier?: Tiers.Summary & { due: number };
-    container?: ContainerLineItem;
     quantity: number;
     due: number;
     discount: number;
 }
 
+export interface LineItemWithTier extends LineItem {
+    category: "tier";
+    tier: Tiers.Summary & { due: number };
+}
+
+export interface LineItemWithContainer extends LineItem {
+    category: "infrastructure";
+    container: ContainerLineItem;
+}
+
+export interface LineItemOther extends LineItem {
+    category: Categories;
+    container: ContainerLineItem;
+}
 
 export class CollectionRequest {
     private static target = "billing/invoices";

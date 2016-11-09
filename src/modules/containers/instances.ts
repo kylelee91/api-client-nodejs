@@ -25,60 +25,100 @@ export function document(container?: ResourceId, id?: ResourceId): CollectionReq
 }
 
 export interface Collection extends CollectionDoc {
-    readonly data: Resource[];
+    data: Resource[];
 }
 
 export interface Single extends SingleDoc {
-    readonly data: Resource | null;
+    data: Resource | null;
 }
 
 export interface Log extends SingleDoc {
-    readonly data: {
-        readonly id: ResourceId;
-        readonly events: Events;
-        readonly output: string;
-        readonly type: string;
-        readonly instance: ResourceId;
+    data: {
+        id: ResourceId;
+        events: Events;
+        output: string;
+        type: string;
+        instance: ResourceId;
     };
 }
 
 export type States = "starting" | "running" | "stopping" | "stopped" | "deleting" | "deleted" | "error";
 export interface Instance extends Resource {
-    readonly id: ResourceId;
-    readonly hostname: string;
-    readonly volumes: Volume[];
-    readonly state: State<States>;
-    readonly location: Location;
-    readonly environment: ResourceId;
-    readonly container: ResourceId;
-    readonly events: Events & {
-        readonly first_boot: Time;
-        readonly started: Time;
+    id: ResourceId;
+    hostname: string;
+    volumes: Volume[];
+    state: State<States>;
+    location: Location;
+    environment: ResourceId;
+    container: ResourceId;
+    events: Events & {
+        first_boot: Time;
+        started: Time;
     };
 
-    readonly networks?: {
-        readonly id: ResourceId;
-        readonly gateway: string;
-        readonly broadcast: string;
-        readonly name: string;
-        readonly cidr: string;
-        readonly type: string;
-        readonly assignment: {
-            readonly ip: {
-                readonly address: string;
-                readonly mask: number;
+    networks?: {
+        id: ResourceId;
+        gateway: string;
+        broadcast: string;
+        name: string;
+        cidr: string;
+        type: string;
+        assignment: {
+            ip: {
+                address: string;
+                mask: number;
             };
         };
-        readonly instance: string;
-        readonly released: string;
-        readonly claimed: string;
+        instance: string;
+        released: string;
+        claimed: string;
     }[];
 }
 
 export interface Volume {
-    readonly container_volume: ResourceId;
-    readonly path: string;
-    readonly password: string;
+    container_volume: ResourceId;
+    path: string;
+    password: string;
+    meta: {
+        location?: Location;
+        networks?: Network[];
+        volumes?: Volume[];
+    };
+}
+
+export interface Location {
+    continent: string;
+    country: string;
+    city: string;
+    state: string;
+}
+
+export interface Network {
+    id: ResourceId;
+    gateway: string;
+    broadcast: string;
+    name: string;
+    cidr: string;
+    type: string;
+    assignment: {
+        ip: {
+            address: string;
+            mask: number;
+        };
+    };
+    instance: string;
+    released: string;
+    claimed: string;
+}
+
+export interface Volume {
+    container_volume: ResourceId;
+    path: string;
+    password: string;
+    ip: string;
+    port: number;
+    username: string;
+    remote_access: boolean;
 }
 
 // List of container instance documents

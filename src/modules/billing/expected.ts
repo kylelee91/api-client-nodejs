@@ -16,7 +16,7 @@ export interface Single extends SingleDoc {
 
 export interface Expected extends Resource {
     id: ResourceId;
-    costs: number;
+    cost: number;
     term: Term;
 }
 

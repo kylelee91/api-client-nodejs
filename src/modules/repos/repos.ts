@@ -23,28 +23,28 @@ export function document(id?: ResourceId): typeof CollectionRequest | SingleRequ
 }
 
 export interface Collection extends CollectionDoc {
-    readonly data: Repo[];
+    data: Repo[];
 }
 
 export interface Single extends SingleDoc {
-    readonly data: Repo | null;
+    data: Repo | null;
 }
 
 export interface Repo extends Resource {
-    readonly id: ResourceId;
-    readonly creator: ResourceId;
-    readonly name: string;
-    readonly about: {
-        readonly description: string;
+    id: ResourceId;
+    creator: ResourceId;
+    name: string;
+    about: {
+        description: string;
     };
-    readonly type: Types;
-    readonly owner: Scope;
-    readonly url: string;
-    readonly auth: {
-        readonly private_key: string;
+    type: Types;
+    owner: Scope;
+    url: string;
+    auth: {
+        private_key: string;
     };
-    readonly state: State<States>;
-    readonly events: Events;
+    state: State<States>;
+    events: Events;
 }
 
 export type States = "live" | "building" | "deleting" | "deleted" | "error";
