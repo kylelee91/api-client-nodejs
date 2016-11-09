@@ -47,7 +47,7 @@ export interface Repo extends Resource {
     events: Events;
     meta?: {
         usage?: {
-            containers: number;
+            images: number;
         };
     };
 }
