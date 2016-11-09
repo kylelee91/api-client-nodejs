@@ -6,10 +6,8 @@ import {
     Auth
 } from "../src";
 import {
-    ResultFail,
-    ResultSuccess,
-    CycleErrorDetail
-} from "../src/common/structures";
+    ApiResult
+} from "../src/common/api";
 
 declare var process: {
     readonly env: any;
@@ -33,7 +31,7 @@ describe("Authorize:", () => {
 });
 
 describe("Environments:", () => {
-    let e: ResultFail<CycleErrorDetail>|ResultSuccess<Environments.Collection>;
+    let e: ApiResult<Environments.Collection>;
     before(async () => {
         e = await Environments.document().get();
         if (!e.ok) {
@@ -55,7 +53,7 @@ describe("Environments:", () => {
 });
 
 describe("Containers:", () => {
-    let c: ResultFail<CycleErrorDetail>|ResultSuccess<Containers.Collection>;
+    let c: ApiResult<Containers.Collection>;
     before(async () => {
         c = await Containers.document().get();
         if (!c.ok) {
