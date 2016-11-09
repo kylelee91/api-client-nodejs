@@ -36,7 +36,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Invoice extends Resource {
-    id: ResourceId;
     account: ResourceId;
     team: ResourceId;
     items: InvoiceLineItem[];

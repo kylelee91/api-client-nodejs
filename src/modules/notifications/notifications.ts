@@ -32,7 +32,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Notification extends Resource {
-    id: ResourceId;
     creator: ResourceId;
     code: string;
     url: string;

@@ -29,7 +29,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Method extends Resource {
-    id: ResourceId;
     name: string;
     primary: boolean;
     address: BillingAddress;

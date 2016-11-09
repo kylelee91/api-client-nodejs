@@ -25,7 +25,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Credit extends Resource {
-    id: ResourceId;
     owner: Scope;
     reason: string;
     amount: {

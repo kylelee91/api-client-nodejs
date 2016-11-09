@@ -31,8 +31,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Environment extends Resource {
-    id: ResourceId;
-    type: "environments";
     name: string;
     about: {
         description: string;

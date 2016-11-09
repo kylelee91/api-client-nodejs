@@ -2,8 +2,7 @@ import * as API from "../../common/api";
 import { Term } from "./common";
 import { 
     SingleDoc, 
-    Resource, 
-    ResourceId, 
+    Resource,
 } from "../../common/structures";
 
 export function document() {
@@ -15,7 +14,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Expected extends Resource {
-    id: ResourceId;
     cost: number;
     term: Term;
 }

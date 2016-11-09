@@ -55,7 +55,6 @@ export interface Single extends SingleDoc {
  * An individual container resource
  */
 export interface Container extends Resource {
-    id: ResourceId;
     name: string;
     config: Config;
     spawns: number;

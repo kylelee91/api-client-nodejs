@@ -31,7 +31,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Repo extends Resource {
-    id: ResourceId;
     creator: ResourceId;
     name: string;
     about: {

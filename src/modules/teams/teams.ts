@@ -32,7 +32,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Team extends Resource {
-    id: ResourceId;
     name: string;
     about: {
         description: string;

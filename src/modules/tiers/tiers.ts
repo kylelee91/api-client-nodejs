@@ -1,6 +1,7 @@
 import * as API from "../../common/api";
 import {
     CollectionDoc,
+    SingleDoc,
     ResourceId,
     Resource,
     QueryParams
@@ -17,7 +18,7 @@ export function document(id?: ResourceId): typeof CollectionRequest | SingleRequ
 }
 
 export interface Collection extends CollectionDoc {
-    data: Resource[];
+    data: Tier[];
     meta?: {
         structure?: {
             resources: MetaFeature[];
@@ -27,12 +28,11 @@ export interface Collection extends CollectionDoc {
     };
 }
 
-export interface Single extends Resource {
+export interface Single extends SingleDoc {
     data: Tier | null;
 }
 
 export interface Tier extends Resource {
-    id: ResourceId;
     name: string;
     public: boolean;
     most_popular: boolean;

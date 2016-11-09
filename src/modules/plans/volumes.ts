@@ -2,7 +2,6 @@ import * as API from "../../common/api";
 import {
     CollectionDoc,
     SingleDoc,
-    ResourceId,
     Resource,
     QueryParams,
 } from "../../common/structures";
@@ -20,21 +19,17 @@ export interface Single extends SingleDoc {
 }
 
 export interface Volume extends Resource {
-    id: ResourceId;
-    type: "volume_plan";
-    attributes: {
-        name: string;
-        local: boolean;
-        price: {
-            month: number;
-        };
-
-        public: boolean;
-        resources: {
-            storage: number;
-        };
-        type: string;
+    name: string;
+    local: boolean;
+    price: {
+        month: number;
     };
+
+    public: boolean;
+    resources: {
+        storage: number;
+    };
+    type: string;
 }
 
 export class VolumeRequest {

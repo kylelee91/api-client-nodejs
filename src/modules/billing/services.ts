@@ -22,7 +22,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Service extends Resource {
-    id: ResourceId;
     term: Term;
     containers: ContainerLineItem[];
     due: number;

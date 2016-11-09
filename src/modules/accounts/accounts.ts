@@ -26,7 +26,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Account extends Resource {
-    id: ResourceId;
     name: {
         first: string;
         last: string;

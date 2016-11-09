@@ -20,7 +20,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Record extends Resource {
-    id: ResourceId;
     container: ResourceId;
     type: Types;
     assignable: boolean;

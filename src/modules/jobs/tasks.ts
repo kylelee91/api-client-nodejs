@@ -2,7 +2,6 @@ import { Resource, ResourceId, Time, Events, State } from "../../common/structur
 import { States } from "./jobs";
 
 export interface Task extends Resource {
-    id: ResourceId;
     topic: string;
     caption: string;
     action: string;

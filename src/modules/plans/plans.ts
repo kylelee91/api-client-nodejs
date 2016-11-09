@@ -27,7 +27,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Plan extends Resource {
-    id: ResourceId;
     name: string;
     public: boolean;
     resources: ResourceLimits;

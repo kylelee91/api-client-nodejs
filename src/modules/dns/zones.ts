@@ -36,7 +36,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Zone extends Resource {
-    id: ResourceId;
     origin: string;
     verified: boolean;
     records: Records.Record[];

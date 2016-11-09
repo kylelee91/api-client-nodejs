@@ -30,7 +30,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Image extends Resource {
-    id: ResourceId;
     name: string;
     about: {
         description: string;
@@ -52,7 +51,6 @@ export interface Image extends Resource {
 }
 
 export interface BuildLog extends Resource {
-    id: ResourceId;
     image: ResourceId;
     owner: Scope;
     output: string;

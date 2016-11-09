@@ -30,7 +30,6 @@ export interface Single extends SingleDoc {
 }
 
 export interface Invite extends Resource {
-    id: ResourceId;
     team: ResourceId;
     inviter: ResourceId;
     invitee: ResourceId;

@@ -27,14 +27,10 @@ export interface Single extends SingleDoc {
 }
 
 export interface DataCenter extends Resource {
-    id: ResourceId;
-    type: "datacenters";
-    attributes: {
-        name: string;
-        provider: string;
-        location: LocationStructure;
-        active: boolean;
-    };
+    name: string;
+    provider: string;
+    location: LocationStructure;
+    active: boolean;
 }
 
 export interface LocationStructure {

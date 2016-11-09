@@ -44,7 +44,6 @@ export interface Log extends SingleDoc {
 
 export type States = "starting" | "running" | "stopping" | "stopped" | "deleting" | "deleted" | "error";
 export interface Instance extends Resource {
-    id: ResourceId;
     hostname: string;
     state: State<States>;
     location: Location;

@@ -1,5 +1,5 @@
 import Cache from "./cache";
-import Settings from "settings";
+import Settings from "../settings";
 import { ApiRequestInit } from "./request";
 import { QueryParams } from "./structures";
 import { ErrorResource } from "./errors";
