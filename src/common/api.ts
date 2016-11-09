@@ -36,10 +36,10 @@ export async function get<T>(target: string, query?: QueryParams): Promise<ApiRe
 export async function post<T>(target: string, doc: Object, query?: QueryParams): Promise<ApiResult<T>> {
     const req = new Request(
         `${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`,
-        Object.assign({
+        Object.assign({} , ApiRequestInit, {
             method: "POST",
             body: JSON.stringify(doc)
-        }, ApiRequestInit)
+        })
     );
 
     embedTeam(req);
@@ -50,7 +50,7 @@ export async function post<T>(target: string, doc: Object, query?: QueryParams):
 export async function patch<T>(target: string, doc: Object, query?: QueryParams): Promise<ApiResult<T>> {
     const req = new Request(
         `${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`,
-        Object.assign(ApiRequestInit, {
+        Object.assign({}, ApiRequestInit, {
             method: "PATCH",
             body: JSON.stringify(doc)
         })
@@ -64,7 +64,7 @@ export async function patch<T>(target: string, doc: Object, query?: QueryParams)
 export async function del<T>(target: string, query?: QueryParams): Promise<ApiResult<T>> {
     const req = new Request(
         `${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`,
-        Object.assign(ApiRequestInit, {
+        Object.assign({}, ApiRequestInit, {
             method: "DELETE",
         })
     );
