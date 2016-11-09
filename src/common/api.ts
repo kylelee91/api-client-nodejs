@@ -123,12 +123,8 @@ function formatParams(q: QueryParams | undefined) {
         f["include"] = q.include.join(",");
     }
 
-    if (q.extra) {
-        f["extra"] = q.extra.join(",");
-    }
-
-    if (q.embed) {
-        f["embed"] = q.embed.join(",");
+    if (q.meta) {
+        f["meta"] = q.meta.join(",");
     }
 
     if (q.filter) {

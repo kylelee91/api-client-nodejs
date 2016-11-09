@@ -1,4 +1,4 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import {
     CollectionDoc,
     SingleDoc,
@@ -9,7 +9,7 @@ import {
     Events,
     Task,
     Scope
-} from "common/structures";
+} from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
 export function document(id: ResourceId): SingleRequest;
@@ -45,7 +45,7 @@ export interface Image extends Resource {
     creator: ResourceId;
     repo: ResourceId;
     meta?: {
-        counts?: {
+        usage?: {
             containers: number;
         };
     };

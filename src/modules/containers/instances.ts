@@ -1,4 +1,4 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import {
     CollectionDoc,
     SingleDoc,
@@ -8,7 +8,7 @@ import {
     Time,
     Events,
     QueryParams
-} from "common/structures";
+} from "../../common/structures";
 
 export function document(container: ResourceId): CollectionRequest;
 export function document(container: ResourceId, id: ResourceId): SingleRequest;
@@ -25,11 +25,11 @@ export function document(container?: ResourceId, id?: ResourceId): CollectionReq
 }
 
 export interface Collection extends CollectionDoc {
-    data: Resource[];
+    data: Instance[];
 }
 
 export interface Single extends SingleDoc {
-    data: Resource | null;
+    data: Instance | null;
 }
 
 export interface Log extends SingleDoc {
@@ -46,7 +46,6 @@ export type States = "starting" | "running" | "stopping" | "stopped" | "deleting
 export interface Instance extends Resource {
     id: ResourceId;
     hostname: string;
-    volumes: Volume[];
     state: State<States>;
     location: Location;
     environment: ResourceId;
@@ -55,35 +54,28 @@ export interface Instance extends Resource {
         first_boot: Time;
         started: Time;
     };
-
-    networks?: {
-        id: ResourceId;
-        gateway: string;
-        broadcast: string;
-        name: string;
-        cidr: string;
-        type: string;
-        assignment: {
-            ip: {
-                address: string;
-                mask: number;
-            };
-        };
-        instance: string;
-        released: string;
-        claimed: string;
-    }[];
-}
-
-export interface Volume {
-    container_volume: ResourceId;
-    path: string;
-    password: string;
-    meta: {
-        location?: Location;
+    meta?: {
         networks?: Network[];
         volumes?: Volume[];
     };
+}
+
+export interface Network {
+    id: ResourceId;
+    gateway: string;
+    broadcast: string;
+    name: string;
+    cidr: string;
+    type: string;
+    assignment: {
+        ip: {
+            address: string;
+            mask: number;
+        };
+    };
+    instance: string;
+    released: string;
+    claimed: string;
 }
 
 export interface Location {

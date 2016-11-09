@@ -1,6 +1,6 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import * as Logins from "./logins";
-import * as Billing from "modules/billing/index";
+import * as Billing from "../../modules/billing/index";
 import { 
     CollectionDoc, 
     SingleDoc, 
@@ -41,12 +41,22 @@ export interface Account extends Resource {
     };
     username: string;
     teams: { id: ResourceId; role: number; joined: Time }[];
-    state: State<"">;
-    events: Events;
+    state: State<"new"|"live"|"suspending"|"suspended"|"purging"|"deleting"|"deleted">;
+    events: Events & {
+        suspension: SuspensionEvent;
+        last_login: Time;
+    };
     billing: Billing.Profile;
     meta?: {
         role: string;
     };
+}
+
+export interface SuspensionEvent {
+    time: Time;
+    reason: string;
+    grace_period: Time;
+    purged: Time;
 }
 
 export interface UpdateParams {

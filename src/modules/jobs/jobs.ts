@@ -1,4 +1,4 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import * as Tasks from "./tasks";
 import {
     CollectionDoc,
@@ -9,7 +9,7 @@ import {
     Events,
     Scope,
     Time
-} from "common/structures";
+} from "../../common/structures";
 
 
 export function document(): typeof CollectionRequest;

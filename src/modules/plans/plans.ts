@@ -1,11 +1,11 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import {
     CollectionDoc,
     SingleDoc,
     ResourceId,
     Resource,
     QueryParams,
-} from "common/structures";
+} from "../../common/structures";
 
 
 export function document(): typeof CollectionRequest;

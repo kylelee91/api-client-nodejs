@@ -1,4 +1,4 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import { 
     CollectionDoc, 
     SingleDoc, 
@@ -8,7 +8,7 @@ import {
     Task,
     Events,
     QueryParams
-} from "common/structures";
+} from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
 export function document(id: ResourceId): SingleRequest;

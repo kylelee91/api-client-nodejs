@@ -1,4 +1,4 @@
-import { Resource, ResourceId, Time, Events, State } from "common/structures";
+import { Resource, ResourceId, Time, Events, State } from "../../common/structures";
 import { States } from "./jobs";
 
 export interface Task extends Resource {

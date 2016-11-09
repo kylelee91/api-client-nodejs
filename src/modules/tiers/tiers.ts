@@ -1,10 +1,10 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import {
     CollectionDoc,
     ResourceId,
     Resource,
     QueryParams
-} from "common/structures";
+} from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
 export function document(id: ResourceId): SingleRequest;
@@ -32,6 +32,7 @@ export interface Single extends Resource {
 }
 
 export interface Tier extends Resource {
+    id: ResourceId;
     name: string;
     public: boolean;
     most_popular: boolean;

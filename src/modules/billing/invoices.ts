@@ -1,6 +1,7 @@
 import * as API from "../../common/api";
 import * as Tiers from "../tiers/tiers";
 import { Term, ContainerLineItem } from "./common";
+import  { Environment } from "../environments";
 import { 
     CollectionDoc, 
     SingleDoc, 
@@ -11,7 +12,7 @@ import {
     Task,
     Events,
     QueryParams
-} from "common/structures";
+} from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
 export function document(id: ResourceId): SingleRequest;
@@ -29,6 +30,9 @@ export interface Collection extends CollectionDoc {
 
 export interface Single extends SingleDoc {
     data: Invoice | null;
+    includes?: {
+        environments: {[key: string]: Environment}
+    };
 }
 
 export interface Invoice extends Resource {

@@ -1,5 +1,6 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import * as Records from "./records";
+import * as Containers from "../containers";
 import {
     CollectionDoc,
     SingleDoc,
@@ -9,7 +10,7 @@ import {
     State,
     Events,
     Task
-} from "common/structures";
+} from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
 export function document(id: ResourceId): SingleRequest;
@@ -22,11 +23,16 @@ export function document(id?: ResourceId): typeof CollectionRequest | SingleRequ
 }
 
 export interface Collection extends CollectionDoc {
-    data: Resource[];
+    data: Zone[];
 }
 
 export interface Single extends SingleDoc {
-    data: Resource | null;
+    data: Zone | null;
+    includes?: {
+        containers: {
+            [key: string]: Containers.Container;
+        }
+    };
 }
 
 export interface Zone extends Resource {
@@ -38,15 +44,6 @@ export interface Zone extends Resource {
     events: Events & {
         last_verification: string;
         verified: string;
-    };
-    meta?: {
-        containers: {
-            [key: string]: {
-                environment: string;
-                id: string;
-                name: string;
-            }
-        }
     };
 }
 

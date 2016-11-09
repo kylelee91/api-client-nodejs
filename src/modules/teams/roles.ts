@@ -1,10 +1,10 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import {
     CollectionDoc,
     SingleDoc,
     Resource,
     QueryParams
-} from "common/structures";
+} from "../../common/structures";
 
 export function document() {
     return RolesResponse;

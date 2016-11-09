@@ -1,8 +1,9 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import * as Instances from "./instances";
 import * as Images from "../images";
 import * as Plans from "../plans";
-import * as DNS from "../dns";
+import * as Dns from "../dns";
+import * as Accounts from "../accounts";
 import {
     CollectionDoc,
     SingleDoc,
@@ -12,7 +13,7 @@ import {
     Task,
     Events,
     QueryParams
-} from "common/structures";
+} from "../../common/structures";
 
 /**
  * Entrypoint for interacting with containers API
@@ -34,7 +35,7 @@ export interface Collection extends CollectionDoc {
     data: Container[];
     includes?: {
         images: { [key: string]: Images.Image };
-        plans: { [key: string]: Images.Image };
+        plans: { [key: string]: Plans.Plan };
     };
 }
 
@@ -45,7 +46,8 @@ export interface Single extends SingleDoc {
     data: Container | null;
     includes?: {
         images: { [key: string]: Images.Image }
-        plans: { [key: string]: Images.Image };
+        plans: { [key: string]: Plans.Plan };
+        domains: { [key: string]: Dns.Records.Record }
     };
 }
 
@@ -66,29 +68,18 @@ export interface Container extends Resource {
     plan: ResourceId;
     domain: ResourceId;
     meta?: {
-        counts?: {
-            instances: {
-                starting: number;
-                running: number;
-                stopping: number;
-                stopped: number;
-                deleting: number;
-                deleted: number;
-                errored: number;
-            }
-        };
-        location?: {
-            continent: string;
-            country: string;
-            city: string;
-            state: string;
-        };
-        ip?: {
+        instances: {
+            starting: number;
+            running: number;
+            stopping: number;
+            stopped: number;
+            deleting: number;
+            deleted: number;
+        },
+        public_ip?: {
             address: string;
             mask: string;
-        },
-        plan?: Plans.Plan;
-        domain?: DNS.Records.Record;
+        }
     };
 }
 
@@ -198,17 +189,20 @@ export interface UpdateParams {
 
 export interface EventCollection extends CollectionDoc {
     data: Event[];
+    includes?: {
+        creators: {[key: string]: Accounts.Account}
+    };
 }
 
 export interface Event {
     id: ResourceId;
     type: string;
-    attributes: {
-        caption: string;
-        time: string;
-        platform: boolean,
-        type: string;
-    };
+    caption: string;
+    time: string;
+    platform: boolean;
+    creator: ResourceId;
+    container: ResourceId;
+    instance?: ResourceId;
 }
 
 export interface CompatibleImages extends Images.Collection { }

@@ -1,10 +1,10 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import { Term } from "./common";
 import { 
     SingleDoc, 
     Resource, 
     ResourceId, 
-} from "common/structures";
+} from "../../common/structures";
 
 export function document() {
     return SingleRequest;

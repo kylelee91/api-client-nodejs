@@ -1,4 +1,4 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import {
     CollectionDoc,
     SingleDoc,
@@ -9,7 +9,7 @@ import {
     State,
     Task,
     Events
-} from "common/structures";
+} from "../../common/structures";
 
 
 export function document(): typeof CollectionRequest;
@@ -45,6 +45,11 @@ export interface Repo extends Resource {
     };
     state: State<States>;
     events: Events;
+    meta?: {
+        usage?: {
+            containers: number;
+        };
+    };
 }
 
 export type States = "live" | "building" | "deleting" | "deleted" | "error";

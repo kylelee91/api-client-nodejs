@@ -1,6 +1,6 @@
-import { OAuthError } from "common/errors";
+import { OAuthError } from "../common/errors";
 import { Token } from "./token";
-import { ApiResult } from "common/api";
+import { ApiResult } from "../common/api";
 import Settings from "../settings";
 
 export interface PasswordAuth {

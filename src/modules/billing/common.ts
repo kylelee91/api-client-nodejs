@@ -1,5 +1,5 @@
-import * as Containers from "modules/containers/index";
-import { ResourceId, Time } from "common/structures";
+import * as Containers from "../../modules/containers/index";
+import { ResourceId, Time } from "../../common/structures";
 
 export interface Term {
     start: Time;

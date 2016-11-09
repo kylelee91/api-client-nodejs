@@ -1,4 +1,4 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import * as Billing from "../billing/index";
 import * as Accounts from "../accounts/index";
 import * as Invites from "./invites";
@@ -11,7 +11,7 @@ import {
     State,
     Events,
     Task
-} from "common/structures";
+} from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
 export function document(id: ResourceId): SingleRequest;
@@ -32,6 +32,7 @@ export interface Single extends SingleDoc {
 }
 
 export interface Team extends Resource {
+    id: ResourceId;
     name: string;
     about: {
         description: string;

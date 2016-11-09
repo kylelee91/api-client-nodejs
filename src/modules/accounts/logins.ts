@@ -1,4 +1,4 @@
-import { CollectionDoc, SingleDoc, Resource, ResourceId, Time } from "common/structures";
+import { CollectionDoc, SingleDoc, Resource, ResourceId, Time } from "../../common/structures";
 
 export interface Collection extends CollectionDoc {
     data: Logins[];

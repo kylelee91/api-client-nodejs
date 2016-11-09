@@ -7,7 +7,8 @@ import {
     Resource,
     ResourceId, 
     QueryParams
-} from "common/structures";
+} from "../../common/structures";
+import { Environment } from "../environments";
 
 export function document() {
     return SingleRequest;
@@ -15,6 +16,9 @@ export function document() {
 
 export interface Single extends SingleDoc {
     data: Service | null;
+    includes?: {
+        environments: {[key: string]: Environment}
+    };
 }
 
 export interface Service extends Resource {

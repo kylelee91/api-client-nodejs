@@ -1,4 +1,4 @@
-import * as API from "common/api";
+import * as API from "../../common/api";
 import * as Roles from "./roles";
 import {
     CollectionDoc,
@@ -8,7 +8,7 @@ import {
     QueryParams,
     Events,
     Time
-} from "common/structures";
+} from "../../common/structures";
 
 export function document(): CollectionRequest;
 export function document(invite: undefined, team: ResourceId): CollectionRequest;

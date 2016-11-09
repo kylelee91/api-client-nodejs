@@ -3,6 +3,7 @@ export interface ErrorResource {
     code?: ErrorCode;
     title?: string;
     detail?: string;
+    source?: string;
 }
 
 export interface OAuthError {

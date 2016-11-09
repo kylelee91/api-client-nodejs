@@ -40,10 +40,9 @@ export interface Includes {
 
 export interface QueryParams {
     include?: string[];
-    extra?: string[];
+    meta?: string[];
     sort?: string[];
     limit?: number;
-    embed?: string[];
     filter?: { [key: string]: string };
     page?: {
         number: number;
