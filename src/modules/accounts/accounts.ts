@@ -36,7 +36,7 @@ export interface Resource extends JsonApi.Resource {
         };
         username: string;
         teams: { id: Id; role: number; joined: Time }[];
-        state: State<"">;
+        state: State<"suspended">;
         events: Events;
         billing: Billing.Profile;
     };
