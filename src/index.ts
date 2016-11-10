@@ -17,6 +17,8 @@ import * as Auth from "./auth";
 import * as Errors from "./common/errors";
 import * as Structures from "./common/structures";
 import * as API from "./common/api";
+import { Cache } from "./common/cache";
+import { ApiRequestInit } from "./common/request";
 
 export { QueryParams } from "./common/structures";
 export { default as Settings } from "./settings";
@@ -37,5 +39,7 @@ export {
     Auth,
     Errors,
     Structures,
-    API
+    API,
+    Cache,
+    ApiRequestInit
 }

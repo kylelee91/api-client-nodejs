@@ -3,6 +3,7 @@ import Settings from "../settings";
 import { ApiRequestInit } from "./request";
 import { QueryParams } from "./structures";
 import { ErrorResource } from "./errors";
+import { OAuthToken } from "../auth/token";
 
 export type ApiResult<T> = ResultSuccess<T> | ResultFail<ErrorResource>;
 
@@ -16,7 +17,11 @@ export interface ResultFail<T> {
     error: T;
 }
 
-export async function get<T>(target: string, query?: QueryParams): Promise<ApiResult<T>> {
+export async function get<T>(target: string, query?: QueryParams, token?: OAuthToken): Promise<ApiResult<T>> {
+    if (!token) {
+        token = Settings.storage.read();
+    }
+    
     if (Settings.cache && Settings.cache.use) {
         const c = Cache.get<ResultSuccess<T>>(target, query, Settings.team);
         if (c) {
@@ -26,14 +31,18 @@ export async function get<T>(target: string, query?: QueryParams): Promise<ApiRe
 
     const req = new Request(`${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`, ApiRequestInit);
     embedTeam(req);
-    let resp = await makeRequest<T>(req);
+    let resp = await makeRequest<T>(req, token);
     if (resp.ok && Settings.cache && Settings.cache.use) {
         Cache.set(target, resp, query, Settings.team, Settings.cache.refresh);
     }
     return resp;
 }
 
-export async function post<T>(target: string, doc: Object, query?: QueryParams): Promise<ApiResult<T>> {
+export async function post<T>(target: string, doc: Object, query?: QueryParams, token?: OAuthToken): Promise<ApiResult<T>> {
+    if (!token) {
+        token = Settings.storage.read();
+    }
+
     const req = new Request(
         `${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`,
         Object.assign({} , ApiRequestInit, {
@@ -43,11 +52,15 @@ export async function post<T>(target: string, doc: Object, query?: QueryParams):
     );
 
     embedTeam(req);
-    let resp = await makeRequest<T>(req);
+    let resp = await makeRequest<T>(req, token);
     return resp;
 }
 
-export async function patch<T>(target: string, doc: Object, query?: QueryParams): Promise<ApiResult<T>> {
+export async function patch<T>(target: string, doc: Object, query?: QueryParams, token?: OAuthToken): Promise<ApiResult<T>> {
+    if (!token) {
+        token = Settings.storage.read();
+    }
+
     const req = new Request(
         `${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`,
         Object.assign({}, ApiRequestInit, {
@@ -57,11 +70,15 @@ export async function patch<T>(target: string, doc: Object, query?: QueryParams)
     );
 
     embedTeam(req);
-    let resp = await makeRequest<T>(req);
+    let resp = await makeRequest<T>(req, token);
     return resp;
 }
 
-export async function del<T>(target: string, query?: QueryParams): Promise<ApiResult<T>> {
+export async function del<T>(target: string, query?: QueryParams, token?: OAuthToken): Promise<ApiResult<T>> {
+    if (!token) {
+        token = Settings.storage.read();
+    }
+
     const req = new Request(
         `${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`,
         Object.assign({}, ApiRequestInit, {
@@ -70,16 +87,15 @@ export async function del<T>(target: string, query?: QueryParams): Promise<ApiRe
     );
 
     embedTeam(req);
-    let resp = await makeRequest<T>(req);
+    let resp = await makeRequest<T>(req, token);
     return resp;
 }
 
-async function makeRequest<T>(req: Request): Promise<ApiResult<T>> {
+async function makeRequest<T>(req: Request, token?: OAuthToken): Promise<ApiResult<T>> {
     if (!Settings.storage) {
         throw new Error("No token storage in settings.");
     }
 
-    const token = Settings.storage.read();
     if (!token) {
         throw new Error("You must load a token before attempting a request.");
     }

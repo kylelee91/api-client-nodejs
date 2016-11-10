@@ -5,11 +5,11 @@ interface Entry {
     timer: number | null;
 }
 
-export default class Cache {
+export class Cache {
 
-    private static registry: {[key: string]: Entry} = {};
+    private registry: {[key: string]: Entry} = {};
 
-    public static get<T>(key: string, options?: {}, team?: string): T | undefined {
+    public get<T>(key: string, options?: {}, team?: string): T | undefined {
         if (!this.registry[key]) {
             // Cache miss
             return undefined;
@@ -30,7 +30,7 @@ export default class Cache {
         return this.registry[key].value;
     }
 
-    public static set(key: string, value: any, options: any, team?: string, timeout?: number) {
+    public set(key: string, value: any, options: any, team?: string, timeout?: number) {
         if (!timeout) {
             timeout = 1000;
         }
@@ -40,7 +40,7 @@ export default class Cache {
         return value;
     }
 
-    public static clear(key: string) {
+    public clear(key: string) {
         if (!this.registry[key]) {
             return;
         }
@@ -48,3 +48,5 @@ export default class Cache {
         clearTimeout(<number>this.registry[key].timer);
     }
 }
+
+export default new Cache();
