@@ -42,8 +42,22 @@ export interface Environment extends Resource {
 
     meta?: {
         counts?: {
-            instances: number;
-            containers: number;
+            instances: {
+                starting: number;
+                running: number;
+                stopping: number;
+                stopped: number;
+                deleting: number;
+                deleted: number;
+            },
+            containers: {
+                starting: number;
+                running: number;
+                stopping: number;
+                stopped: number;
+                deleting: number;
+                deleted: number;
+            }
         }
     };
 }
@@ -109,7 +123,7 @@ export class SingleRequest {
         return this.task("start");
     }
 
-    public async stop()  {
+    public async stop() {
         return this.task("stop");
     }
 

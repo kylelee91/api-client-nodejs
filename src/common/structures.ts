@@ -71,18 +71,14 @@ export interface Events {
 }
 
 export class Task<T extends string> {
-    public data: {
-        id?: ResourceId;
-        action: T;
-        contents?: Object
-        job?: string;
-    };
+    public id?: ResourceId;
+    public action: T;
+    public contents?: Object;
+    public job?: string;
 
     constructor(action: T, contents?: Object) {
-        this.data = {
-            action: action,
-            contents: contents
-        };
+        this.action = action;
+        this.contents = contents;
     }
 }
 
