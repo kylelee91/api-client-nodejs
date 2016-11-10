@@ -35,7 +35,7 @@ export async function passwordAuth(options: PasswordAuth): Promise<ApiResult<Tok
     try {
         const resp = await fetch(Settings.auth.tokenUrl, {
             method: "POST",
-            body: queryParams,
+            body: `grant_type=password&${queryParams}`,
             headers: {
                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
             }
