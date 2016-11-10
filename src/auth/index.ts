@@ -27,16 +27,19 @@ export async function passwordAuth(options: PasswordAuth): Promise<ApiResult<Tok
     }
 
     let queryParams = Object.keys(options)
-        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
+        .map(k => k + "=" + options[k])
         .join("&");
 
     // const req = new JsonApi.Request<Token>(Settings.auth.tokenUrl);
-    const req = new Request(`${Settings.auth.tokenUrl}?grant_type=password&${queryParams}`, {
-        method: "POST",
-    });
 
     try {
-        const resp = await fetch(req);
+        const resp = await fetch(Settings.auth.tokenUrl, {
+            method: "POST",
+            body: queryParams,
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        });
         if (!resp.ok) {
             const err = await resp.json<OAuthError>();
             return {
@@ -98,15 +101,17 @@ export async function refreshAuth(): Promise<ApiResult<Token>> {
     }
 
     let queryParams = Object.keys(options)
-        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
+        .map(k => k + "=" + options[k])
         .join("&");
 
-    const req = new Request(`${Settings.auth.refreshUrl}?grant_type=password&${queryParams}`, {
-        method: "POST",
-    });
-
     try {
-        const resp = await fetch(req);
+        const resp = await fetch(Settings.auth.refreshUrl, {
+            method: "POST",
+            body: queryParams,
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        });
         if (!resp.ok) {
             const err = await resp.json<OAuthError>();
             return {
