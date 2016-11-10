@@ -27,7 +27,7 @@ export async function passwordAuth(options: PasswordAuth): Promise<ApiResult<Tok
     }
 
     let queryParams = Object.keys(options)
-        .map(k => k + "=" + options[k])
+        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
         .join("&");
 
     // const req = new JsonApi.Request<Token>(Settings.auth.tokenUrl);
@@ -101,7 +101,7 @@ export async function refreshAuth(): Promise<ApiResult<Token>> {
     }
 
     let queryParams = Object.keys(options)
-        .map(k => k + "=" + options[k])
+        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
         .join("&");
 
     try {
