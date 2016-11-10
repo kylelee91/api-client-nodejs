@@ -68,7 +68,7 @@ export interface Container extends Resource {
     plan: ResourceId;
     domain: ResourceId;
     meta?: {
-        instances: {
+        instances?: {
             starting: number;
             running: number;
             stopping: number;
@@ -147,16 +147,16 @@ export interface LoadBalance {
     datacenter: ResourceId;
     max: number;
     min: number;
-    public_interface?: boolean;
+    public_interface: boolean;
 }
 
 export interface Persistent {
     datacenter: string;
-    public_interface?: boolean;
+    public_interface: boolean;
 }
 
 export interface Volume {
-    id?: ResourceId;
+    id: ResourceId;
     volume_plan: string;
     path: string;
     remote_access: boolean;

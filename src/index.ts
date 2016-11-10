@@ -13,6 +13,7 @@ import * as Repos from "./modules/repos";
 import * as Teams from "./modules/teams";
 import * as Tiers from "./modules/tiers";
 import * as Notifications from "./modules/notifications";
+import * as Employees from "./modules/employees";
 import * as Auth from "./auth";
 import * as Errors from "./common/errors";
 import * as Structures from "./common/structures";
@@ -36,6 +37,7 @@ export {
     Teams,
     Tiers,
     Notifications,
+    Employees,
     Auth,
     Errors,
     Structures,
