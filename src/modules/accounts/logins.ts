@@ -19,8 +19,8 @@ export interface Login extends Resource {
         id: ResourceId;
         ip: string;
     };
-    employee: {
-        id: ResourceId | null;
+    employee?: {
+        id: ResourceId;
     };
     time: Time;
     type: "password" | "employee";
