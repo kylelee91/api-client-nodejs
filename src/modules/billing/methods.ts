@@ -74,7 +74,6 @@ export interface NewParams {
     name: string;
     credit_card: CreditCardParams;
     address: BillingAddress;
-    team?: string;
 }
 
 export interface UpdateParams {
