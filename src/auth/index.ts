@@ -26,10 +26,13 @@ export async function passwordAuth(options: PasswordAuth): Promise<ApiResult<Tok
         options.client_secret = Settings.client.secret;
     }
 
+    let queryParams = Object.keys(options)
+        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
+        .join("&");
+
     // const req = new JsonApi.Request<Token>(Settings.auth.tokenUrl);
-    const req = new Request(Settings.auth.tokenUrl, {
+    const req = new Request(`${Settings.auth.tokenUrl}?grant_type=password&${queryParams}`, {
         method: "POST",
-        body: JSON.stringify(Object.assign({}, {grant_type: "password"}, options))
     });
 
     try {
@@ -94,9 +97,12 @@ export async function refreshAuth(): Promise<ApiResult<Token>> {
         options.client_secret = Settings.client.secret;
     }
 
-    const req = new Request(Settings.auth.refreshUrl, {
+    let queryParams = Object.keys(options)
+        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
+        .join("&");
+
+    const req = new Request(`${Settings.auth.refreshUrl}?grant_type=password&${queryParams}`, {
         method: "POST",
-        body: JSON.stringify(options)
     });
 
     try {
