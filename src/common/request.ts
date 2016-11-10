@@ -1,8 +1,8 @@
 export const ApiRequestInit: RequestInit = {
     method: "GET",
     headers: new Headers({
-        "Accept": "application/vnd.api+json",
-        "Content-Type": "application/vnd.api+json"
+        "Accept": "application/json",
+        "Content-Type": "application/json"
     }),
     mode: "cors",
     credentials: "omit",

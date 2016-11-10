@@ -37,7 +37,8 @@ export async function passwordAuth(options: PasswordAuth): Promise<ApiResult<Tok
             method: "POST",
             body: `grant_type=password&${queryParams}`,
             headers: {
-                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "Accept": "application/json"
             }
         });
         if (!resp.ok) {
@@ -109,7 +110,8 @@ export async function refreshAuth(): Promise<ApiResult<Token>> {
             method: "POST",
             body: queryParams,
             headers: {
-                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "Accept": "application/json"
             }
         });
         if (!resp.ok) {
