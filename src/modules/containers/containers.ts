@@ -10,6 +10,7 @@ import {
     Resource,
     ResourceId,
     State,
+    NewTask,
     Task,
     Events,
     QueryParams
@@ -242,26 +243,26 @@ export class SingleRequest {
     }
 
     public async start() {
-        return this.task(new Task<"start">("start"));
+        return this.task(new NewTask<"start">("start"));
     }
 
     public async stop() {
-        return this.task(new Task<"stop">("stop"));
+        return this.task(new NewTask<"stop">("stop"));
     }
 
     public async apply(mods: ModifyTaskParams) {
-        return this.task(new Task<"apply">("apply", mods));
+        return this.task(new NewTask<"apply">("apply", mods));
     }
 
     public async reimage(params: ReimageParams) {
-        return this.task(new Task<"reimage">("reimage", params));
+        return this.task(new NewTask<"reimage">("reimage", params));
     }
 
     public async compatibleImages(query?: QueryParams) {
         return API.get<CompatibleImages>(`${this.target}/compatible-images`, query);
     }
 
-    public task(t: Task<SingleActions>, query?: QueryParams) {
+    public task(t: NewTask<SingleActions>, query?: QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             t,

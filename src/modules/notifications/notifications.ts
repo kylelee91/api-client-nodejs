@@ -6,6 +6,7 @@ import {
     Resource,
     QueryParams,
     State,
+    NewTask,
     Task,
     Events,
     Scope,
@@ -58,10 +59,10 @@ export class CollectionRequest {
     }
 
     public static async markAllAsRead() {
-        return this.task(new Task("mark_read"));
+        return this.task(new NewTask("mark_read"));
     }
 
-    public static async task(t: Task<CollectionActions>, query?: QueryParams) {
+    public static async task(t: NewTask<CollectionActions>, query?: QueryParams) {
         return API.post<Task<CollectionActions>>(
             `${this.target}/tasks`,
             t,
@@ -78,10 +79,10 @@ export class SingleRequest {
     }
 
     public async markAsRead() {
-        return this.task(new Task("mark_read"));
+        return this.task(new NewTask("mark_read"));
     }
 
-    public async task(t: Task<CollectionActions>, query?: QueryParams) {
+    public async task(t: NewTask<CollectionActions>, query?: QueryParams) {
         return API.post<Task<CollectionActions>>(
             `${this.target}/tasks`,
             t,

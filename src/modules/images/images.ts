@@ -7,6 +7,7 @@ import {
     QueryParams,
     State,
     Events,
+    NewTask,
     Task,
     Scope
 } from "../../common/structures";
@@ -144,7 +145,7 @@ export class CollectionRequest {
     }
 
     public static async deleteUnused() {
-        return API.post<Task<CollectionActions>>(`${this.target}/tasks`, new Task("cleanup"));
+        return API.post<Task<CollectionActions>>(`${this.target}/tasks`, new NewTask("cleanup"));
     }
 }
 
@@ -177,6 +178,6 @@ export class SingleRequest {
     }
 
     public async task(action: SingleActions, contents?: Object) {
-        return API.post<Task<SingleActions>>(`${this.target}/tasks`, new Task(action, contents));
+        return API.post<Task<SingleActions>>(`${this.target}/tasks`, new NewTask(action, contents));
     }
 }

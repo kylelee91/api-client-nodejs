@@ -9,6 +9,7 @@ import {
     QueryParams,
     State,
     Events,
+    NewTask,
     Task
 } from "../../common/structures";
 
@@ -93,13 +94,13 @@ export class SingleRequest {
     public async task(action: SingleActions, contents?: Object, query?: QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
-            new Task<SingleActions>(action, contents),
+            new NewTask<SingleActions>(action, contents),
             query
         );
     }
 
     public async delete() {
-        return API.del<Task<SingleActions>>(this.target);
+        return API.del<Task<"delete">>(this.target);
     }
 
     public records(): Records.CollectionRequest;

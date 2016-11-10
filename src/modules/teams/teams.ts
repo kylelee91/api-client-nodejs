@@ -10,7 +10,7 @@ import {
     QueryParams,
     State,
     Events,
-    Task
+    NewTask
 } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
@@ -108,9 +108,9 @@ export class SingleRequest {
     }
 
     public async task(action: SingleActions, contents?: Object, query?: QueryParams) {
-        return API.post<Task<SingleActions>>(
+        return API.post<NewTask<SingleActions>>(
             `${this.target}/tasks`,
-            new Task<SingleActions>(action, contents),
+            new NewTask<SingleActions>(action, contents),
             query
         );
     }
@@ -156,6 +156,6 @@ export class MemberRequest {
     }
 
     public async delete(query?: QueryParams) {
-        return API.del<Task<SingleActions>>(this.target, query);
+        return API.del<NewTask<SingleActions>>(this.target, query);
     }
 }

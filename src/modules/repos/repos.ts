@@ -7,6 +7,7 @@ import {
     QueryParams,
     Scope,
     State,
+    NewTask,
     Task,
     Events
 } from "../../common/structures";
@@ -119,7 +120,7 @@ export class SingleRequest {
     }
 
     public async task(action: SingleActions, contents?: Object) {
-        return API.post<Task<SingleActions>>(`${this.target}/tasks`, new Task(action, contents));
+        return API.post<Task<SingleActions>>(`${this.target}/tasks`, new NewTask(action, contents));
     }
 }
 

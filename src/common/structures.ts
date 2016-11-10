@@ -70,7 +70,7 @@ export interface Events {
     completed?: string;
 }
 
-export class Task<T extends string> {
+export class NewTask<T extends string> {
     public id?: ResourceId;
     public action: T;
     public contents?: Object;
@@ -80,6 +80,15 @@ export class Task<T extends string> {
         this.action = action;
         this.contents = contents;
     }
+}
+
+export interface Task<T extends string> {
+    data: {
+        id?: ResourceId;
+        action: T;
+        contents?: Object;
+        job?: string;
+    };
 }
 
 // T is string literal of allowed states

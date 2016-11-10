@@ -8,6 +8,7 @@ import {
     ResourceId, 
     Time, 
     State, 
+    NewTask,
     Task,
     Events,
     QueryParams
@@ -108,7 +109,7 @@ export class AccountRequest {
     public static async task(action: AccountActions, contents?: Object, query?: QueryParams) {
         return API.post<Task<AccountActions>>(
             `${this.target}/tasks`,
-            new Task<AccountActions>(action, contents),
+            new NewTask<AccountActions>(action, contents),
             query
         );
     }

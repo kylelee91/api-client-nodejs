@@ -9,6 +9,7 @@ import {
     ResourceId, 
     Time, 
     State, 
+    NewTask,
     Task,
     Events,
     QueryParams
@@ -170,7 +171,7 @@ export class SingleRequest {
     public async task(action: SingleActions, contents?: Object, query?: QueryParams) {
         return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
-            new Task<SingleActions>(action, contents),
+            new NewTask<SingleActions>(action, contents),
             query
         );
     }
