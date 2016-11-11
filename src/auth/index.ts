@@ -142,3 +142,57 @@ export async function refreshAuth(): Promise<ApiResult<Token>> {
         };
     }
 }
+
+export async function apiKeyAuth(options: {key: string}): Promise<ApiResult<Token>> {
+    // Exceptions thrown ONLY IF the API client can't function
+    if (!Settings.storage) {
+        throw new Error("No token storage defined in settings. Refusing to make request.");
+    }
+
+    if (!Settings.auth) {
+        throw new Error("No authorization url defined in settings. Refusing to make request.");
+    }
+
+    let queryParams = Object.keys(options)
+        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
+        .join("&");
+
+    // const req = new JsonApi.Request<Token>(Settings.auth.tokenUrl);
+
+    try {
+        const resp = await fetch(Settings.auth.tokenUrl, {
+            method: "POST",
+            body: `grant_type=apikey&${queryParams}`,
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "Accept": "application/json"
+            }
+        });
+        if (!resp.ok) {
+            const err = await resp.json<OAuthError>();
+            return {
+                ok: false,
+                error: {
+                    status: resp.status,
+                    detail: err.error_description,
+                    title: err.error
+                }
+            };
+        }
+
+        const token = await resp.json<Token>();
+        Settings.storage.write(token);
+        return {
+            ok: true,
+            value: token
+        };
+    } catch (e) {
+        return {
+            ok: false,
+            error: {
+                detail: e.message,
+                title: "Unable to reach authentication server"
+            }
+        };
+    }
+}
