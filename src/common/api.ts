@@ -106,9 +106,10 @@ async function makeRequest<T>(req: Request, token?: OAuthToken): Promise<ApiResu
         //TODO: Do Timeout Here?
         const resp = await fetch(req);
         if (!resp.ok) {
+            const error = await resp.json();
             return {
                 ok: false,
-                error: await resp.json<ErrorResource>()
+                error: error.error
             };
         }
 
