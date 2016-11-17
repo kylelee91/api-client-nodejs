@@ -44,7 +44,7 @@ export interface UpdateParams {
 }
 
 export class CollectionRequest {
-    private static target = "keys";
+    private static target = "api/keys";
 
     public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
@@ -59,7 +59,7 @@ export class SingleRequest {
     private target: string;
 
     constructor(private id: ResourceId) {
-        this.target = `keys/${id}`;
+        this.target = `api/keys/${id}`;
     }
 
     public async get(query?: QueryParams) {
