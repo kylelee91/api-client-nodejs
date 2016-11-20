@@ -25,22 +25,22 @@ export interface Single extends SingleDoc {
     data: ApiKey | null;
 }
 
-export type AccessType = "modify" | "view";
+export type PrivilegeType = "modify" | "view";
 
 export interface ApiKey extends Resource {
     name: string;
     key: string;
-    access: AccessType;
+    privilege: PrivilegeType;
 }
 
 export interface NewParams {
     name: string;
-    access: AccessType;
+    privilege: PrivilegeType;
 }
 
 export interface UpdateParams {
     name?: string;
-    access?: AccessType;
+    privilege?: PrivilegeType;
 }
 
 export class CollectionRequest {
