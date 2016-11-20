@@ -5,6 +5,8 @@ import {
     Resource,
     ResourceId,
     QueryParams,
+    Events,
+    State
 } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
@@ -25,22 +27,33 @@ export interface Single extends SingleDoc {
     data: ApiKey | null;
 }
 
-export type PrivilegeType = "modify" | "view";
+export type PrivilegeType = "modify" | "read";
 
 export interface ApiKey extends Resource {
     name: string;
-    key: string;
+    secret: string;
+    creator: string;
+    whitelist: Whitelist;
     privilege: PrivilegeType;
+    events: Events;
+    state: State<"">;
+}
+
+export interface Whitelist {
+    enable: boolean;
+    ips: string[];
 }
 
 export interface NewParams {
     name: string;
     privilege: PrivilegeType;
+    whitelist?: Whitelist;
 }
 
 export interface UpdateParams {
     name?: string;
     privilege?: PrivilegeType;
+    whitelist?: Whitelist;
 }
 
 export class CollectionRequest {
