@@ -40,6 +40,14 @@ export interface Team extends Resource {
     events: Events;
     billing: Billing.Profile;
     owner: ResourceId;
+    meta?: {
+        members: {
+            total: number;
+            admins: number;
+            developers: number;
+            analysts: number;
+        }
+    };
 }
 
 export type States = "live" | "deleting" | "deleted";
