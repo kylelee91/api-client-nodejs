@@ -54,8 +54,8 @@ export type States = "live" | "deleting" | "deleted";
 
 export interface NewParams {
     name: string;
-    about?: {
-        description?: string;
+    about: {
+        description: string;
     };
 }
 
