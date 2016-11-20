@@ -56,7 +56,6 @@ export interface NewParams {
     name: string;
     about?: {
         description?: string;
-        website?: string;
     };
 }
 
@@ -64,7 +63,6 @@ export interface UpdateParams {
     name?: string;
     about?: {
         description?: string;
-        website?: string;
     };
 }
 
