@@ -41,7 +41,7 @@ export interface Team extends Resource {
     billing: Billing.Profile;
     owner: ResourceId;
     meta?: {
-        members: {
+        members?: {
             total: number;
             admins: number;
             developers: number;
