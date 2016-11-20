@@ -162,6 +162,6 @@ export class MemberRequest {
     }
 
     public async delete(query?: QueryParams) {
-        return API.del<NewTask<SingleActions>>(this.target, query);
+        return API.del<Single>(this.target, query);
     }
 }
