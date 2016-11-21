@@ -98,6 +98,6 @@ export class SingleRequest {
 
     public action(action: "accept" | "decline", query?: QueryParams) {
         this.target += "/actions";
-        return API.post<Single>(this.target, {data: {accept: action === "accept"}}, query);
+        return API.post<Single>(this.target, {accept: action === "accept", decline: action !== "accept"}, query);
     }
 }
