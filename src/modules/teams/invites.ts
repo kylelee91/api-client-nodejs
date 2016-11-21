@@ -42,6 +42,7 @@ export interface Invite extends Resource {
 
 export interface NewParams {
     invitee: ResourceId;
+    role: Roles.Names;
 }
 
 export class CollectionRequest {
