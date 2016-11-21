@@ -1,5 +1,6 @@
 import * as API from "../../common/api";
 import * as Roles from "./roles";
+import * as Teams from "./teams";
 import {
     CollectionDoc,
     SingleDoc,
@@ -23,6 +24,9 @@ export function document(invite?: ResourceId, team?: ResourceId): CollectionRequ
 
 export interface Collection extends CollectionDoc {
     data: Invite[];
+    includes?: {
+        teams: {[key: string]: Teams.Team}
+    };
 }
 
 export interface Single extends SingleDoc {
