@@ -27,14 +27,12 @@ export interface Single extends SingleDoc {
     data: ApiKey | null;
 }
 
-export type PrivilegeType = "modify" | "read";
-
 export interface ApiKey extends Resource {
     name: string;
     secret: string;
     creator: string;
     whitelist: Whitelist;
-    privilege: PrivilegeType;
+    readonly: boolean;
     events: Events;
     state: State<"">;
 }
@@ -46,13 +44,13 @@ export interface Whitelist {
 
 export interface NewParams {
     name: string;
-    privilege: PrivilegeType;
+    readonly: boolean;
     whitelist?: Whitelist;
 }
 
 export interface UpdateParams {
     name?: string;
-    privilege?: PrivilegeType;
+    readonly?: boolean;
     whitelist?: Whitelist;
 }
 
