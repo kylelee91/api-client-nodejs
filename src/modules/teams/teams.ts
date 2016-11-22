@@ -66,7 +66,7 @@ export interface UpdateParams {
     };
 }
 
-export type SingleActions = "change_tier";
+export type SingleActions = "apply";
 
 export class CollectionRequest {
     private static target = "teams";
@@ -110,7 +110,7 @@ export class SingleRequest {
     }
 
     public async changeTier(tier: string) {
-        return this.task("change_tier", { tier: tier });
+        return this.task("apply", { tier: tier });
     }
 
     public async task(action: SingleActions, contents?: Object, query?: QueryParams) {
