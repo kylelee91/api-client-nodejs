@@ -48,7 +48,7 @@ export interface InstanceUsage {
 }
 
 export interface Profile {
-    trial: Trial;
+    trial?: Trial;
     term: Term;
     tier: ResourceId;
     disable?: boolean;
