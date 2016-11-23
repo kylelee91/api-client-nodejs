@@ -20,7 +20,7 @@ Settings.auth.refreshUrl = "https://portal.dev.cycle.io/auth/refresh";
 describe("Authorize:", () => {
     it("Auth via API Key", async() => {
         let result = await Auth.apiKeyAuth({
-            secret: process.env.APIKEY
+            secret: "HzTZR55TQCnvkDgwXSgBBDEBoZr6LmYhXbm9xErGmi1DMaIVMAopDnkNrQFaaTDxhsYLXHAGuC2d8pfJ4gqySxl2GhUrBH6xKliG"
         });
 
         if (!result.ok) {
