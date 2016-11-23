@@ -143,7 +143,7 @@ export async function refreshAuth(): Promise<ApiResult<Token>> {
     }
 }
 
-export async function apiKeyAuth(options: {key: string}): Promise<ApiResult<Token>> {
+export async function apiKeyAuth(options: {secret: string}): Promise<ApiResult<Token>> {
     // Exceptions thrown ONLY IF the API client can't function
     if (!Settings.storage) {
         throw new Error("No token storage defined in settings. Refusing to make request.");
@@ -162,7 +162,7 @@ export async function apiKeyAuth(options: {key: string}): Promise<ApiResult<Toke
     try {
         const resp = await fetch(Settings.auth.tokenUrl, {
             method: "POST",
-            body: `grant_type=apikey&${queryParams}`,
+            body: `grant_type=api_key&${queryParams}`,
             headers: {
                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
                 "Accept": "application/json"

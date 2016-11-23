@@ -12,8 +12,8 @@ export class Settings {
         refresh: 1000,
     };
     auth = {
-        tokenUrl: "https://api.cycle.io:14000/oauth2/token",
-        refreshUrl: "https://api.cycle.io:14000/oauth2/refresh",
+        tokenUrl: "https://portal.cycle.io/auth/token",
+        refreshUrl: "https://portal.cycle.io/auth/token",
     };
     client: Client | undefined;
     storage: StorageInterface = new CacheStorage();

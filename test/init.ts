@@ -18,10 +18,9 @@ Settings.auth.tokenUrl = "https://portal.dev.cycle.io/auth/token";
 Settings.auth.refreshUrl = "https://portal.dev.cycle.io/auth/refresh";
 
 describe("Authorize:", () => {
-    it("Auth via Password", async() => {
-        let result = await Auth.passwordAuth({
-            username: process.env.USERNAME,
-            password: process.env.PASSWORD
+    it("Auth via API Key", async() => {
+        let result = await Auth.apiKeyAuth({
+            secret: process.env.APIKEY
         });
 
         if (!result.ok) {
@@ -35,7 +34,7 @@ describe("Environments:", () => {
     before(async () => {
         e = await Environments.document().get();
         if (!e.ok) {
-            throw new Error(e.error.detail);
+            throw new Error(e.error.title);
         }
     });
 
@@ -57,7 +56,7 @@ describe("Containers:", () => {
     before(async () => {
         c = await Containers.document().get();
         if (!c.ok) {
-            throw new Error(c.error.detail);
+            throw new Error(c.error.title);
         }
     });
 
