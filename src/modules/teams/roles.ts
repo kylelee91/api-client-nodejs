@@ -23,10 +23,10 @@ export interface Role extends Resource {
 }
 
 export enum Names {
-    Owner = 2,
-    Admin = 4,
-    Developer = 8,
-    Analyst = 16
+    Owner = 1,
+    Admin = 2,
+    Developer = 4,
+    Analyst = 8
 }
 
 
