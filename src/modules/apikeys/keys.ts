@@ -50,6 +50,7 @@ export interface NewParams {
 
 export interface UpdateParams {
     name?: string;
+    readonly?: boolean;
     whitelist?: Whitelist;
 }
 
