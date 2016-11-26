@@ -10,7 +10,8 @@ import {
     QueryParams,
     State,
     Events,
-    NewTask
+    NewTask,
+    Task
 } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
@@ -114,7 +115,7 @@ export class SingleRequest {
     }
 
     public async task(action: SingleActions, contents?: Object, query?: QueryParams) {
-        return API.post<NewTask<SingleActions>>(
+        return API.post<Task<SingleActions>>(
             `${this.target}/tasks`,
             new NewTask<SingleActions>(action, contents),
             query
