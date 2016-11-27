@@ -91,7 +91,7 @@ export async function del<T>(target: string, query?: QueryParams, token?: OAuthT
     return resp;
 }
 
-async function makeRequest<T>(req: Request, token?: OAuthToken): Promise<ApiResult<T>> {
+async function makeRequest<T>(req: Request, token: OAuthToken | undefined): Promise<ApiResult<T>> {
     if (!Settings.storage) {
         throw new Error("No token storage in settings.");
     }
