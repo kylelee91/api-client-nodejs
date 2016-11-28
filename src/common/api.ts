@@ -103,7 +103,6 @@ async function makeRequest<T>(req: Request, token: OAuthToken | undefined): Prom
     req.headers.append("Authorization", `Bearer ${token.access_token}`);
 
     try {
-        //TODO: Do Timeout Here?
         const resp = await fetch(req);
         if (!resp.ok) {
             const error = await resp.json();
@@ -122,8 +121,10 @@ async function makeRequest<T>(req: Request, token: OAuthToken | undefined): Prom
         return {
             ok: false,
             error: {
+                status: 0,
                 title: "Unable to reach server",
-                detail: "There was an error attempting to fetch data from server."
+                detail: "There was an error attempting to fetch data from server.",
+                code: "0.network_error"
             }
         };
     }

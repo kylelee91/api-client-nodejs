@@ -12,6 +12,7 @@ export interface OAuthError {
 }
 
 export type ErrorCode =
+"0.network_error" |
 "400.invalid_syntax" |
 "402.method_expired" | 
 "402.not_ready" |
