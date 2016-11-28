@@ -10,7 +10,8 @@ import {
     State,
     Events,
     NewTask,
-    Task
+    Task,
+    Time
 } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
@@ -38,12 +39,11 @@ export interface Single extends SingleDoc {
 
 export interface Zone extends Resource {
     origin: string;
-    verified: boolean;
     records: Records.Record[];
     state: State<States>;
     events: Events & {
-        last_verification: string;
-        verified: string;
+        last_verification: Time;
+        verified: Time;
     };
 }
 
