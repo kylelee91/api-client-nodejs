@@ -1,4 +1,4 @@
-import { Resource, State } from "../../common/structures";
+import { Resource } from "../../common/structures";
 
 export interface Employee extends Resource {
     name: {
@@ -13,5 +13,4 @@ export interface Employee extends Resource {
     username: string;
     position: string;
     department: string[];
-    state: State<"active"|"suspended">;
 }
