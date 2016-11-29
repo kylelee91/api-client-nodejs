@@ -31,7 +31,9 @@ export interface Collection extends CollectionDoc {
 export interface Single extends SingleDoc {
     data: Zone | null;
     includes?: {
-        containers: {[key: string]: Containers.Container | undefined} | undefined;
+        containers: {
+            [key: string]: Containers.Container;
+        }
     };
 }
 

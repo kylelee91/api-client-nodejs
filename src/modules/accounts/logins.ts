@@ -5,8 +5,8 @@ import { Employee } from "../employees";
 export interface Collection extends CollectionDoc {
     data: Login[];
     includes?: {
-        accounts: {[key: string]: Account | undefined} | undefined;
-        employees: {[key: string]: Employee | undefined} | undefined;
+        accounts: {[key: string]: Account};
+        employees: {[key: string]: Employee}
     };
 }
 

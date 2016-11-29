@@ -35,8 +35,8 @@ export function document(id?: ResourceId): typeof CollectionRequest | SingleRequ
 export interface Collection extends CollectionDoc {
     data: Container[];
     includes?: {
-        images: { [key: string]: Images.Image | undefined } | undefined;
-        plans: { [key: string]: Plans.Plan | undefined } | undefined;
+        images: { [key: string]: Images.Image };
+        plans: { [key: string]: Plans.Plan };
     };
 }
 
@@ -46,9 +46,9 @@ export interface Collection extends CollectionDoc {
 export interface Single extends SingleDoc {
     data: Container | null;
     includes?: {
-        images: { [key: string]: Images.Image | undefined } | undefined;
-        plans: { [key: string]: Plans.Plan | undefined } | undefined;
-        domains: { [key: string]: Dns.Records.Record | undefined } | undefined;
+        images: { [key: string]: Images.Image }
+        plans: { [key: string]: Plans.Plan };
+        domains: { [key: string]: Dns.Records.Record }
     };
 }
 
@@ -190,7 +190,7 @@ export interface UpdateParams {
 export interface EventCollection extends CollectionDoc {
     data: Event[];
     includes?: {
-        creators: {[key: string]: Accounts.Account | undefined} | undefined;
+        creators: {[key: string]: Accounts.Account}
     };
 }
 
