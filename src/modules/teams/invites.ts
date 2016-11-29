@@ -25,7 +25,7 @@ export function document(invite?: ResourceId, team?: ResourceId): CollectionRequ
 export interface Collection extends CollectionDoc {
     data: Invite[];
     includes?: {
-        teams: {[key: string]: Teams.Team}
+        teams: {[key: string]: Teams.Team | undefined} | undefined
     };
 }
 

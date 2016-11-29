@@ -32,7 +32,7 @@ export interface Collection extends CollectionDoc {
 export interface Single extends SingleDoc {
     data: Invoice | null;
     includes?: {
-        environments: {[key: string]: Environment}
+        environments: {[key: string]: Environment | undefined} | undefined;
     };
 }
 

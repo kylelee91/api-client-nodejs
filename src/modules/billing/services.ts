@@ -5,7 +5,6 @@ import { Term, ContainerLineItem } from "./common";
 import { 
     SingleDoc, 
     Resource,
-    ResourceId, 
     QueryParams
 } from "../../common/structures";
 import { Environment } from "../environments";
@@ -17,7 +16,7 @@ export function document() {
 export interface Single extends SingleDoc {
     data: Service | null;
     includes?: {
-        environments: {[key: string]: Environment}
+        environments: {[key: string]: Environment | undefined} | undefined;
     };
 }
 
