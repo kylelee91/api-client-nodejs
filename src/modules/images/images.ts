@@ -51,11 +51,15 @@ export interface Image extends Resource {
     };
 }
 
-export interface BuildLog extends Resource {
+export interface BuildLogResource extends Resource {
     image: ResourceId;
     owner: Scope;
     output: string;
-    Events: Events;
+    events: Events;
+}
+
+export interface BuildLog extends SingleDoc {
+    data: BuildLogResource | null;
 }
 
 export type States =
