@@ -3,7 +3,6 @@ import {
     CollectionDoc, 
     SingleDoc, 
     Resource, 
-    ResourceId, 
     Time, 
     Scope, 
     QueryParams
