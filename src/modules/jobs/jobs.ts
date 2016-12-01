@@ -27,7 +27,7 @@ export interface Collection extends CollectionDoc {
 }
 
 export interface Single extends SingleDoc {
-    data: Job;
+    data: Job | null;
 }
 
 export interface Job {
