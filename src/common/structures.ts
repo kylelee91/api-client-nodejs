@@ -93,14 +93,18 @@ export interface Task<T extends string> {
 
 // T is string literal of allowed states
 export interface State<T extends string> {
-    changed: string;
+    changed: Time;
 
     current: T;
 
-    job: ResourceId;
+    job: {
+        id: ResourceId;
+        queue: Time;
+        queued: Time;
+    };
 
     error?: {
-        block?: boolean;
+        block: boolean;
         time?: string;
         message: string;
     };
