@@ -17,7 +17,7 @@ export interface Single extends SingleDoc {
 export interface Login extends Resource {
     account: {
         id: ResourceId;
-        ip: string;
+        ip?: string;
     };
     employee?: {
         id: ResourceId;
