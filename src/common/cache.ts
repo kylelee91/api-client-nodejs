@@ -35,7 +35,7 @@ export class Cache {
             timeout = 1000;
         }
         this.clear(key);
-        this.registry[key] = {value: value, options: options, timer: null, team: team};
+        this.registry[key] = {value: value, options: options ? JSON.parse(JSON.stringify(options)) : undefined, timer: null, team: team};
         this.registry[key].timer = setTimeout(() => this.clear(key), timeout);
         return value;
     }
