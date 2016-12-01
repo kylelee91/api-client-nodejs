@@ -36,7 +36,7 @@ export class Cache {
             timeout = 1000;
         }
         this.clear(key);
-        const cache = <Entry>{value: value, options: options, timer: null, team: team};
+        const cache = <Entry>{value: value, options: options ? JSON.parse(JSON.stringify(options)) : undefined, timer: null, team: team};
         cache.timer = setTimeout(() => this.clear(key), timeout);
         this.registry[key] = cache;
         return value;
