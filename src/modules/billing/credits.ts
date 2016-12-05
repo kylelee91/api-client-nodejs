@@ -14,13 +14,12 @@ export function document(): typeof CollectionRequest {
 
 export interface Collection extends CollectionDoc {
     data: Credit[];
+    meta: Meta;
 }
 
 export interface Single extends SingleDoc {
     data: Credit | null;
-    meta: {
-        total: number;
-    };
+    meta: Meta;
 }
 
 export interface Credit extends Resource {
@@ -32,6 +31,10 @@ export interface Credit extends Resource {
     };
     issued: Time;
     expired: Time;
+}
+
+export interface Meta {
+    total: number;
 }
 
 export class CollectionRequest {

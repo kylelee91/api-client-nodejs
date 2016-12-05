@@ -3,6 +3,7 @@ import { Term } from "./common";
 import { 
     SingleDoc, 
     Resource,
+    QueryParams
 } from "../../common/structures";
 
 export function document() {
@@ -21,7 +22,7 @@ export interface Expected extends Resource {
 export class SingleRequest {
     private static target = "billing/expected";
 
-    public static async get() {
-        return API.get<Single>(this.target);
+    public static async get(query?: QueryParams) {
+        return API.get<Single>(this.target, query);
     }
 }
