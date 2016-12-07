@@ -1,18 +1,21 @@
 import * as API from "../../common/api";
 import * as Tiers from "../tiers/tiers";
 import { Term, ContainerLineItem } from "./common";
-import  { Environment } from "../environments";
-import { 
-    CollectionDoc, 
-    SingleDoc, 
-    Resource, 
-    ResourceId, 
-    Time, 
-    State, 
+import { Environment } from "../environments";
+import * as Accounts from "../accounts";
+import * as Teams from "../teams";
+import {
+    CollectionDoc,
+    SingleDoc,
+    Resource,
+    ResourceId,
+    Time,
+    State,
     NewTask,
     Task,
     Events,
-    QueryParams
+    QueryParams,
+    Scope
 } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
@@ -27,18 +30,23 @@ export function document(id?: ResourceId): typeof CollectionRequest | SingleRequ
 
 export interface Collection extends CollectionDoc {
     data: Invoice[];
+    includes?: {
+        environments: { [key: string]: Environment };
+        owners: { 
+            accounts: {[key: string]: Accounts.Account},
+            teams: {[key: string]: Teams.Team}
+        }
+    };
 }
 
 export interface Single extends SingleDoc {
     data: Invoice | null;
     includes?: {
-        environments: {[key: string]: Environment}
+        environments: { [key: string]: Environment };
     };
 }
 
 export interface Invoice extends Resource {
-    account: ResourceId;
-    team: ResourceId;
     items: InvoiceLineItem[];
     approved: boolean;
     term: Term;
@@ -56,6 +64,7 @@ export interface Invoice extends Resource {
         credited: Time;
         voided: Time;
     };
+    owner: Scope;
     meta?: {
         amount_due?: number;
     };
