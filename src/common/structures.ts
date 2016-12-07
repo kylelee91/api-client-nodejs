@@ -38,7 +38,7 @@ export interface Includes {
     [key: string]: { [key: string]: Resource };
 }
 
-export interface QueryParams {
+export interface DefaultParams {
     include?: string[];
     meta?: string[];
     sort?: string[];
@@ -51,6 +51,9 @@ export interface QueryParams {
     // Override team from settings
     team?: ResourceId;
 }
+
+// Type strict for the ones we want, but allow any (future proof)
+export type QueryParams = DefaultParams & Object;
 
 export interface Events {
     created?: string;

@@ -21,7 +21,7 @@ export async function get<T>(target: string, query?: QueryParams, token?: OAuthT
     if (!token) {
         token = Settings.storage.read();
     }
-    
+
     if (Settings.cache && Settings.cache.use) {
         const c = Cache.get<ResultSuccess<T>>(target, query, Settings.team);
         if (c) {
@@ -45,7 +45,7 @@ export async function post<T>(target: string, doc: Object, query?: QueryParams, 
 
     const req = new Request(
         `${Settings.url}/v${Settings.version}/${target}?${formatParams(query)}`,
-        Object.assign({} , ApiRequestInit, {
+        Object.assign({}, ApiRequestInit, {
             method: "POST",
             body: JSON.stringify(doc)
         })
@@ -135,40 +135,27 @@ function formatParams(q: QueryParams | undefined) {
         return "";
     }
 
-    const f = {};
-
-    if (q.include) {
-        f["include"] = q.include.join(",");
-    }
-
-    if (q.meta) {
-        f["meta"] = q.meta.join(",");
-    }
-
-    if (q.filter) {
-        for (let prop in q.filter) {
-            let p = encodeURIComponent(prop);
-            if (q.filter[p]) {
-                f["filter[" + p + "]"] = encodeURIComponent(q.filter[prop]);
+    let result = {};
+    function recurse(cur: any, prop: any) {
+        if (Object(cur) !== cur) {
+            result[prop] = cur;
+        } else if (Array.isArray(cur)) {
+            result[prop] = cur.join(",");
+        } else {
+            let isEmpty = true;
+            for (let p in cur) {
+                isEmpty = false;
+                recurse(cur[p], prop ? prop + "[" + p + "]" : p);
+            }
+            if (isEmpty && prop) {
+                result[prop] = {};
             }
         }
     }
+    recurse(q, "");
 
-    if (q.page) {
-        f["page[number]"] = q.page.number;
-        f["page[size]"] = q.page.size;
-    }
-
-    if (q.limit) {
-        f["limit"] = q.limit;
-    }
-
-    if (q.sort) {
-        f["sort"] = q.sort.join(",");
-    }
-
-    return Object.keys(f)
-        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(f[k]))
+    return Object.keys(result)
+        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(result[k]))
         .join("&");
 }
 

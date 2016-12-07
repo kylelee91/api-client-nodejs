@@ -7,27 +7,28 @@ interface Entry {
 
 export class Cache {
 
-    private registry: {[key: string]: Entry} = {};
+    private registry: {[key: string]: Entry | undefined} = {};
 
     public get<T>(key: string, options?: {}, team?: string): T | undefined {
-        if (!this.registry[key]) {
+        const cache = this.registry[key];
+        if (!cache) {
             // Cache miss
             return undefined;
         }
         
         if (options) {
             // Different options. Cache miss.
-            if (JSON.stringify(this.registry[key].options) !== JSON.stringify(options)) {
+            if (JSON.stringify(cache.options) !== JSON.stringify(options)) {
                 return undefined;
             }
         }
 
         // Different team. Cache miss.
-        if (this.registry[key].team !== team) {
+        if (cache.team !== team) {
             return undefined;
         } 
 
-        return this.registry[key].value;
+        return cache.value;
     }
 
     public set(key: string, value: any, options: any, team?: string, timeout?: number) {
@@ -35,17 +36,19 @@ export class Cache {
             timeout = 1000;
         }
         this.clear(key);
-        this.registry[key] = {value: value, options: options, timer: null, team: team};
-        this.registry[key].timer = setTimeout(() => this.clear(key), timeout);
+        const cache: Entry = {value: value, options: options ? JSON.parse(JSON.stringify(options)) : undefined, timer: null, team: team};
+        cache.timer = setTimeout(() => this.clear(key), timeout);
+        this.registry[key] = cache;
         return value;
     }
 
     public clear(key: string) {
-        if (!this.registry[key]) {
+        const cache = this.registry[key];
+        if (!cache) {
             return;
         }
-        this.registry[key].value = null;
-        clearTimeout(<number>this.registry[key].timer);
+        this.registry[key] = undefined;
+        clearTimeout(<number>cache.timer);
     }
 }
 

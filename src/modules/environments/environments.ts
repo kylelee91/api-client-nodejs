@@ -9,8 +9,7 @@ import {
     Events,
     NewTask,
     Task,
-    Scope,
-    Time
+    Scope
 } from "../../common/structures";
 
 export function document(): typeof CollectionRequest;
@@ -78,14 +77,6 @@ export interface UpdateParams {
     name?: string;
     about?: {
         description?: string;
-        developer?: {
-            name?: string;
-            website?: string;
-            organization?: string;
-        };
-        version?: string;
-        release_date?: Time;
-        documentation_url?: string;
     };
 }
 
