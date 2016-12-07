@@ -69,8 +69,8 @@ export type Actions = "start" | "stop";
 
 export interface NewParams {
     name: string;
-    about: {
-        description: string;
+    about?: {
+        description?: string;
     };
 }
 
