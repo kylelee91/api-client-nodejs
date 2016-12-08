@@ -1,6 +1,6 @@
 {
   "name": "cycle-api",
-  "version": "1.0.0-beta.28",
+  "version": "1.0.0-beta.29",
   "description": "NodeJS Client for interacting with Cycle's API.",
   "homepage": "https://cycle.io",
   "bugs": "support@cycle.io",
@@ -18,7 +18,7 @@
     "@types/mocha": "^2.2.29",
     "mocha": "^3.0.0",
     "tslint": "^3.2.0",
-    "typescript": "^2.0.6"
+    "typescript": "^2.1.1"
   },
   "scripts": {
     "prepublish": "tsc",

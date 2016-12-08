@@ -35,7 +35,9 @@ export interface Meta {
  * }
  */
 export interface Includes {
-    [key: string]: { [key: string]: Resource };
+    [key: string]: { 
+        [key: string]: Resource | {[key: string]: Resource};
+    };
 }
 
 export interface DefaultParams {
