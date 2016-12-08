@@ -29,7 +29,7 @@ describe("Authorize:", () => {
         }
     });
 });
-
+/*
 describe("Environments:", () => {
     it("Verifies that data is an array", async () => {
         const e = await Environments.document().get();
@@ -43,6 +43,7 @@ describe("Environments:", () => {
             throw new Error("Data is not an array");
         }
     });
+*/
 /*
     it("Creates environment", async () => {
         const e = await Environments.document().create({
@@ -61,27 +62,20 @@ describe("Environments:", () => {
         }
     });
 */
-
+/*
     it("Updates environment", async () => {
         const e = await Environments.document("584097c21b847a65e05aadeb").update({
             name: "Test Update API",
             about: {
-                description: "This is updating the description of environment",
-                developer: {
-                    name: "Updated Name",
-                    website: "www.example.com",
-                    organization: "Cycle",
-                },
-                version: "1.0",
-                release_date: "11/30/16",
-                documentation_url: "documentation.com"
+                description: "This is updating the description of environment"
             } 
         });
         if (!e.ok) {
             throw new Error(e.error.detail || e.error.title);
         }
+        console.log(e.value);
     });
-
+*/
 /*
     it("Gets single environment", async () => {
         const e = await Environments.document("584097c21b847a65e05aadeb").get();
@@ -122,9 +116,9 @@ describe("Environments:", () => {
             throw new Error(e.error.detail || e.error.title);
         }
     });
-*/
-});
 
+});
+*/
 describe("Images:", () => {
     it("Verifies that data is an array", async () => {
         const i = await Images.document().get();
@@ -146,6 +140,7 @@ describe("Images:", () => {
         }
     });
 */
+/*
     it("Updates environment", async () => {
         const i = await Images.document("58474d211b847a63ccdcd0ac").update({
             name: "Testing!",
@@ -153,6 +148,13 @@ describe("Images:", () => {
                 description: "This is testing"
             }
         });
+        if (!i.ok) {
+            throw new Error(i.error.detail || i.error.title);
+        }
+    });
+*/
+    it("Updates environment", async () => {
+        const i = await Images.document().create();
         if (!i.ok) {
             throw new Error(i.error.detail || i.error.title);
         }
