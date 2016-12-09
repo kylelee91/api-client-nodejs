@@ -103,10 +103,6 @@ export interface ConfigVolumeStructure {
     mode: number;
 }
 
-export interface NewParams {
-
-}
-
 export interface DockerHubImportParams {
     name: string; // >4 chars
     about?: {
@@ -142,10 +138,6 @@ export class CollectionRequest {
 
     public static async get(query?: QueryParams) {
         return API.get<Collection>(this.target, query);
-    }
-
-    public static async create(doc: NewParams, query?: QueryParams) {
-        return API.post<Single>(this.target, doc, query);
     }
 
     public static async deleteUnused() {
