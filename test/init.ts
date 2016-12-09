@@ -29,6 +29,8 @@ describe("Authorize:", () => {
         }
     });
 });
+
+//========================================================================================================================
 /*
 describe("Environments:", () => {
     it("Verifies that data is an array", async () => {
@@ -43,7 +45,9 @@ describe("Environments:", () => {
             throw new Error("Data is not an array");
         }
     });
+
 */
+
 /*
     it("Creates environment", async () => {
         const e = await Environments.document().create({
@@ -119,6 +123,8 @@ describe("Environments:", () => {
 
 });
 */
+//========================================================================================================================
+
 describe("Images:", () => {
     it("Verifies that data is an array", async () => {
         const i = await Images.document().get();
@@ -132,16 +138,18 @@ describe("Images:", () => {
             throw new Error("Data is not an array");
         }
     });
-/*
+
+
     it("Deletes unused images", async () => {
         const i = await Images.document().deleteUnused();
         if (!i.ok) {
             throw new Error(i.error.detail || i.error.title);
         }
     });
-*/
+});
+
 /*
-    it("Updates environment", async () => {
+    it("Updates images", async () => {
         const i = await Images.document("58474d211b847a63ccdcd0ac").update({
             name: "Testing!",
             about: {
@@ -153,17 +161,29 @@ describe("Images:", () => {
         }
     });
 */
-    it("Updates environment", async () => {
-        const i = await Images.document().create();
+/*
+    it("Import dockerhub image", async () => {
+        const i = await Images.document().dockerhub.import({
+            name: "Test Image",
+            about: {
+                description: "This is a test image"
+            },
+            repo: "cycleplatform/website-daemon",
+            tag: ":latest"
+        });
         if (!i.ok) {
             throw new Error(i.error.detail || i.error.title);
         }
     });
 
-});
+*/
 
+
+//========================================================================================================================
+
+/*
 describe("Containers:", () => {
-        it("Verifies that data is an array", async () => {
+    it("Verifies that data is an array", async () => {
         const c = await Containers.document().get();
         if (!c.ok) {
             throw new Error(c.error.title);
@@ -176,3 +196,4 @@ describe("Containers:", () => {
         }
     });
 });
+*/
