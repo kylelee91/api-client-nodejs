@@ -1,4 +1,4 @@
-import { Resource } from "../../common/structures";
+import { Resource, Time } from "../../common/structures";
 
 export interface Employee extends Resource {
     name: {
@@ -8,7 +8,7 @@ export interface Employee extends Resource {
     email: {
         address: string;
         verified: boolean;
-        added: string // Time
+        added: Time;
     };
     username: string;
     position: string;

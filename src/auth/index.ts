@@ -21,16 +21,9 @@ export async function passwordAuth(options: PasswordAuth): Promise<ApiResult<Tok
         throw new Error("No authorization url defined in settings. Refusing to make request.");
     }
 
-    if (Settings.client && (!options.client_id || !options.client_secret)) {
-        options.client_id = Settings.client.id;
-        options.client_secret = Settings.client.secret;
-    }
-
     let queryParams = Object.keys(options)
         .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
         .join("&");
-
-    // const req = new JsonApi.Request<Token>(Settings.auth.tokenUrl);
 
     try {
         const resp = await fetch(Settings.auth.tokenUrl, {
@@ -96,11 +89,6 @@ export async function refreshAuth(): Promise<ApiResult<Token>> {
         "refresh_token": token.refresh_token
     };
 
-    if (Settings.client) {
-        options.client_id = Settings.client.id;
-        options.client_secret = Settings.client.secret;
-    }
-
     let queryParams = Object.keys(options)
         .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
         .join("&");
@@ -157,8 +145,6 @@ export async function apiKeyAuth(options: {secret: string}): Promise<ApiResult<T
     let queryParams = Object.keys(options)
         .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
         .join("&");
-
-    // const req = new JsonApi.Request<Token>(Settings.auth.tokenUrl);
 
     try {
         const resp = await fetch(Settings.auth.tokenUrl, {

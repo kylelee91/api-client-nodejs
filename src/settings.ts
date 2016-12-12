@@ -1,5 +1,4 @@
 import { StorageInterface, CacheStorage } from "./auth/storage";
-import { Client } from "./auth/client";
 import { ResourceId } from "./common/structures";
 
 export type Version = 1;
@@ -15,7 +14,6 @@ export class Settings {
         tokenUrl: "https://portal.cycle.io/auth/token",
         refreshUrl: "https://portal.cycle.io/auth/token",
     };
-    client: Client | undefined;
     storage: StorageInterface = new CacheStorage();
     url = "https://api.cycle.io";
     autoRefreshToken = true;

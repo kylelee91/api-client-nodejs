@@ -37,7 +37,7 @@ export interface Account extends Resource {
     email: {
         address: string;
         verified: boolean;
-        added: string // Time
+        added: Time;
     };
     username: string;
     teams: { id: ResourceId; role: number; joined: Time }[];
