@@ -78,4 +78,8 @@ export class SingleRequest {
     constructor(id: ResourceId) {
         this.target = `plans/${id}`;
     }
+
+    public async get(query?: QueryParams) {
+        return API.get<Single>(this.target, query);
+    }
 }

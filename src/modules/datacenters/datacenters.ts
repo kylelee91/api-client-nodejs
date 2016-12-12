@@ -55,6 +55,6 @@ export class SingleRequest {
     }
 
     public async get(query?: QueryParams) {
-        return API.get<Collection>(this.target, query);
+        return API.get<Single>(this.target, query);
     }
 }
