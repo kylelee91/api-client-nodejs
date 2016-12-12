@@ -44,7 +44,6 @@ export interface DefaultParams {
     include?: string[];
     meta?: string[];
     sort?: string[];
-    limit?: number;
     filter?: { [key: string]: string };
     page?: {
         number: number;

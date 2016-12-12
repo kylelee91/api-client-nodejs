@@ -53,4 +53,8 @@ export class SingleRequest {
     constructor(id: ResourceId) {
         this.target = `datacenters/${id}`;
     }
+
+    public async get(query?: QueryParams) {
+        return API.get<Collection>(this.target, query);
+    }
 }
