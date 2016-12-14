@@ -57,7 +57,6 @@ export interface NewParams {
 
 export interface UpdateParams {
     origin: string;
-    records?: Records.UpdateParams[];
 }
 
 export class CollectionRequest {

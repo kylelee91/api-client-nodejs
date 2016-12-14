@@ -7,7 +7,9 @@ import {
     Auth,
     DataCenters,
     Plans,
-    Jobs
+    Jobs,
+    Repos,
+    Dns
 
 } from "../src";
 import {
@@ -419,9 +421,9 @@ describe("Volumes:", async () => {
     });
 });
 */
-
-describe("Jobs:", async () => {
 /*
+describe("Jobs:", async () => {
+
     it("Retrieves Jobs", async () => {
         const j = await Jobs.document().get();
         if (!j.ok) {
@@ -429,7 +431,7 @@ describe("Jobs:", async () => {
         }
         console.log(p.value);
     });
-*/
+
         it("Retrieves a Job", async () => {
         const j = await Jobs.document("57dc25ad1b847a549ce7040d").get();
         if (!j.ok) {
@@ -438,3 +440,191 @@ describe("Jobs:", async () => {
         console.log(j.value);
     });
 });
+*/
+/*
+describe("Repos:", async () => {
+
+    it ("Retrieves a collection of repos", async () => {
+        const r = await Repos.document().get();
+        if (!r.ok) {
+            throw new Error(r.error.detail);
+        }
+        console.log(r.value);
+    });
+*/
+/*
+    it ("Retrieves a single repo", async () => {
+        const r = await Repos.document("583fcf341b847a65e05aacab").get();
+        if (!r.ok) {
+            throw new Error(r.error.detail);
+        }
+        console.log(r.value);
+    });
+*/
+/*
+    it ("Creates a repo", async () => {
+        const r = await Repos.document().create({
+            name: "Create Repo",
+            url: "git@github.com:kylelee91/test.git",
+            type: "git",
+            auth: {
+                private_key: "-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----"
+            }
+        });
+        if (!r.ok) {
+            throw new Error(r.error.detail);
+        }
+        console.log(r.value);
+    });
+*/
+/*
+    it ("Updates repo", async () => {
+        const r = await Repos.document("584fafaf593b673bad36a02b").update({
+            name: "Update Repo",
+            url: "git@github.com:update/test.git",
+            auth: {
+                private_key: "PRVT_KEY_HERE"
+            }
+        });
+
+    });
+*/
+/*
+    it ("Build repo", async () => {
+        const r = await Repos.document("584fbed2593b673bad36a03a").build({
+                latest: true,
+                commit: "",
+                description: ""
+        });
+    });
+});
+*/
+
+describe("DNS Zones:", async () => {
+/*
+    it ("Retrieves a collection of zones", async () => {
+        const z = await Dns.Zones.document().get();
+        if (!z.ok) {
+            throw new Error(z.error.detail || z.error.title);
+        }
+        console.log(z.value);
+    });
+*/
+/*
+    it ("Creates a dns zone", async () => {
+        const z = await Dns.Zones.document().create({
+            origin: "example.com"
+        });
+    });
+*/
+/*
+    it ("Retrieves a single dns zone", async () => {
+        const z = await Dns.Zones.document("585059fb593b673bad36a079").get();
+        if (!r.ok) {
+            throw new Error(z.error.detail || z.error.title);
+        }
+        console.log(z.value);
+    });
+    */
+    
+    it ("Updates a single dns zone", async () => {
+        const z = await Dns.Zones.document("583356941b847a68d486ebad").update({
+            origin: "Update.com",
+        });
+        if (!z.ok) {
+            throw new Error(z.error.detail || z.error.title);
+        }
+        console.log(z.value);
+    });
+});
+/*
+    it ("Verifies a dns zone", async () => {
+        const z = await Dns.Zones.document("585059fb593b673bad36a079").verify();
+        if (!z.ok) {
+            throw new Error(z.error.detail || z.error.title);
+        }
+        console.log(z.value);
+    });
+*/
+/*
+    it ("Deletes a dns zone", async () => {
+        const z = await Dns.Zones.document("585059fb593b673bad36a079").delete();
+        if (!z.ok) {
+            throw new Error(z.error.detail || z.error.title);
+        }
+        console.log(z.value);
+    });
+});
+*/
+/*
+describe("DNS Records:", async () => {
+
+    it ("Retrieves a collection of records", async () => {
+        const r = await Dns.Zones.document("").records().get();
+        if (!r.ok) {
+            throw new Error(r.error.detail || r.error.title);
+        }
+        console.log(r.value);
+    });
+*/
+
+/*
+    it ("Creates a DNS record", async () => {
+        const r = await Dns.Zones.document("583356941b847a68d486ebad").records().create({
+            type: "a",
+            assignable: true,
+            name: "create",
+            values: {
+                ip: ""
+            }
+        });
+        if (!r.ok) {
+            throw new Error(r.error.detail || r.error.title);
+        }
+        console.log(r.value);
+    });
+*/
+/*
+    it ("Retrieves a single record", async () => {
+        const r = await Dns.Zones.document("583356941b847a68d486ebad").records("583a42ee1b847a76ec4c754f").get();
+        if (!r.ok) {
+            throw new Error(r.error.detail || r.error.title);
+        }
+        console.log(r.value);
+    });
+*/
+/*
+    it ("Retrieves a single record", async () => {
+        const r = await Dns.Zones.document("583356941b847a68d486ebad").records("583a466d1b847a76ec4c7559").delete();
+        if (!r.ok) {
+            throw new Error(r.error.detail || r.error.title);
+        }
+        console.log(r.value);
+    });
+    */
+/*
+    it ("Updates a single record", async () => {
+        const r = await Dns.Zones.document("583356941b847a68d486ebad").records("58507f66593b674d07deb34d").update({
+            type: "aaaa",
+            assignable: true,
+            name: "Update",
+            values: {
+                ip: "2001:cdba:0000:0000:0000:0000:3257:9652"
+            }
+        });
+        if (!r.ok) {
+            throw new Error(r.error.detail || r.error.title);
+        }
+        console.log(r.value);
+    });
+*/
+/*
+    it ("Retrieves a record domain", async () => {
+        const r = await Dns.Records.domains();
+        if (!r.ok) {
+            throw new Error(r.error.detail || r.error.title);
+        }
+        console.log(r.value);
+    });
+});
+*/

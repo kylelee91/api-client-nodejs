@@ -39,7 +39,6 @@ export interface NewParams {
     type: Types;
     assignable: boolean;
     name: string;
-    ssl?: boolean;
     values: {
         ip?: string;
         priority?: number;
@@ -49,12 +48,10 @@ export interface NewParams {
 }
 
 export interface UpdateParams {
-    id: ResourceId;
     type?: Types;
     assignable?: boolean;
     name?: string;
     domain?: string;
-    ssl?: boolean;
     values?: {
         ip?: string;
         priority?: number;
