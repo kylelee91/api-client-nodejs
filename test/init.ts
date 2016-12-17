@@ -9,7 +9,10 @@ import {
     Plans,
     Jobs,
     Repos,
-    Dns
+    Dns,
+    Billing,
+    Accounts,
+    Tiers
 
 } from "../src";
 import {
@@ -499,9 +502,9 @@ describe("Repos:", async () => {
     });
 });
 */
-
-describe("DNS Zones:", async () => {
 /*
+describe("DNS Zones:", async () => {
+
     it ("Retrieves a collection of zones", async () => {
         const z = await Dns.Zones.document().get();
         if (!z.ok) {
@@ -526,7 +529,7 @@ describe("DNS Zones:", async () => {
         console.log(z.value);
     });
     */
-    
+ /*   
     it ("Updates a single dns zone", async () => {
         const z = await Dns.Zones.document("583356941b847a68d486ebad").update({
             origin: "Update.com",
@@ -536,7 +539,7 @@ describe("DNS Zones:", async () => {
         }
         console.log(z.value);
     });
-});
+*/
 /*
     it ("Verifies a dns zone", async () => {
         const z = await Dns.Zones.document("585059fb593b673bad36a079").verify();
@@ -545,6 +548,7 @@ describe("DNS Zones:", async () => {
         }
         console.log(z.value);
     });
+});
 */
 /*
     it ("Deletes a dns zone", async () => {
@@ -628,3 +632,138 @@ describe("DNS Records:", async () => {
     });
 });
 */
+
+////////////////////////////////////////////////////////////////////////
+/*
+describe("Billing:", async () => {
+
+    it ("Gets a collection of invoices", async () => {
+        const b = await Billing.Invoices.document().get();
+        if (!b.ok) {
+            throw new Error(b.error.detail || b.error.title);
+        }
+        console.log(b.value);
+    });
+*/
+/*
+    it ("Gets a single invoice", async () => {
+        const b = await Billing.Invoices.document("5853371e79f2ca5fe6aece55").get();
+        if (!b.ok) {
+            throw new Error(b.error.detail || b.error.title);
+        }
+        console.log(b.value);
+    });
+*/
+/*
+    it ("Gets a collection of invoices", async () => {
+        const b = await Billing.Credits.document().get();
+        if (!b.ok) {
+            throw new Error(b.error.detail || b.error.title);
+        }
+        console.log(b.value);
+    });
+*/
+/*
+    it ("Gets a current services", async () => {
+        const b = await Billing.Services.document().get();
+        if (!b.ok) {
+            throw new Error(b.error.detail || b.error.title);
+        }
+        console.log(b.value);
+    });
+*/
+/*
+    it ("Gets expected", async () => {
+        const b = await Billing.Expected.document().get();
+        if (!b.ok) {
+            throw new Error(b.error.detail || b.error.title);
+        }
+        console.log(b.value);
+    });
+});
+*/
+////////////////////////////////////////////////////////////
+/*
+describe("Accounts:", async () => {
+
+        it ("Retrieves account", async () => {
+        const a = await Accounts.document().get();
+        if (!a.ok) {
+            throw new Error(a.error.detail || a.error.title);
+        }
+        console.log(a.value);
+    });
+*/
+/*
+        it ("Updates account", async () => {
+        const a = await Accounts.document().update({
+            name: {
+                first: "Kyle",
+                last: "Lee"
+            },
+            position: "",
+            auth: {
+                allow_employee_login: true
+            }
+        });
+        if (!a.ok) {
+            throw new Error(a.error.detail || a.error.title);
+        }
+        console.log(a.value);
+    });
+*/
+/*
+        it ("Updates password", async () => {
+        const a = await Accounts.document().changePassword({
+            current: "CurrentPassword",
+            new: "NewPassword"
+        });
+
+        if (!a.ok) {
+            throw new Error(a.error.detail || a.error.title);
+        }
+        console.log(a.value);
+    });
+*/
+/*
+        it ("Retrieve accounts", async () => {
+        const a = await Accounts.document().lookup({
+            filter: {
+                search: "kyl"
+            }
+        });
+
+        if (!a.ok) {
+            throw new Error(a.error.detail || a.error.title);
+        }
+        console.log(a.value);
+    });
+});
+*/
+/////////////////////////////////////////////////////////////////
+/*
+describe("Tiers:", async () => {
+    it ("Gets a collection of tiers", async () => {
+        const b = await Tiers.document().get();
+        if (!b.ok) {
+            throw new Error(b.error.detail || b.error.title);
+        }
+        console.log(b.value);
+    });
+*/
+/*
+    it ("Gets a single tier", async () => {
+        const b = await Tiers.document("574d2aea1c4568c6f3aaf8d0").get();
+        if (!b.ok) {
+            throw new Error(b.error.detail || b.error.title);
+        }
+        console.log(b.value);
+    });
+
+});
+*/
+/////////////////////////////////////////////////////////////////
+
+describe("Datacenters:", async () => {
+
+});
