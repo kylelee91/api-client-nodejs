@@ -46,6 +46,7 @@ export interface NewParams {
     name: string;
     readonly: boolean;
     whitelist?: Whitelist;
+    account?: string; // Only for owner of team
 }
 
 export interface UpdateParams {
