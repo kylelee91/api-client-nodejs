@@ -132,7 +132,7 @@ export type ScalingMethods = "persistent" | "geodns" | "loadbalance" | "loadbala
 export interface Scaling {
     method: ScalingMethods;
     hostname: string;
-    geodns?: GeoDNS;
+    geodns?: GeoDNS; 
     loadbalance?: LoadBalance;
     persistent?: Persistent;
 }
