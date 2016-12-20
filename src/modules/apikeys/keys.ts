@@ -35,6 +35,7 @@ export interface ApiKey extends Resource {
     readonly: boolean;
     events: Events;
     state: State<"">;
+    account: string;
 }
 
 export interface Whitelist {
