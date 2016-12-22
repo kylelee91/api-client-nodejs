@@ -52,6 +52,7 @@ export interface ResourceLimits {
     storage: {
         read: number;
         write: number;
+        base_size: number; // Container base image storage, in MB.
     };
 
     network: {
