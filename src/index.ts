@@ -8,7 +8,6 @@ import * as Dns from "./modules/dns";
 import * as Environments from "./modules/environments";
 import * as Images from "./modules/images";
 import * as Jobs from "./modules/jobs";
-import * as ApiKeys from "./modules/apikeys";
 import * as Plans from "./modules/plans";
 import * as Repos from "./modules/repos";
 import * as Teams from "./modules/teams";
@@ -37,7 +36,6 @@ export {
     Repos,
     Teams,
     Tiers,
-    ApiKeys,
     Notifications,
     Employees,
     Auth,
