@@ -1,129 +1,185 @@
-import * as JsonApi from "../jsonapi/index";
-import * as Errors from "../common/errors";
-import Settings from "../common/settings";
-import { getStorage } from "./storage";
-import Client from "./client";
-import Token from "./token";
+import { OAuthError } from "../common/errors";
+import { Token } from "./token";
+import { ApiResult } from "../common/api";
+import Settings from "../settings";
+export { Token }
 
-export async function passwordAuth(options: {
-    username: string,
-    client_id?: string,
-    client_secret?: string
-    password: string,
-}): Promise<Token> {
+export interface PasswordAuth {
+    username: string;
+    password: string;
+    client_id?: string;
+    client_secret?: string;
+}
+
+export async function passwordAuth(options: PasswordAuth): Promise<ApiResult<Token>> {
+    // Exceptions thrown ONLY IF the API client can't function
+    if (!Settings.storage) {
+        throw new Error("No token storage defined in settings. Refusing to make request.");
+    }
+
+    if (!Settings.auth) {
+        throw new Error("No authorization url defined in settings. Refusing to make request.");
+    }
+
+    let queryParams = Object.keys(options)
+        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
+        .join("&");
+
     try {
-        const req = new JsonApi.Request<Token>(Settings.auth.tokenUrl);
-        if (options.client_id && options.client_secret) {
-            Client.id = options.client_id;
-            Client.secret = options.client_secret;
-        }
-        req.method = "post";
-        req.options = options;
-        req.options["grant_type"] = "password";
-        const token = await req.send();
-        getStorage().write(token);
-        return token;
-    } catch (e) {
-        throw Errors.identify(e);
-    }
-}
-
-export async function apiKeyAuth(k: string): Promise<Token> {
-    try {
-        const req = new JsonApi.Request<Token>(Settings.auth.tokenUrl);
-        req.method = "post";
-        req.options = {
-            grant_type: "apikey",
-            key: k
-        };
-        const token = await req.send();
-        getStorage().write(token);
-        return token;
-    } catch (e) {
-        throw Errors.identify(e);
-    }
-}
-
-export async function deleteToken() {
-    getStorage().delete();
-}
-
-export function readToken(): Token {
-    const t = getStorage().read();
-    if (!t) {
-        throw new Errors.TokenNotAuthorizedError();
-    }
-
-    return t;
-}
-
-// Allow lock var to persist.
-// Acts as mutex, only one refresh will happen.
-export let refreshToken: (t: Token) => Promise<Token> = (() => {
-    let lock: Promise<Token> | undefined;
-
-    return async (t: Token) => {
-        try {
-            if (lock) {
-                return await lock;
+        const resp = await fetch(Settings.auth.tokenUrl, {
+            method: "POST",
+            body: `grant_type=password&${queryParams}`,
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "Accept": "application/json"
             }
-
-            const req = new JsonApi.Request<Token>(Settings.auth.refreshUrl);
-            req.method = "get";
-            req.options = {
-                "grant_type": "refresh_token",
-                "refresh_token": t.refresh_token
+        });
+        if (!resp.ok) {
+            const err = await resp.json<OAuthError>();
+            return {
+                ok: false,
+                error: {
+                    status: resp.status,
+                    detail: err.error_description,
+                    title: err.error
+                }
             };
-
-            if (Client.id && Client.secret) {
-                req.options["client_id"] = Client.id;
-                req.options["client_secret"] = Client.secret;
-            }
-
-            lock = req.send();
-            const token = await lock;
-            getStorage().write(token);
-            lock = undefined; // Don't forget to do this otherwise second refresh attempt fails.
-            return token;
-        } catch (e) {
-            throw Errors.identify(e);
         }
-    };
-})();
 
-export async function signRequest<T>(req: JsonApi.Request<T>): Promise<T> {
-    const token = readToken();
-    let resp: T;
-    req.setHeader("Authorization", "Bearer " + token.access_token);
-
-    try {
-        resp = await req.send();
+        const token = await resp.json<Token>();
+        Settings.storage.write(token);
+        return {
+            ok: true,
+            value: token
+        };
     } catch (e) {
-        const eType = Errors.identify(e);
-
-        if ((eType instanceof Errors.TokenNotAuthorizedError) === false) {
-            throw eType;
-        }
-
-        // Handles the following case:
-        // 1) Token expires with failed request
-        // 2) Another request with expired token is made
-        // 3) Refresh token request initiated and completes (unlocking this function)
-        // 4) Expired token request completes, tries to do refresh with old token and fails
-        const currentToken = readToken();
-        if (currentToken && token.refresh_token !== currentToken.refresh_token) {
-            req.setHeader("Authorization", "Bearer " + currentToken.access_token);
-        } else {
-            try {
-                const refresh = await refreshToken(token);
-                req.setHeader("Authorization", "Bearer " + refresh.access_token);
-            } catch (e) {
-                throw new Errors.TokenRefreshFailedError();
+        return {
+            ok: false,
+            error: {
+                detail: e.message,
+                title: "Unable to reach authentication server"
             }
-        }
+        };
+    }
+}
 
-        resp = await req.send();
+export async function refreshAuth(): Promise<ApiResult<Token>> {
+    interface Params {
+        grant_type: "refresh_token";
+        refresh_token: string;
+        client_id?: string;
+        client_secret?: string;
     }
 
-    return resp;
-} 
+    if (!Settings.storage) {
+        throw Error("No token storage defined in settings. Refusing to make request.");
+    }
+
+    if (!Settings.auth) {
+        throw Error("No refresh url defined in settings. Refusing to make request.");
+    }
+
+    const token = Settings.storage.read();
+    if (!token) {
+        throw new Error("You must load a token before attempting a request.");
+    }
+
+    const options: Params = {
+        "grant_type": "refresh_token",
+        "refresh_token": token.refresh_token
+    };
+
+    let queryParams = Object.keys(options)
+        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
+        .join("&");
+
+    try {
+        const resp = await fetch(Settings.auth.refreshUrl, {
+            method: "POST",
+            body: queryParams,
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "Accept": "application/json"
+            }
+        });
+        if (!resp.ok) {
+            const err = await resp.json<OAuthError>();
+            return {
+                ok: false,
+                error: {
+                    status: resp.status,
+                    detail: err.error_description,
+                    title: err.error
+                }
+            };
+        }
+
+        const refresh = await resp.json<Token>();
+        Settings.storage.write(refresh);
+        return {
+            ok: true,
+            value: refresh
+        };
+    } catch (e) {
+        return {
+            ok: false,
+            error: {
+                code: "0.network_error",
+                detail: e.message,
+                title: "Unable to reach authentication server"
+            }
+        };
+    }
+}
+
+export async function apiKeyAuth(options: {secret: string}): Promise<ApiResult<Token>> {
+    // Exceptions thrown ONLY IF the API client can't function
+    if (!Settings.storage) {
+        throw new Error("No token storage defined in settings. Refusing to make request.");
+    }
+
+    if (!Settings.auth) {
+        throw new Error("No authorization url defined in settings. Refusing to make request.");
+    }
+
+    let queryParams = Object.keys(options)
+        .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(options[k]))
+        .join("&");
+
+    try {
+        const resp = await fetch(Settings.auth.tokenUrl, {
+            method: "POST",
+            body: `grant_type=api_key&${queryParams}`,
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "Accept": "application/json"
+            }
+        });
+        if (!resp.ok) {
+            const err = await resp.json<OAuthError>();
+            return {
+                ok: false,
+                error: {
+                    status: resp.status,
+                    detail: err.error_description,
+                    title: err.error
+                }
+            };
+        }
+
+        const token = await resp.json<Token>();
+        Settings.storage.write(token);
+        return {
+            ok: true,
+            value: token
+        };
+    } catch (e) {
+        return {
+            ok: false,
+            error: {
+                detail: e.message,
+                title: "Unable to reach authentication server"
+            }
+        };
+    }
+}

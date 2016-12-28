@@ -1,4 +1,4 @@
-export interface TokenInterface {
+export interface OAuthToken {
     access_token: string;
     token_type: string;
     expires_in: number;
@@ -6,14 +6,14 @@ export interface TokenInterface {
     refresh_token: string;
 }
 
-export default class Token implements TokenInterface {
+export class Token implements OAuthToken {
     public access_token: string;
     public token_type: string;
     public expires_in: number;
     public created: number;
     public refresh_token: string;
     
-    constructor(token: TokenInterface) {
+    constructor(token: OAuthToken) {
         this.access_token = token.access_token;
         this.token_type = token.token_type;
         this.expires_in = token.expires_in;

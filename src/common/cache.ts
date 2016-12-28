@@ -1,44 +1,55 @@
 interface Entry {
     value: any;
     options: any;
+    team?: string;
     timer: number | null;
 }
 
-export default class Cache {
+export class Cache {
 
-    private static registry: {[key: string]: Entry} = {};
+    private registry: {[key: string]: Entry | undefined} = {};
 
-    public static get(key: string, options?: {}) {
-        if (!this.registry[key]) {
+    public get<T>(key: string, options?: {}, team?: string): T | undefined {
+        const cache = this.registry[key];
+        if (!cache) {
             // Cache miss
-            return null;
+            return undefined;
         }
         
         if (options) {
             // Different options. Cache miss.
-            if (JSON.stringify(this.registry[key].options) !== JSON.stringify(options)) {
-                return null;
+            if (JSON.stringify(cache.options) !== JSON.stringify(options)) {
+                return undefined;
             }
         }
 
-        return this.registry[key].value;
+        // Different team. Cache miss.
+        if (cache.team !== team) {
+            return undefined;
+        } 
+
+        return cache.value;
     }
 
-    public static set(key: string, value: any, options: any, timeout?: number) {
+    public set(key: string, value: any, options: any, team?: string, timeout?: number) {
         if (!timeout) {
             timeout = 1000;
         }
         this.clear(key);
-        this.registry[key] = {value: value, options: options, timer: null};
-        this.registry[key].timer = setTimeout(this.clear.bind(this, key), timeout);
+        const cache: Entry = {value: value, options: options ? JSON.parse(JSON.stringify(options)) : undefined, timer: null, team: team};
+        cache.timer = setTimeout(() => this.clear(key), timeout);
+        this.registry[key] = cache;
         return value;
     }
 
-    public static clear(key: string) {
-        if (! this.registry[key]) {
+    public clear(key: string) {
+        const cache = this.registry[key];
+        if (!cache) {
             return;
         }
-        this.registry[key].value = null;
-        clearTimeout(<number>this.registry[key].timer);
+        this.registry[key] = undefined;
+        clearTimeout(<number>cache.timer);
     }
 }
+
+export default new Cache();

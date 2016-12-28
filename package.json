@@ -1,6 +1,6 @@
 {
   "name": "cycle-api",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0",
   "description": "NodeJS Client for interacting with Cycle's API.",
   "homepage": "https://cycle.io",
   "bugs": "support@cycle.io",
@@ -11,14 +11,14 @@
   "main": "dist/index.js",
   "typings": "dist/typings/index.d.ts",
   "dependencies": {
-    "superagent": "^2.1.0"
+    "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {
+    "@types/isomorphic-fetch": "0.0.31",
     "@types/mocha": "^2.2.29",
-    "@types/superagent": "^1.4.28",
     "mocha": "^3.0.0",
     "tslint": "^3.2.0",
-    "typescript": "^2.0.0"
+    "typescript": "^2.1.1"
   },
   "scripts": {
     "prepublish": "tsc",
@@ -33,7 +33,9 @@
     "petrichor",
     "portal",
     "api",
-    "client"
+    "client",
+    "containers",
+    "caas"
   ],
   "author": "Petrichor, Inc.",
   "license": "Apache-2.0"

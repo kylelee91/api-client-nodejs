@@ -1,109 +1,75 @@
-import * as JsonApi from "../jsonapi/index";
-
-export class BadRequestError extends JsonApi.JsonApiError {
-
+export interface ErrorResource {
+    status?: number;
+    code?: ErrorCode;
+    title?: string;
+    detail?: string;
+    source?: string;
 }
 
-export class TokenNotAuthorizedError extends JsonApi.JsonApiError {
-
+export interface OAuthError {
+    error: string;
+    error_description: string;
 }
 
-export class TokenRefreshFailedError extends JsonApi.JsonApiError {
-    
-}
-
-export class ResourceForbiddenError extends JsonApi.JsonApiError {
-
-}
-
-export class FieldValidationError extends JsonApi.JsonApiError {
-
-}
-
-export class ResourceNotFoundError extends JsonApi.JsonApiError {
-    
-}
-
-export class AuthenticationFailure extends JsonApi.JsonApiError {
-    
-}
-
-export class ServerError extends JsonApi.JsonApiError {
-    
-}
-
-export {
-    RequestFailedError,
-    RequestTimeoutError,
-    InvalidMethodError,
-    InvalidResponseError
-} from "../jsonapi/index";
-
-export function identify(e: JsonApi.JsonApiError): JsonApi.JsonApiError {
-    // See if it was a networking issue
-    switch (true) {
-        case e instanceof JsonApi.RequestFailedError:
-        case e instanceof JsonApi.RequestTimeoutError:
-        case e instanceof JsonApi.InvalidMethodError:
-        case e instanceof JsonApi.InvalidResponseError:
-            return e;
-        default:
-            break;
-    }
-    
-    if (!e.errors || !e.errors.length) {
-        return identifyOAuthError(e);
-    }
-    
-    if ("error" in e.errors[0] && "error_description" in e.errors[0]) {
-        return identifyOAuthError(e);
-    }
-
-    switch (e.errors[0].status) {
-        case "400":
-            return new BadRequestError();
-        case "401":
-            return new TokenNotAuthorizedError();
-        case "403":
-            return new ResourceForbiddenError(e);
-        case "404":
-            return new ResourceNotFoundError(e);
-        case "422":
-            return new FieldValidationError(e);
-        case "500":
-            return new ServerError(e);
-        default:
-            return e;
-    }
-}
-
-export class OAuthError extends Error {
-    public error: string;
-    public error_description: string;
-}
-
-function identifyOAuthError(e: JsonApi.JsonApiError): JsonApi.JsonApiError {
-    let err: JsonApi.JsonApiError;
-    const oauthErr = <OAuthError>e.errors[0];
-    
-    if (!oauthErr) {
-        return new JsonApi.JsonApiError(e);
-    }
-    
-    switch (oauthErr.error) {
-        case "access_denied":
-            err = new AuthenticationFailure();
-            err.name = oauthErr.error;
-            err.message = oauthErr.error_description;
-            break;
-        case "invalid_request":
-            err = new BadRequestError();
-            err.name = oauthErr.error;
-            err.message = oauthErr.error_description;
-            break;
-        default:
-            err = new JsonApi.JsonApiError(e);
-    }
-    
-    return err;
-}
+export type ErrorCode =
+"0.network_error" |
+"400.invalid_syntax" |
+"402.method_expired" | 
+"402.not_ready" | 
+"402.payment_due" | 
+"401.auth_corrupt" | 
+"401.auth_invalid" | 
+"401.auth_expired" |
+"403.permissions" |
+"403.readonly" |
+"403.restricted_portal" |
+"403.must_verify" |
+"403.trial_limitation" |
+"403.team_mismatch" |
+"403.wrong_scope" |
+"403.tier_feature" |
+"403.primary_method_deletion" |
+"403.resource_capacity" |
+"404.department" |
+"404.support_ticket" |
+"404.support_ticket_reply" |
+"404.support_ticket.priority" |
+"404.tier" |
+"404.api_key" |
+"404.account" |
+"404.employee" |
+"404.team" |
+"404.team_invitation" |
+"404.datacenter" |
+"404.dns_zone" |
+"404.dns_record" |
+"404.repo" |
+"404.container" |
+"404.cluster" |
+"404.plan" |
+"404.instance" |
+"404.instance_log" |
+"404.payment_method" |
+"404.invoice" |
+"404.image" |
+"404.job" |
+"404.image_build_logs" |
+"404.notification" |
+"404.node" |
+"404.promo_code" |
+"404.environment" |
+"415.invalid_content_type" |
+"422.missing_argument" |
+"422.invalid_argument" |  // url
+"422.invalid_input" | // body, post etc
+"422.not_compatible" |
+"422.already_exists" |
+"422.limit_reached" |
+"500.unknown" |
+"500.database" |
+"500.email" |  // sendgrid
+"500.jobd" |
+"500.notify" |
+"500.image_state" |
+"500.support_activity" |
+"500.payment_gateway";
