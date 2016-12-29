@@ -1,6 +1,6 @@
 {
   "name": "cycle-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NodeJS Client for interacting with Cycle's API.",
   "homepage": "https://cycle.io",
   "bugs": "support@cycle.io",
@@ -11,10 +11,10 @@
   "main": "dist/index.js",
   "typings": "dist/typings/index.d.ts",
   "dependencies": {
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "^2.2.1",
+    "@types/isomorphic-fetch": "0.0.31"
   },
   "devDependencies": {
-    "@types/isomorphic-fetch": "0.0.31",
     "@types/mocha": "^2.2.29",
     "mocha": "^3.0.0",
     "tslint": "^3.2.0",
