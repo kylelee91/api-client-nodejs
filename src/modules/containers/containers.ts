@@ -58,8 +58,6 @@ export interface Single extends SingleDoc {
 export interface Container extends Resource {
     name: string;
     config: Config;
-    spawns: number;
-    scaling: Scaling;
     volumes: Volume[];
     state: State<States>;
     events: Events;
@@ -67,6 +65,7 @@ export interface Container extends Resource {
     image: ResourceId;
     plan: ResourceId;
     domain: ResourceId;
+    stats?: Stats;
     meta?: {
         instances?: {
             starting: number;
@@ -96,13 +95,18 @@ export type States = "starting" | "running" | "stopping" | "stopped" | "deleting
  */
 export type SingleActions = "start" | "stop" | "apply" | "reimage";
 
-export interface ModifyTaskParams {
+export interface ApplyTaskParams {
     plan?: ResourceId;
-    domain?: ResourceId | null;
-    hostname?: string;
+    domain?: ResourceId | null; // Set to null to remove
     runtime?: RuntimeConfig;
     tls?: TLS;
     flags?: Flags;
+    hostname?: string;
+    scaling?: {
+        geodns?: Partial<GeoDNS>;
+        loadbalance?: Partial<LoadBalance>;
+        persistent?: Partial<Persistent>;
+    };
 }
 
 export interface ReimageParams {
@@ -114,6 +118,12 @@ export interface Config {
     tls: TLS;
     dnsrecord: ResourceId | null;
     runtime: RuntimeConfig;
+    hostname: string;
+    scaling: Scaling;
+}
+
+export interface Stats {
+    spawns: number; // Total number of instances ever created by container
 }
 
 export interface Flags {
@@ -128,31 +138,32 @@ export interface RuntimeConfig {
     };
 };
 
-export type ScalingMethods = "persistent" | "geodns" | "loadbalance" | "loadbalance-geodns";
-export interface Scaling {
-    method: ScalingMethods;
-    hostname: string;
-    geodns?: GeoDNS; 
-    loadbalance?: LoadBalance;
-    persistent?: Persistent;
-}
-
+export type Scaling = GeoDNS | LoadBalance | Persistent;
+export type ScalingMethodName = "geodns" | "loadbalance" | "persistent";
 export interface GeoDNS {
-    datacenters: ResourceId[];
-    max_per_dc: number;
-    min_per_dc: number;
+    method: "geodns";
+    geodns: {
+        datacenters: ResourceId[];
+        max_per_dc: number;
+        min_per_dc: number;
+    };
 }
 
 export interface LoadBalance {
-    datacenter: ResourceId;
-    max: number;
-    min: number;
-    public_interface: boolean;
+    method: "loadbalance";
+    loadbalance: {
+        datacenter: ResourceId;
+        max: number;
+        min: number;
+    };
 }
 
 export interface Persistent {
-    datacenter: string;
-    public_interface: boolean;
+    method: "persistent";
+    persistent: {
+        datacenter: string;
+        public_interface: boolean;
+    };
 }
 
 export interface Volume {
@@ -170,15 +181,9 @@ export interface TLS {
 export interface NewParams {
     name: string;
     environment: ResourceId;
-    config: {
-        flags?: Flags;
-        tls?: TLS;
-        dnsrecord?: ResourceId | null;
-        runtime?: RuntimeConfig;
-    };
+    config: Partial<Config>;
     plan: ResourceId;
     image: ResourceId;
-    scaling: Scaling;
     volumes: Volume[];
 }
 
@@ -190,7 +195,7 @@ export interface UpdateParams {
 export interface EventCollection extends CollectionDoc {
     data: Event[];
     includes?: {
-        creators: {[key: string]: Accounts.Account}
+        creators: { [key: string]: Accounts.Account }
     };
 }
 
@@ -250,7 +255,7 @@ export class SingleRequest {
         return this.task(new NewTask<"stop">("stop"));
     }
 
-    public async apply(mods: ModifyTaskParams) {
+    public async apply(mods: ApplyTaskParams) {
         return this.task(new NewTask<"apply">("apply", mods));
     }
 
