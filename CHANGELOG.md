@@ -14,3 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - tsd.json, haven't used since TS 2.0.0
+
+## [1.1.1] - 2017-2-13
+### Added
+- Fix bug where query params were never passed into an account request
