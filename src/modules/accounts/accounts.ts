@@ -82,7 +82,7 @@ export class AccountRequest {
     private static target: string = "account";
 
     public static async get(query?: QueryParams) {
-        return API.get<Single>(this.target);
+        return API.get<Single>(this.target, query);
     }
 
     public static async update(doc: UpdateParams, query?: QueryParams) {
