@@ -56,7 +56,7 @@ describe("Environments:", () => {
         }
     });
 
-
+});
 
 /*
     it("Creates environment", async () => {
@@ -764,7 +764,3 @@ describe("Tiers:", async () => {
 });
 */
 /////////////////////////////////////////////////////////////////
-
-describe("Datacenters:", async () => {
-
-});
