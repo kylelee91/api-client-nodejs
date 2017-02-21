@@ -30,7 +30,7 @@ export interface Credit extends Resource {
         remaining: number;
     };
     issued: Time;
-    expired: Time;
+    expires: Time;
 }
 
 export interface Meta {

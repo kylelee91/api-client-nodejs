@@ -18,3 +18,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.1.1] - 2017-2-13
 ### Added
 - Fix bug where query params were never passed into an account request
+
+## [1.2.0] - 2017-2-20
+### Updated
+- Credits.expired was changed to Credits.expires on API. Matched field in client.
+Breaking change for anyone using credits API
