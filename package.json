@@ -15,15 +15,17 @@
     "@types/isomorphic-fetch": "0.0.31"
   },
   "devDependencies": {
+    "@types/chai": "^3.4.35",
     "@types/mocha": "^2.2.29",
+    "chai": "^3.5.0",
     "mocha": "^3.0.0",
     "tslint": "^3.2.0",
-    "typescript": "^2.1.4"
+    "typescript": "^2.1.6"
   },
   "scripts": {
     "prepublish": "tsc",
     "pretest": "cd test && tsc",
-    "test": "mocha test/build/test/init.js"
+    "test": "mocha test/build/test/index.js"
   },
   "keywords": [
     "cycle",

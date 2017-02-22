@@ -17,9 +17,7 @@ import {
     Teams
 
 } from "../src";
-import {
-    ApiResult
-} from "../src/common/api";
+
 
 declare var process: {
     readonly env: any;
@@ -31,6 +29,11 @@ Settings.auth.refreshUrl = "https://portal.dev.cycle.io/auth/refresh";
 
 describe("Authorize:", () => {
     it("Auth via API Key", async() => {
+        Auth.passwordAuth({
+            username: process.env.USERNAME,
+            password: ""
+        })
+        
         let result = await Auth.apiKeyAuth({
             secret: process.env.APIKEY
         });
@@ -57,8 +60,6 @@ describe("Environments:", () => {
             throw new Error("Data is not an array");
         }
     });
-<<<<<<< Updated upstream
-
 });
 
 /*

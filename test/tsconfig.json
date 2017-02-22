@@ -8,8 +8,5 @@
         "strictNullChecks": true,
         "suppressImplicitAnyIndexErrors": true,
         "pretty": true
-    },
-    "files": [
-        "init.ts"
-    ]
+    }
 }

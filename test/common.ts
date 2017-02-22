@@ -10,3 +10,12 @@ export interface Results {
     status: number;
     //...etc
 }
+
+export interface ErrorResults {
+
+
+
+
+
+    
+}
