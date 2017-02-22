@@ -2,7 +2,7 @@ interface Entry {
     value: any;
     options: any;
     team?: string;
-    timer: number | null;
+    timer: any;
 }
 
 export class Cache {

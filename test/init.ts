@@ -42,10 +42,11 @@ describe("Authorize:", () => {
 });
 
 //========================================================================================================================
-/*
+
 describe("Environments:", () => {
     it("Verifies that data is an array", async () => {
         const e = await Environments.document().get();
+
         if (!e.ok) {
             throw new Error(e.error.title);
         }
@@ -58,7 +59,7 @@ describe("Environments:", () => {
     });
 <<<<<<< Updated upstream
 
-*/
+});
 
 /*
     it("Creates environment", async () => {
@@ -775,7 +776,3 @@ describe("Tiers:", async () => {
 });
 */
 /////////////////////////////////////////////////////////////////
-
-describe("Datacenters:", async () => {
-
-});
