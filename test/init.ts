@@ -12,7 +12,9 @@ import {
     Dns,
     Billing,
     Accounts,
-    Tiers
+    Tiers,
+    Notifications,
+    Teams
 
 } from "../src";
 import {
@@ -54,6 +56,7 @@ describe("Environments:", () => {
             throw new Error("Data is not an array");
         }
     });
+<<<<<<< Updated upstream
 
 */
 
@@ -96,6 +99,7 @@ describe("Environments:", () => {
             throw new Error(e.error.detail || e.error.title);
         }
     });
+});
 */
 /*
     it("Task start environment", async () => {
@@ -147,6 +151,7 @@ describe("Images:", () => {
             throw new Error("Data is not an array");
         }
     });
+});
 */
 /*
     it("Deletes unused images", async () => {
@@ -198,9 +203,9 @@ describe("Images:", () => {
 
 //========================================================================================================================
 
-/*
-describe("Containers:", () => {
 
+describe("Containers:", () => {
+/*
     it("Verifies that data is an array", async () => {
         const c = await Containers.document().get({
         page: {
@@ -222,8 +227,8 @@ describe("Containers:", () => {
         }
 
     });
-*/
-/*
+
+
     it("Gets a single container", async () => {
         const c = await Containers.document("584a3ed51b847a3e7bb3ca3f").get();
         if (!c.ok) {
@@ -232,29 +237,31 @@ describe("Containers:", () => {
 
     });
 */
+
+
 /*
     it("Creates a container", async () => {
         const c = await Containers.document().create({
             name: "Created Container",
-            environment: "5849daff1b847a3e7bb3c9fb",
+            environment: "586eb60a593b671053527991",
             config: {
                 flags: {auto_restart: true},
                 tls: {
                     enabled: true,
                     path: "/tls"
                 },
-                dnsrecord: ""
-            },
-            plan: "5612c19b58f23b6c0ec6df55",
-            image: "584a23b41b847a3e7   bb3ca2b",
-            scaling: {
+                dnsrecord: "",
+                hostname: "test-cont",
+                scaling: {
                 method: "persistent",
-                hostname: "testcontainer",
                 persistent: {
                     datacenter: "564a202c58f2213ab004c75a",
                     public_interface: true
                 }
+            }
             },
+            plan: "5612c19b58f23b6c0ec6df55",
+            image: "586d56a6593b676942797722",
             volumes: [
                 {
                     id: "",
@@ -269,13 +276,14 @@ describe("Containers:", () => {
         }
     });
 */
-/*
+
+
     it("Updates container", async () => {
-        const c = await Containers.document("584a3ed51b847a3e7bb3ca3f").update({
+        const c = await Containers.document("586eba1c593b6710535279c0").update({
             name: "Update Container",
             volumes: [
                 {
-                    id: "584a3ed51b847a3e7bb3ca3e",
+                    id: "586ebb3b593b6710535279c7",
                     remote_access: false
                 }
             ]
@@ -284,7 +292,7 @@ describe("Containers:", () => {
             throw new Error(c.error.detail);
         }
     });
-*/
+});
 
 /*
     it("Deletes container", async () => {
@@ -367,6 +375,7 @@ describe("Containers:", () => {
         console.log(c.value);
     });
 });
+
 */
 /*
 describe("Datacenter:", async () => {
@@ -387,6 +396,7 @@ describe("Datacenter:", async () => {
         }
         console.log(d.value);
     });
+
 });
 */
 /*
@@ -423,8 +433,8 @@ describe("Volumes:", async () => {
         console.log(p.value);
     });
 });
-*/
-/*
+
+
 describe("Jobs:", async () => {
 
     it("Retrieves Jobs", async () => {
@@ -432,7 +442,7 @@ describe("Jobs:", async () => {
         if (!j.ok) {
             throw new Error(j.error.title);
         }
-        console.log(p.value);
+        console.log(j.value);
     });
 
         it("Retrieves a Job", async () => {
@@ -454,8 +464,8 @@ describe("Repos:", async () => {
         }
         console.log(r.value);
     });
-*/
-/*
+
+
     it ("Retrieves a single repo", async () => {
         const r = await Repos.document("583fcf341b847a65e05aacab").get();
         if (!r.ok) {
@@ -463,6 +473,7 @@ describe("Repos:", async () => {
         }
         console.log(r.value);
     });
+});
 */
 /*
     it ("Creates a repo", async () => {
@@ -471,7 +482,7 @@ describe("Repos:", async () => {
             url: "git@github.com:kylelee91/test.git",
             type: "git",
             auth: {
-                private_key: "-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----"
+                private_key:
             }
         });
         if (!r.ok) {
@@ -523,12 +534,13 @@ describe("DNS Zones:", async () => {
 /*
     it ("Retrieves a single dns zone", async () => {
         const z = await Dns.Zones.document("585059fb593b673bad36a079").get();
-        if (!r.ok) {
+        if (!z.ok) {
             throw new Error(z.error.detail || z.error.title);
         }
         console.log(z.value);
     });
-    */
+});
+*/
  /*   
     it ("Updates a single dns zone", async () => {
         const z = await Dns.Zones.document("583356941b847a68d486ebad").update({
@@ -564,14 +576,14 @@ describe("DNS Zones:", async () => {
 describe("DNS Records:", async () => {
 
     it ("Retrieves a collection of records", async () => {
-        const r = await Dns.Zones.document("").records().get();
+        const r = await Dns.Zones.document("5851d791593b674d07deb44d").records().get();
         if (!r.ok) {
             throw new Error(r.error.detail || r.error.title);
         }
         console.log(r.value);
     });
-*/
 
+*/
 /*
     it ("Creates a DNS record", async () => {
         const r = await Dns.Zones.document("583356941b847a68d486ebad").records().create({
@@ -598,7 +610,7 @@ describe("DNS Records:", async () => {
     });
 */
 /*
-    it ("Retrieves a single record", async () => {
+    it ("Deletes a single record", async () => {
         const r = await Dns.Zones.document("583356941b847a68d486ebad").records("583a466d1b847a76ec4c7559").delete();
         if (!r.ok) {
             throw new Error(r.error.detail || r.error.title);
@@ -631,8 +643,8 @@ describe("DNS Records:", async () => {
         console.log(r.value);
     });
 });
-*/
 
+*/
 ////////////////////////////////////////////////////////////////////////
 /*
 describe("Billing:", async () => {
@@ -662,8 +674,8 @@ describe("Billing:", async () => {
         }
         console.log(b.value);
     });
-*/
-/*
+
+
     it ("Gets a current services", async () => {
         const b = await Billing.Services.document().get();
         if (!b.ok) {
@@ -671,8 +683,8 @@ describe("Billing:", async () => {
         }
         console.log(b.value);
     });
-*/
-/*
+
+
     it ("Gets expected", async () => {
         const b = await Billing.Expected.document().get();
         if (!b.ok) {
@@ -750,8 +762,8 @@ describe("Tiers:", async () => {
         }
         console.log(b.value);
     });
-*/
-/*
+
+
     it ("Gets a single tier", async () => {
         const b = await Tiers.document("574d2aea1c4568c6f3aaf8d0").get();
         if (!b.ok) {
