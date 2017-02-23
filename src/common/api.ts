@@ -112,7 +112,7 @@ async function makeRequest<T>(req: Request, token: OAuthToken | undefined): Prom
             };
         }
 
-        const result = await resp.json<T>();
+        const result: T = await resp.json();
         return {
             ok: true,
             value: result

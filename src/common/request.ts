@@ -9,14 +9,14 @@ export const ApiRequestInit: RequestInit = {
     cache: "no-cache"
 };
 
-export function timeout(f: Promise<IResponse>, t: number) {
+export function timeout(f: Promise<Response>, t: number) {
     return Promise.race([
         f,
         new Promise((_, rej) => setTimeout(() => rej(new Error("Request Timeout")), t))
     ]);
 }
 
-export async function retry(req: Request): Promise<IResponse> {
+export async function retry(req: Request): Promise<Response> {
     try {
         return fetch(req);
     } catch (e) {
