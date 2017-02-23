@@ -11,8 +11,7 @@
         "pretty": true,
         "removeComments": true,
         "moduleResolution": "node",
-        "suppressImplicitAnyIndexErrors": true,
-        "baseUrl": "./src"
+        "suppressImplicitAnyIndexErrors": true
     },
     "exclude": [
         "node_modules",
