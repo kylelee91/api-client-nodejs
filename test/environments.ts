@@ -1,7 +1,8 @@
+declare function require(name: string): any;
+
 //import { IdResults, Results, ErrorResults } from "./common";
 import { Environments, API } from "../src";
-import { assert } from "chai";
-import { CreateContainer } from "./containers";
+import { assert, expect } from "chai";
 
 
 export async function create() {
@@ -38,28 +39,28 @@ export async function create() {
         "The environment created does not match the name used to create environment");
     // everything good, print success
 
-    return resp.value.data.id;
+    return resp.value;
 };
 
 
-export async function update(id: string | undefined) {
+export async function update(env: Environments.Single | undefined) {
     // again
-    if (!id) {
+    if (!env || !env.data) {
         //error - working ID wasn't set. must get id of env first
-        throw new Error("An existing environment ID wasn't set. You must use an existing environment ID.");
+        throw new Error("An existing environment wasn't set. You must use an existing environment.");
     }
     const updateEnvName = "Update Environment";
     const updateEnvDescription = "Update envDescription";
-    const env = {
+    const newEnv = {
         name: updateEnvName,
         about: {
             description: updateEnvDescription
         }
     };
-    const resp = await Environments.document(id).update({
-        name: env.name,
+    const resp = await Environments.document(env.data.id).update({
+        name: newEnv.name,
         about: {
-            description: env.about.description
+            description: newEnv.about.description
         }
     });
 
@@ -71,57 +72,110 @@ export async function update(id: string | undefined) {
         throw new Error("The data for updating an environment is null.");
     }
 
-    assert.equal(resp.value.data.name, env.name, "The environment updated does not match the name used to update environment");
-    assert.equal(resp.value.data.about.description, env.about.description,
+    assert.equal(newEnv.name, resp.value.data.name, "The environment updated does not match the name used to update environment");
+    assert.equal(newEnv.about.description, resp.value.data.about.description,
         "The environment updated does not match the name used to create environment");
 };
 
-export async function del(id: string | undefined) {
-    if (!id) {
+export async function del(env: Environments.Single | undefined) {
+    if (!env || !env.data) {
         //error - working ID wasn't set. must get id of env first
         throw new Error("An existing environment ID wasn't set. You must use an existing environment ID.");
     }
 
-    const resp = await Environments.document(id).delete();
+    const resp = await Environments.document(env.data.id).delete();
     if (!resp.ok) {
-        throw new Error("It failed to delete the environment");
+        throw new Error("It failed to delete the environment.");
     }
-
+    if (!resp.value.data) {
+        throw new Error("The data for deleting an environment is null.");
+    }
 };
 
+export async function getSingle() {
+    let id: string | undefined;
+
+    const env = await create();
+   if (!env.data) {
+        //error - working ID wasn't set. must get id of env first
+        throw new Error("An existing environment ID wasn't set. You must use an existing environment ID.");
+    }
+    id = env.data.id;
+
+    const resp = await Environments.document().get(id);
+    if (!resp.ok) {
+        throw new Error("It failed to get a single environment.");
+    }
+
+    if (!resp.value.data) {
+        throw new Error("The data for getting a single environment is null.");
+    }
+
+    assert.deepEqual(env.data, resp.value.data);
+
+    del(env);
+};
+
+export async function getCollection() {
+    const resp = await Environments.document().get();
+
+    if (!resp.ok) {
+        throw new Error("It failed to get a collection of environment.");
+    }
+
+    if (!resp.value.data) {
+        throw new Error("The data for getting a collection of environments is null.");
+    }
+}
+
 describe("Testing Environments", async () => {
-    describe("Create, Update, Delete", async () => {
-        let id: string | undefined = undefined;
-        before("Creating environment", async () => {
-            if (!id) {
-                id = await create();
+    describe("Create, Update, and Delete", async () => {
+        let env: Environments.Single | undefined;
+        before("Create", async () => {
+            if (!env) {
+                env = await create();
             }
+            return env;
         });
 
-        it("Updating environment", async () => {
-            await update(id);
+        it("Update", async () => {
+            await update(env);
         });
 
-        after("Deleting environment", async () => {
-            await del(id);
+        after("Delete", async () => {
+            await del(env);
         });
     });
 
     describe("Deleted environment", async () => {
-        let id: string | undefined = undefined;
+        let env: Environments.Single | undefined;
         before("Creating environment", async () => {
-            if (!id) {
-                id = await create();
-                await del(id);
+            if (!env) {
+                env = await create();
+                await del(env);
             }
         });
 
-        it("Update environment", async () => {
-            await update(id);
+        it("Update", () => {
+            return update(env).then(() => {
+                throw Error("Updated a deleted environment");
+            }, () => {/* */});
         });
 
-        it("Delete environment", async () => {
-            await del(id);
+        it("Delete", () => {
+            return del(env).then((resp) => {
+                throw Error("Deleted a deleted environment");
+            }, () => {/* */});
+        });
+    });
+
+    describe("Creates environment and checks response from get", async () => {
+
+    });
+
+    describe("Get collection of environments", async () => {
+        it("Get", async () => {
+            await getCollection();
         });
     });
 });

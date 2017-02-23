@@ -1,4 +1,4 @@
-import { Auth } from "../src"
+import { Auth } from "../src";
 
 declare var process: {
     readonly env: any;

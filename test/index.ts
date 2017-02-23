@@ -1,5 +1,7 @@
 import "./auth";
-import "./environments";
+// import "./environments";
+// import "./images";
+import "./accounts";
 import { Settings } from "../src";
 
 Settings.url = "https://api.dev.cycle.io";
