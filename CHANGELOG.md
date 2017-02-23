@@ -23,3 +23,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Updated
 - Credits.expired was changed to Credits.expires on API. Matched field in client.
 Breaking change for anyone using credits API
+
+## [1.2.0] - 2017-2-23
+### Added
+- Utilities 
+- Job tracker utility
+
+### Updated
+- Typescript 2.2.1
+
+### Removed
+- isomorphic fetch types - now included in TS 2.2.1 lib.d.ts

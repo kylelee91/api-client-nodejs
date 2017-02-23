@@ -1,6 +1,7 @@
 import { ApiResult } from "../common/api";
 import { QueryParams, ResourceId } from "../common/structures";
 import * as Jobs from "../modules/jobs";
+// tslint:disable-next-line:no-unused-variable
 import { Single } from "../modules/jobs";
 
 /**
