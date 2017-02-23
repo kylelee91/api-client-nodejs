@@ -1,7 +1,7 @@
-import { ApiResult } from "common/api";
-import { QueryParams, ResourceId } from "common/structures";
-import * as Jobs from "modules/jobs";
-import { Single } from "modules/jobs";
+import { ApiResult } from "../common/api";
+import { QueryParams, ResourceId } from "../common/structures";
+import * as Jobs from "../modules/jobs";
+import { Single } from "../modules/jobs";
 
 /**
  * Interface describing function called on progress event
