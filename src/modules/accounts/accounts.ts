@@ -65,8 +65,6 @@ export interface UpdateParams {
         last?: string;
     };
 
-    position?: string;
-
     auth?: {
         allow_employee_login?: boolean;
     };

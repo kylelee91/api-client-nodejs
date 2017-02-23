@@ -80,7 +80,7 @@ export async function update(env: Environments.Single | undefined) {
 export async function del(env: Environments.Single | undefined) {
     if (!env || !env.data) {
         //error - working ID wasn't set. must get id of env first
-        throw new Error("An existing environment ID wasn't set. You must use an existing environment ID.");
+        throw new Error("An existing environment wasn't set. You must use an existing environment.");
     }
 
     const resp = await Environments.document(env.data.id).delete();
@@ -96,13 +96,13 @@ export async function getSingle() {
     let id: string | undefined;
 
     const env = await create();
-   if (!env.data) {
+    if (!env.data) {
         //error - working ID wasn't set. must get id of env first
-        throw new Error("An existing environment ID wasn't set. You must use an existing environment ID.");
+        throw new Error("An existing environment wasn't set. You must use an existing environment.");
     }
     id = env.data.id;
 
-    const resp = await Environments.document().get(id);
+    const resp = await Environments.document(id).get();
     if (!resp.ok) {
         throw new Error("It failed to get a single environment.");
     }
@@ -110,10 +110,10 @@ export async function getSingle() {
     if (!resp.value.data) {
         throw new Error("The data for getting a single environment is null.");
     }
+    assert.deepEqual(env.data, resp.value.data, "The response from get does not match the response expected.");
 
-    assert.deepEqual(env.data, resp.value.data);
 
-    del(env);
+    return env;
 };
 
 export async function getCollection() {
@@ -159,18 +159,26 @@ describe("Testing Environments", async () => {
         it("Update", () => {
             return update(env).then(() => {
                 throw Error("Updated a deleted environment");
-            }, () => {/* */});
+            }, () => {/* */ });
         });
 
         it("Delete", () => {
             return del(env).then((resp) => {
                 throw Error("Deleted a deleted environment");
-            }, () => {/* */});
+            }, () => {/* */ });
         });
     });
 
     describe("Creates environment and checks response from get", async () => {
+        let env: Environments.Single | undefined;
+        it("Get", async () => {
+            env = await getSingle();
+            return env;
+        });
 
+        after("Deletes environment", async () => {
+            await del(env);
+        });
     });
 
     describe("Get collection of environments", async () => {
