@@ -96,3 +96,51 @@ before you are able to access the value.
 
     Settings.storage = new StorageInterface(); // Replace with class that matches interface
 ```
+
+## Utility
+The API client comes with optional utility functions to make interacting with Cycle even simpler.
+
+### Job Tracker
+The job tracker is an awaitable function that takes a settings object and resolves when the job is in a state
+that would be completed - whether or not it errored.
+
+
+```typescript
+import { Utils } from "cycle-api";
+
+// Settings
+interface JobTrackerSettings {
+    id: ResourceId; // -> ID of job you want to track
+    onProgress?: (j: Jobs.Single) => void; // -> function that gets called every update tick with current state of job
+    fetchJob?: FetchJobCallback; // -> Override function - implement custom job fetching
+    delay?: number; // -> ms between ticks
+}
+
+// Usage
+
+async function test() {
+    const jresp = await Utils.jobToComplete({
+        id: "abc", // -> ID of Job (usually from task)
+        onProgress: j => { // Function called on every update cycle
+            console.log("JOB UPDATED", j);
+        }
+    });
+
+    /**
+     * Only gets here if job state is not new, running, or queued.
+     * Cycle is no longer working on the job and no
+     * more updated will be made
+     */
+    if (jresp.ok) {
+        const { value: job} = jresp;
+
+        // Make sure data isn't null
+        if (!job.data) {
+            return;
+        }
+
+        // Utilize job here
+        console.log(job.data.state.current);
+    }
+}
+```
