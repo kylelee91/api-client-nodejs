@@ -20,6 +20,7 @@ import * as Structures from "./common/structures";
 import * as API from "./common/api";
 import { Cache } from "./common/cache";
 import { ApiRequestInit } from "./common/request";
+import * as Utils from "./util";
 
 export { QueryParams } from "./common/structures";
 export { default as Settings } from "./settings";
@@ -43,5 +44,6 @@ export {
     Structures,
     API,
     Cache,
-    ApiRequestInit
+    ApiRequestInit,
+    Utils
 }
