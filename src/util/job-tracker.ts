@@ -38,7 +38,8 @@ export interface JobTrackerSettings {
  */
 export async function jobToComplete(s: JobTrackerSettings) {
     const { id, onProgress, delay } = s;
-    let callback = s.fetchJob || Jobs.document(id).get;
+    const jobFunc = () => Jobs.document(id).get();
+    let callback = s.fetchJob || jobFunc;
     let resp = await callback();
 
     if (!resp.ok || !resp.value.data) {

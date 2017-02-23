@@ -22,7 +22,7 @@
   "scripts": {
     "prepublish": "tsc",
     "pretest": "cd test && tsc",
-    "test": "mocha test/build/test/init.js"
+    "test": "mocha --timeout 500000 test/build/test/init.js"
   },
   "keywords": [
     "cycle",
