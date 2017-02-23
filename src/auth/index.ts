@@ -35,7 +35,7 @@ export async function passwordAuth(options: PasswordAuth): Promise<ApiResult<Tok
             }
         });
         if (!resp.ok) {
-            const err = await resp.json<OAuthError>();
+            const err: OAuthError = await resp.json();
             return {
                 ok: false,
                 error: {
@@ -46,7 +46,7 @@ export async function passwordAuth(options: PasswordAuth): Promise<ApiResult<Tok
             };
         }
 
-        const token = await resp.json<Token>();
+        const token: Token = await resp.json();
         Settings.storage.write(token);
         return {
             ok: true,
@@ -103,7 +103,7 @@ export async function refreshAuth(): Promise<ApiResult<Token>> {
             }
         });
         if (!resp.ok) {
-            const err = await resp.json<OAuthError>();
+            const err: OAuthError = await resp.json();
             return {
                 ok: false,
                 error: {
@@ -114,7 +114,7 @@ export async function refreshAuth(): Promise<ApiResult<Token>> {
             };
         }
 
-        const refresh = await resp.json<Token>();
+        const refresh: Token = await resp.json();
         Settings.storage.write(refresh);
         return {
             ok: true,
@@ -156,7 +156,7 @@ export async function apiKeyAuth(options: {secret: string}): Promise<ApiResult<T
             }
         });
         if (!resp.ok) {
-            const err = await resp.json<OAuthError>();
+            const err: OAuthError = await resp.json();
             return {
                 ok: false,
                 error: {
@@ -167,7 +167,7 @@ export async function apiKeyAuth(options: {secret: string}): Promise<ApiResult<T
             };
         }
 
-        const token = await resp.json<Token>();
+        const token: Token = await resp.json();
         Settings.storage.write(token);
         return {
             ok: true,
