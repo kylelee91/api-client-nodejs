@@ -145,7 +145,7 @@ export class CollectionRequest {
     }
 }
 
-export type SingleActions = "build";
+export type SingleActions = "build"|"delete";
 export class SingleRequest {
     private target: string;
 
@@ -162,7 +162,7 @@ export class SingleRequest {
     }
 
     public async delete(query?: QueryParams) {
-        return API.del<Task<SingleActions>>(this.target, query);
+        return API.del<Task<"delete">>(this.target, query);
     }
 
     public async build() {

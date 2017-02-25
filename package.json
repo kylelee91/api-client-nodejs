@@ -24,7 +24,7 @@
   "scripts": {
     "prepublish": "tsc",
     "pretest": "cd test && tsc",
-    "test": "mocha --timeout 500000 test/build/test/init.js"
+    "test": "mocha --timeout 500000 test/build/test/index.js"
   },
   "keywords": [
     "cycle",

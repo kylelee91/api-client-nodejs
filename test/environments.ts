@@ -1,8 +1,8 @@
 declare function require(name: string): any;
 
 //import { IdResults, Results, ErrorResults } from "./common";
-import { Environments, API } from "../src";
-import { assert, expect } from "chai";
+import { Environments, Utils } from "../src";
+import { assert } from "chai";
 
 
 export async function create() {
@@ -65,7 +65,7 @@ export async function update(env: Environments.Single | undefined) {
     });
 
     if (!resp.ok) {
-        throw new Error("Updating an environment has failed because a structure wasn't returned.")
+        throw new Error("Updating an environment has failed because a structure wasn't returned.");
     }
 
     if (!resp.value.data) {
@@ -84,11 +84,20 @@ export async function del(env: Environments.Single | undefined) {
     }
 
     const resp = await Environments.document(env.data.id).delete();
-    if (!resp.ok) {
-        throw new Error("It failed to delete the environment.");
+    if (!resp.ok || !resp.value.data.job) {
+        throw new Error("It failed to create job: delete environment.");
     }
-    if (!resp.value.data) {
-        throw new Error("The data for deleting an environment is null.");
+    
+    const jobResp = await Utils.jobToComplete({
+        id: resp.value.data.job
+    });
+
+    if (!jobResp.ok || !jobResp.value.data) {
+        throw new Error("Getting job failed");
+    }
+
+    if (jobResp.value.data.state.current === "error" && jobResp.value.data.state.error) {
+        throw new Error(`Job build failed: ${jobResp.value.data.state.error.message}`);
     }
 };
 
@@ -128,62 +137,62 @@ export async function getCollection() {
     }
 }
 
-describe("Testing Environments", async () => {
-    describe("Create, Update, and Delete", async () => {
-        let env: Environments.Single | undefined;
-        before("Create", async () => {
-            if (!env) {
-                env = await create();
-            }
-            return env;
-        });
+// describe("Testing Environments", async () => {
+//     describe("Create, Update, and Delete", async () => {
+//         let env: Environments.Single | undefined;
+//         before("Create", async () => {
+//             if (!env) {
+//                 env = await create();
+//             }
+//             return env;
+//         });
 
-        it("Update", async () => {
-            await update(env);
-        });
+//         it("Update", async () => {
+//             await update(env);
+//         });
 
-        after("Delete", async () => {
-            await del(env);
-        });
-    });
+//         after("Delete", async () => {
+//             await del(env);
+//         });
+//     });
 
-    describe("Deleted environment", async () => {
-        let env: Environments.Single | undefined;
-        before("Creating environment", async () => {
-            if (!env) {
-                env = await create();
-                await del(env);
-            }
-        });
+//     describe("Deleted environment", async () => {
+//         let env: Environments.Single | undefined;
+//         before("Creating environment", async () => {
+//             if (!env) {
+//                 env = await create();
+//                 await del(env);
+//             }
+//         });
 
-        it("Update", () => {
-            return update(env).then(() => {
-                throw Error("Updated a deleted environment");
-            }, () => {/* */ });
-        });
+//         it("Update", () => {
+//             return update(env).then(() => {
+//                 throw Error("Updated a deleted environment");
+//             }, () => {/* */ });
+//         });
 
-        it("Delete", () => {
-            return del(env).then((resp) => {
-                throw Error("Deleted a deleted environment");
-            }, () => {/* */ });
-        });
-    });
+//         it("Delete", () => {
+//             return del(env).then((resp) => {
+//                 throw Error("Deleted a deleted environment");
+//             }, () => {/* */ });
+//         });
+//     });
 
-    describe("Creates environment and checks response from get", async () => {
-        let env: Environments.Single | undefined;
-        it("Get", async () => {
-            env = await getSingle();
-            return env;
-        });
+//     describe("Creates environment and checks response from get", async () => {
+//         let env: Environments.Single | undefined;
+//         it("Get", async () => {
+//             env = await getSingle();
+//             return env;
+//         });
 
-        after("Deletes environment", async () => {
-            await del(env);
-        });
-    });
+//         after("Deletes environment", async () => {
+//             await del(env);
+//         });
+//     });
 
-    describe("Get collection of environments", async () => {
-        it("Get", async () => {
-            await getCollection();
-        });
-    });
-});
+//     describe("Get collection of environments", async () => {
+//         it("Get", async () => {
+//             await getCollection();
+//         });
+//     });
+// });

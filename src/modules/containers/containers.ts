@@ -244,7 +244,7 @@ export class SingleRequest {
     }
 
     public async delete(query?: QueryParams) {
-        return API.del<Single>(this.target, query);
+        return API.del<Task<SingleActions>>(this.target, query);
     }
 
     public async start() {
