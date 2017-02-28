@@ -74,7 +74,7 @@ export async function update(env: Environments.Single | undefined) {
 
     assert.equal(newEnv.name, resp.value.data.name, "The environment updated does not match the name used to update environment");
     assert.equal(newEnv.about.description, resp.value.data.about.description,
-        "The environment updated does not match the name used to create environment");
+        "The environment updated does not match the name used to update environment");
 };
 
 export async function del(env: Environments.Single | undefined) {
@@ -137,62 +137,62 @@ export async function getCollection() {
     }
 }
 
-// describe("Testing Environments", async () => {
-//     describe("Create, Update, and Delete", async () => {
-//         let env: Environments.Single | undefined;
-//         before("Create", async () => {
-//             if (!env) {
-//                 env = await create();
-//             }
-//             return env;
-//         });
+describe("Testing Environments", async () => {
+    describe("Create, Update, and Delete", async () => {
+        let env: Environments.Single | undefined;
+        before("Create", async () => {
+            if (!env) {
+                env = await create();
+            }
+            return env;
+        });
 
-//         it("Update", async () => {
-//             await update(env);
-//         });
+        it("Update", async () => {
+            await update(env);
+        });
 
-//         after("Delete", async () => {
-//             await del(env);
-//         });
-//     });
+        after("Delete", async () => {
+            await del(env);
+        });
+    });
 
-//     describe("Deleted environment", async () => {
-//         let env: Environments.Single | undefined;
-//         before("Creating environment", async () => {
-//             if (!env) {
-//                 env = await create();
-//                 await del(env);
-//             }
-//         });
+    // describe("Deleted environment", async () => {
+    //     let env: Environments.Single | undefined;
+    //     before("Creating environment", async () => {
+    //         if (!env) {
+    //             env = await create();
+    //             await del(env);
+    //         }
+    //     });
 
-//         it("Update", () => {
-//             return update(env).then(() => {
-//                 throw Error("Updated a deleted environment");
-//             }, () => {/* */ });
-//         });
+    //     it("Update", () => {
+    //         return update(env).then(() => {
+    //             throw Error("Updated a deleted environment");
+    //         }, () => {/* */ });
+    //     });
 
-//         it("Delete", () => {
-//             return del(env).then((resp) => {
-//                 throw Error("Deleted a deleted environment");
-//             }, () => {/* */ });
-//         });
-//     });
+    //     it("Delete", () => {
+    //         return del(env).then((resp) => {
+    //             throw Error("Deleted a deleted environment");
+    //         }, () => {/* */ });
+    //     });
+    // });
 
-//     describe("Creates environment and checks response from get", async () => {
-//         let env: Environments.Single | undefined;
-//         it("Get", async () => {
-//             env = await getSingle();
-//             return env;
-//         });
+    describe("Creates environment and checks response from get", async () => {
+        let env: Environments.Single | undefined;
+        it("Get", async () => {
+            env = await getSingle();
+            return env;
+        });
 
-//         after("Deletes environment", async () => {
-//             await del(env);
-//         });
-//     });
+        after("Deletes environment", async () => {
+            await del(env);
+        });
+    });
 
-//     describe("Get collection of environments", async () => {
-//         it("Get", async () => {
-//             await getCollection();
-//         });
-//     });
-// });
+    describe("Get collection of environments", async () => {
+        it("Get", async () => {
+            await getCollection();
+        });
+    });
+});

@@ -175,60 +175,60 @@ async function runImageTestImport(repo: string) {
     return img;
 }
 
-// describe("Testing Images", async () => {
-//     describe("Import, Build, Update, and Delete", async () => {
-//         await Promise.all([
-//             runImageTestImport("cycleplatform/website-daemon"),
-//             runImageTestImport("cycleplatform/minecraft")
-//         ]);
-//     });
+describe("Testing Images", async () => {
+    describe("Import, Build, Update, and Delete", async () => {
+        await Promise.all([
+            runImageTestImport("cycleplatform/website-daemon"),
+            runImageTestImport("cycleplatform/minecraft")
+        ]);
+    });
 
-//     describe("Delete unused images", async () => {
-//         before("Import image", async () => {
-//             await Promise.all([
-//                 dockerImport("cycleplatform/website-daemon"),
-//                 dockerImport("cycleplatform/minecraft")
-//             ]);
-//         });
-//         it("Delete", async () => {
-//             await deleteUnused();
-//         });
-//     });
+    describe("Delete unused images", async () => {
+        before("Import image", async () => {
+            await Promise.all([
+                dockerImport("cycleplatform/website-daemon"),
+                dockerImport("cycleplatform/minecraft")
+            ]);
+        });
+        it("Delete", async () => {
+            await deleteUnused();
+        });
+    });
 
-//     describe("Deleted image", async () => {
-//         let img: Images.Single | undefined;
-//         before("Import", async () => {
-//             img = await dockerImport("cycleplatform/website-daemon");
-//             await del(img);
-//         });
-//         it("Delete", () => {
-//             return del(img).then((resp) => {
-//                 throw Error("Deleted a deleted image");
-//             }, () => {/* */});
-//         });
+    // describe("Deleted image", async () => {
+    //     let img: Images.Single | undefined;
+    //     before("Import", async () => {
+    //         img = await dockerImport("cycleplatform/website-daemon");
+    //         await del(img);
+    //     });
+    //     it("Delete", () => {
+    //         return del(img).then((resp) => {
+    //             throw Error("Deleted a deleted image");
+    //         }, () => {/* */});
+    //     });
 
-//         it("Update", () => {
-//             return update(img).then((resp) => {
-//                 throw Error("Updated a deleted image");
-//             }, () => {/* */});
-//         });
+    //     it("Update", () => {
+    //         return update(img).then((resp) => {
+    //             throw Error("Updated a deleted image");
+    //         }, () => {/* */});
+    //     });
 
-//         it("Build", () => {
-//             return build(img).then((resp) => {
-//                 throw Error("Built a deleted image");
-//             }, () => {/* */});
-//         });
-//     });
+    //     it("Build", () => {
+    //         return build(img).then((resp) => {
+    //             throw Error("Built a deleted image");
+    //         }, () => {/* */});
+    //     });
+    // });
 
-//     describe("Imports image and checks response from get", async () => {
-//         let img: Images.Single | undefined;
-//         it("Get", async () => {
-//             img = await getSingle();
-//             return img;
-//         });
+    // describe("Imports image and checks response from get", async () => {
+    //     let img: Images.Single | undefined;
+    //     it("Get", async () => {
+    //         img = await getSingle();
+    //         return img;
+    //     });
 
-//         after("Deletes image", async () => {
-//             await del(img);
-//         });
-//     }); 
-// });
+    //     after("Deletes image", async () => {
+    //         await del(img);
+    //     });
+    // }); 
+});

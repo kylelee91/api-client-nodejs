@@ -183,7 +183,7 @@ export async function taskUpdate(cont: Containers.Single) {
     const contUpdate = {
         plan: "5612c19b58f23b6c0ec6df55",
         domain: null,
-        hostname: "ApplyContainer",
+        hostname: "applycontainer",
         runtime: {
             env_vars: {
                 FILE_DIR: "/data/files",
@@ -214,8 +214,6 @@ export async function taskUpdate(cont: Containers.Single) {
     if (jobResp.value.data.state.current === "error" && jobResp.value.data.state.error) {
         throw new Error(`Job build failed: ${jobResp.value.data.state.error.message}`);
     }
-    console.log(resp.value.data);
-    await compareContainer(cont);
 
 };
 
@@ -317,52 +315,53 @@ export async function reimageContainer(cont: Containers.Single) {
     }
 }
 
+
 describe("Test Containers", async () => {
-    // describe("Create, Get, Update, and  Delete Container", async () => {
-    //     let results: ResourceType[];
-    //     before("Create", async () => {
-    //         results = await create();
-    //     });
-    //     it("Get", async () => {
-    //         await compareContainer(<Containers.Single>results[0].doc);
-    //     });
-    //     it("Update", async () => {
-    //         await update(<Containers.Single>results[0].doc);
-    //     });
+    describe("Create, Get, Update, and  Delete Container", async () => {
+        let results: ResourceType[];
+        before("Create", async () => {
+            results = await create();
+        });
+        it("Get", async () => {
+            await compareContainer(<Containers.Single>results[0].doc);
+        });
+        it("Update", async () => {
+            await update(<Containers.Single>results[0].doc);
+        });
 
-    //     after("Delete", async () => {
-    //         await deleteResource(...results);
-    //     });
-    // });
+        after("Delete", async () => {
+            await deleteResource(...results);
+        });
+    });
 
-    // describe("Update Via Task", async () => {
-    //     let results: ResourceType[];
-    //     before("Create", async () => {
-    //         results = await create();
-    //     });
-    //     it("Update via task", async () => {
-    //         await taskUpdate(<Containers.Single>results[0].doc);
-    //     });
-    //     after("Delete", async () => {
-    //         await deleteResource(...results);
-    //     });
-    // });
+    describe("Update Via Task", async () => {
+        let results: ResourceType[];
+        before("Create", async () => {
+            results = await create();
+        });
+        it("Update via task", async () => {
+            await taskUpdate(<Containers.Single>results[0].doc);
+        });
+        after("Delete", async () => {
+            await deleteResource(...results);
+        });
+    });
 
-    // describe("Start/Stop Container", async () => {
-    //     let results: ResourceType[];
-    //     before("Create", async () => {
-    //         results = await create();
-    //     });
-    //     it("Start", async () => {
-    //         await start(<Containers.Single>results[0].doc);
-    //     });
-    //     it("Stop", async () => {
-    //         await stop(<Containers.Single>results[0].doc);
-    //     });
-    //     after("Delete", async () => {
-    //         await deleteResource(...results);
-    //     });
-    // });
+    describe("Start/Stop Container", async () => {
+        let results: ResourceType[];
+        before("Create", async () => {
+            results = await create();
+        });
+        it("Start", async () => {
+            await start(<Containers.Single>results[0].doc);
+        });
+        it("Stop", async () => {
+            await stop(<Containers.Single>results[0].doc);
+        });
+        after("Delete", async () => {
+            await deleteResource(...results);
+        });
+    });
 
     describe("Reimage Container Image", async () => {
         let results: ResourceType[];

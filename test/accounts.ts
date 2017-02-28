@@ -1,7 +1,7 @@
 import { Accounts } from "../src";
-import { assert, expect } from "chai";
+import { assert } from "chai";
 
-export async function get(id: string) {
+export async function get() {
     const account = {
         "data": {
             "id": "583e36ad1b847a4c714cd8c7",
@@ -29,10 +29,10 @@ export async function get(id: string) {
                     "ended": "1901-01-01T00:00:00Z"
                 },
                 "term": {
-                    "start": "2017-02-12T21:07:02.246Z",
-                    "end": "2017-03-12T21:07:02.246Z"
+                    "start": "2017-02-27T18:28:42.897Z",
+                    "end": "2017-03-27T18:28:42.897Z"
                 },
-                "tier": "574d2aea1c4568c6f3aaf8d0",
+                "tier": "574d2e9d1c4568c6f3aaf8d4",
                 "restrictions": {
                     "containers": 5
                 },
@@ -51,9 +51,10 @@ export async function get(id: string) {
                 "created": "2016-11-30T02:17:17.097Z",
                 "updated": "0001-01-01T00:00:00Z",
                 "deleted": "0001-01-01T00:00:00Z",
-                "last_login": "2017-02-23T20:29:02.462Z",
+                "last_login": "2017-02-28T00:13:18.143Z",
                 "suspension": {
                     "time": "2016-12-07T03:11:31.994Z",
+                    "code": "",
                     "reason": "Trial period ended with active services.",
                     "grace_period": "2016-12-21T03:11:31.994Z",
                     "purged": "0001-01-01T00:00:00Z"
@@ -62,11 +63,7 @@ export async function get(id: string) {
         }
     };
 
-    if (!id) {
-        throw new Error("An existing account ID wasn't set. You must use an existing account ID.")
-    }
-
-    const resp = await Accounts.document().get(id);
+    const resp = await Accounts.document().get();
 
     if (!resp.ok) {
         throw new Error("It failed to retrieve an account.");
@@ -120,7 +117,7 @@ export async function update() {
 describe("Testing Accounts", async () => {
     describe("Getting account data", async () => {
         it("Get", async () => {
-            await get("57db30401b847a549ce703e5");
+            await get();
         });
     });
 

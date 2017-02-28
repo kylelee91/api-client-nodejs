@@ -66,7 +66,7 @@ export class CollectionRequest {
         return API.get<Collection>(this.target, query);
     }
 
-    public static async create(doc: NewParams, query?: QueryParams) {
+public static async create(doc: NewParams, query?: QueryParams) {
         return API.post<Single>(this.target, doc, query);
     }
 }

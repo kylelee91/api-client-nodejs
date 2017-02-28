@@ -1,9 +1,11 @@
 import "./auth";
-// import "./environments";
 // import "./images";
+// import "./environments";
+// import "./containers";
 // import "./accounts";
 // import "./volumes";
-import "./containers";
+// import "./dns";
+import "./plans";
 import { Settings } from "../src";
 
 Settings.url = "https://api.dev.cycle.io";
