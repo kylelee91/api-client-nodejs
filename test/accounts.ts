@@ -77,28 +77,17 @@ export async function get() {
 };
 
 export async function update() {
-    const firstname = "First";
-    const lastname = "Last";
-    const allowLogin = true;
     const account = {
         name: {
-            first: firstname,
-            last: lastname
+            first: "Kyle",
+            last: "Lee"
         },
         auth: {
-            allow_employee_login: allowLogin
+            allow_employee_login: true
         }
     };
 
-    const resp = await Accounts.document().update({
-        name: {
-            first: account.name.first,
-            last: account.name.last
-        },
-        auth: {
-            allow_employee_login: account.auth.allow_employee_login
-        }
-    });
+    const resp = await Accounts.document().update(account);
     if (!resp.ok) {
         throw new Error("It failed to update your account.");
     }
@@ -115,11 +104,11 @@ export async function update() {
 };
 
 describe("Testing Accounts", async () => {
-    describe("Getting account data", async () => {
-        it("Get", async () => {
-            await get();
-        });
-    });
+    // describe("Getting account data", async () => {
+    //     it("Get", async () => {
+    //         await get();
+    //     });
+    // });
 
     describe("Updating Account", async () => {
         it("Update", async () => {

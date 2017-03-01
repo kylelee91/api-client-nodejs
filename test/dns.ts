@@ -1,5 +1,6 @@
 import { assert } from "chai";
 import { Dns, Utils } from "../src";
+const dns = require("dns");
 
 export async function createZone() {
     const testOrigin = {
@@ -80,7 +81,7 @@ export async function getSingleZone() {
         throw new Error("The data for getting a DNS zone is null.");
     }
 
-    assert.deepEqual(zone.data, resp.value, "The response from get Zone does not match the response expected");
+    assert.deepEqual(zone.data, resp.value.data, "The response from get Zone does not match the response expected");
 
     return zone;
 };
@@ -195,15 +196,19 @@ describe("Testing DNS", async () => {
         });
     });
 
-    describe("Creates DNS zone and checks response from get", async () => {
-        let zone: Dns.Zones.Single;
-        it("Get", async () => {
-            zone = await getSingleZone();
-        });
-        after("Delete", async () => {
-            await delZone(zone);
-        });
-    });
+
+    dns.setServers(["", ""]);
+    dns.lookup("kylejlee.me");
+
+    // describe("Creates DNS zone and checks response from get", async () => {
+    //     let zone: Dns.Zones.Single;
+    //     it("Get", async () => {
+    //         zone = await getSingleZone();
+    //     });
+    //     after("Delete", async () => {
+    //         await delZone(zone);
+    //     });
+    // });
 
     describe("Create, Update, and Delete DNS records", async () => {
         let zone: Dns.Zones.Single;

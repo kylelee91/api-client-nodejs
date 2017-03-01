@@ -49,7 +49,7 @@ export async function build(img: Images.Single | undefined) {
     if (!resp.ok || !resp.value.data.job) {
         throw new Error("It failed to create job: build image.");
     }
-    
+
     const jobResp = await Utils.jobToComplete({
         id: resp.value.data.job
     });
@@ -57,9 +57,12 @@ export async function build(img: Images.Single | undefined) {
     if (!jobResp.ok || !jobResp.value.data) {
         throw new Error("Getting job failed");
     }
-
-    if (jobResp.value.data.state.current === "error" && jobResp.value.data.state.error) {
-        throw new Error(`Job build failed: ${jobResp.value.data.state.error.message}`);
+    console.log(jobResp.value.data.state);
+    if (jobResp.value.data.state.current === "error") {
+        if (jobResp.value.data.state.error) {
+            throw new Error(`Job build failed: ${jobResp.value.data.state.error.message}`);
+        }
+        throw new Error(`Job build failed and no error block was specified`);
     }
 };
 
@@ -105,7 +108,7 @@ export async function del(img: Images.Single | undefined) {
     if (!resp.ok || !resp.value.data.job) {
         throw new Error("It failed to create job: delete image.");
     }
-    
+
     const jobResp = await Utils.jobToComplete({
         id: resp.value.data.job
     });

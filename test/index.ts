@@ -1,10 +1,10 @@
 import "./auth";
-// import "./images";
-// import "./environments";
-// import "./containers";
-// import "./accounts";
-// import "./volumes";
-// import "./dns";
+import "./accounts";
+import "./images";
+import "./environments";
+import "./containers";
+import "./volumes";
+import "./dns";
 import "./plans";
 import { Settings } from "../src";
 
