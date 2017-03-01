@@ -57,7 +57,6 @@ export async function build(img: Images.Single | undefined) {
     if (!jobResp.ok || !jobResp.value.data) {
         throw new Error("Getting job failed");
     }
-    console.log(jobResp.value.data.state);
     if (jobResp.value.data.state.current === "error") {
         if (jobResp.value.data.state.error) {
             throw new Error(`Job build failed: ${jobResp.value.data.state.error.message}`);
