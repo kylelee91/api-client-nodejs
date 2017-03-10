@@ -42,7 +42,7 @@ export async function dockerImport(repo: string) {
 
 export async function build(img: Images.Single | undefined) {
     if (!img || !img.data) {
-        throw new Error("An existing image  wasn't set. You must use an existing image.")
+        throw new Error("An existing image  wasn't set. You must use an existing image.");
     }
 
     const resp = await Images.document(img.data.id).build();

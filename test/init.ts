@@ -515,7 +515,7 @@ describe("Repos:", async () => {
     });
 });
 */
-/*
+/
 describe("DNS Zones:", async () => {
 
     it ("Retrieves a collection of zones", async () => {
